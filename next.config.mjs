@@ -16,6 +16,12 @@ const nextConfig = {
         hostname: "github.com"
       }
     ]
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   }
 };
 

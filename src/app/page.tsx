@@ -162,42 +162,15 @@ const Home: NextPage = () => {
           data-border="rounded"
           justifyContent="space-between"
           maxWidth="l"
-          paddingRight="64"
-          paddingLeft="32"
           paddingY="20"
         >
           <Logo size="m" icon={false} href="https://once-ui.com" />
           <Row gap="12" hide="s">
             <SearchBar />
-            <Button
-              href="https://discord.com/invite/5EyAQ4eNdS"
-              prefixIcon="discord"
-              size="s"
-              label="Discord"
-              weight="default"
-              variant="tertiary"
-            />
-            <Button
-              href="https://github.com/once-ui-system/nextjs-starter"
-              prefixIcon="github"
-              size="s"
-              label="GitHub"
-              weight="default"
-              variant="tertiary"
-            />
             <StyleOverlay top="20" right="24" />
           </Row>
           <Row gap="16" show="s" alignItems="center" paddingRight="24">
-            <IconButton
-              href="https://discord.com/invite/5EyAQ4eNdS"
-              icon="discord"
-              variant="tertiary"
-            />
-            <IconButton
-              href="https://github.com/once-ui-system/nextjs-starter"
-              icon="github"
-              variant="tertiary"
-            />
+            <SearchBar />
             <StyleOverlay top="20" right="24" />
           </Row>
         </Row>
@@ -354,13 +327,13 @@ const Home: NextPage = () => {
               <AvatarGroup
                 marginBottom="8"
                 reverse
-                size="s"
+                size="l"
                 avatars={[
                   {
-                    src: "https://github.com/josumaru",
+                    src: "https://github.com/josumaru.png",
                   },
                   {
-                    src: "https://github.com/josumaru",
+                    src: "https://github.com/josumaru.png",
                   },
                 ]}
               />
