@@ -14,7 +14,7 @@ import { Flex, Spinner, useToast } from "@/once-ui/components";
 import { getStream } from "@/lib/hianime";
 interface Props {}
 
-const Page: NextPage<Props> = ({}) => {
+const VideoPlayer = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [data, setData] = useState<Stream | null>(null);
@@ -50,40 +50,35 @@ const Page: NextPage<Props> = ({}) => {
     fetchData();
   }, []);
 
-  return (
-    <Suspense
-      fallback={
-        <Flex justifyContent="center" fillWidth fillHeight>
-          <Spinner />
-        </Flex>
-      }
+  return loading ? (
+    <Flex justifyContent="center" fillWidth fillHeight>
+      <Spinner />
+    </Flex>
+  ) : (
+    <MediaPlayer
+      src={data?.results.streamingLink.link.file}
     >
-      {loading ? (
-        <Flex justifyContent="center" fillWidth fillHeight>
-          <Spinner />
-        </Flex>
-      ) : (
-        <MediaPlayer
-          title="Sprite Fight"
-          src={data?.results.streamingLink.link.file}
-        >
-          <MediaProvider>
-            {data?.results.streamingLink.tracks.map((track, index) => (
-              <Track
-                key={`${index}`}
-                src={track.file}
-                kind={track.kind as TextTrackKind}
-                label={track.label}
-                default={track.label === "English"}
-              />
-            ))}
-          </MediaProvider>
-          <DefaultVideoLayout icons={defaultLayoutIcons} />
-        </MediaPlayer>
-      )}
-      ;
-    </Suspense>
+      <MediaProvider>
+        {data?.results.streamingLink.tracks.map((track, index) => (
+          <Track
+            key={`${index}`}
+            src={track.file}
+            kind={track.kind as TextTrackKind}
+            label={track.label}
+            default={track.label === "English"}
+          />
+        ))}
+      </MediaProvider>
+      <DefaultVideoLayout icons={defaultLayoutIcons} />
+    </MediaPlayer>
   );
 };
+
+
+const Page: NextPage = ({}) => {
+  return <Suspense>
+    <VideoPlayer />
+  </Suspense>
+}
 
 export default Page;
