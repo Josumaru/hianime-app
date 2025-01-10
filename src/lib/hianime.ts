@@ -3,6 +3,7 @@ import { Episodes } from "@/types/episodes";
 import { Hianime } from "@/types/hianime";
 import { Info } from "@/types/info";
 import { Search } from "@/types/search";
+import { Stream } from "@/types/stream";
 import axios from "axios";
 
 const apiBaseUrl = process.env.API_BASE_URL;
@@ -59,6 +60,21 @@ export const getSearch = async (keyword: string): Promise<Search> => {
       throw new Error(`Noo, something went wrong, relax it's not your fault ( ˶ˆᗜˆ˵ )`);
     } else {
       throw new Error(`Hmm, you wrote it correctly, right?  (╭ರ_•́)`);
+    }
+  }
+}
+
+
+export const getStream = async (id: string): Promise<Stream> => {
+  try {
+    const endpoint = `${apiBaseUrl}/api/stream?id=${id}&server=hd-1&type=sub`
+    const data = await axios.get(endpoint);
+    return data.data as Stream;
+  } catch (error) {
+    if(axios.isAxiosError(error)) {
+      throw new Error(`Noo, something went wrong, relax it's not your fault ( ˶ˆᗜˆ˵ )`);
+    } else {
+      throw new Error(`Hmm, you do it correctly, right?  (╭ರ_•́)`);
     }
   }
 }

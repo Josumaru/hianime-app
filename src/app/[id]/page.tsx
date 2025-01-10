@@ -285,7 +285,7 @@ const Page: NextPage<Props> = ({ params }) => {
             background="brand-medium"
           >
             {episodes?.results.episodes.map((episode) => (
-              <SmartLink href={`/${id}`} key={episode.id}>
+              <SmartLink href={`/watch?id=${episode.id}`} key={episode.id}>
                 <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
                   {episode.title}
                   <Text as="span" onBackground="accent-strong">
