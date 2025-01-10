@@ -8,7 +8,7 @@ import {
   defaultLayoutIcons,
   DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Stream } from "@/types/stream";
 import { Flex, Spinner, useToast } from "@/once-ui/components";
 import { getStream } from "@/lib/hianime";
@@ -50,28 +50,39 @@ const Page: NextPage<Props> = ({}) => {
     fetchData();
   }, []);
 
-  return loading ? (
-    <Flex justifyContent="center" fillWidth fillHeight>
-      <Spinner />
-    </Flex>
-  ) : (
-    <MediaPlayer
-      title="Sprite Fight"
-      src={data?.results.streamingLink.link.file}
+  return (
+    <Suspense
+      fallback={
+        <Flex justifyContent="center" fillWidth fillHeight>
+          <Spinner />
+        </Flex>
+      }
     >
-      <MediaProvider>
-        {data?.results.streamingLink.tracks.map((track, index) => (
-          <Track
-            key={`${index}`}
-            src={track.file}
-            kind={track.kind as TextTrackKind}
-            label={track.label}
-            default={track.label === "English"}
-          />
-        ))}
-      </MediaProvider>
-      <DefaultVideoLayout icons={defaultLayoutIcons} />
-    </MediaPlayer>
+      {loading ? (
+        <Flex justifyContent="center" fillWidth fillHeight>
+          <Spinner />
+        </Flex>
+      ) : (
+        <MediaPlayer
+          title="Sprite Fight"
+          src={data?.results.streamingLink.link.file}
+        >
+          <MediaProvider>
+            {data?.results.streamingLink.tracks.map((track, index) => (
+              <Track
+                key={`${index}`}
+                src={track.file}
+                kind={track.kind as TextTrackKind}
+                label={track.label}
+                default={track.label === "English"}
+              />
+            ))}
+          </MediaProvider>
+          <DefaultVideoLayout icons={defaultLayoutIcons} />
+        </MediaPlayer>
+      )}
+      ;
+    </Suspense>
   );
 };
 
