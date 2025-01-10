@@ -87,7 +87,6 @@ export const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <DropdownWrapper
-      fillWidth
       trigger={trigger}
       dropdown={dropdown}
       isOpen={isOpen}

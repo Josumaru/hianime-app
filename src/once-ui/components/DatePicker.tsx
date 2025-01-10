@@ -27,6 +27,7 @@ export interface DatePickerProps extends Omit<React.ComponentProps<typeof Flex>,
   range?: {
     startDate?: Date;
     endDate?: Date;
+    isPreview?: boolean;
   };
   onHover?: (date: Date | null) => void;
 }
@@ -46,15 +47,15 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       size = "m",
       className,
       style,
-      onHover,
+      currentMonth: propCurrentMonth,
+      currentYear: propCurrentYear,
+      onMonthChange,
       range,
+      onHover,
       ...rest
     },
     ref,
   ) => {
-    const today = new Date();
-    const [currentMonth, setCurrentMonth] = useState<number>(value ? value.getMonth() : today.getMonth());
-    const [currentYear, setCurrentYear] = useState<number>(value ? value.getFullYear() : today.getFullYear());
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
     const [selectedTime, setSelectedTime] = useState<
       | {
@@ -85,6 +86,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 
       return () => clearTimeout(timer);
     }, []);
+
+    const today = new Date();
 
     const monthNames = [
       "January",
@@ -127,16 +130,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     };
 
     const handleMonthChange = (increment: number) => {
-      const newMonth = currentMonth + increment;
-      if (newMonth < 0) {
-        setCurrentMonth(11); // December
-        setCurrentYear(currentYear - 1);
-      } else if (newMonth > 11) {
-        setCurrentMonth(0); // January
-        setCurrentYear(currentYear + 1);
-      } else {
-        setCurrentMonth(newMonth);
-      }
+      onMonthChange?.(increment);
     };
 
     const convert24to12 = (hour24: number) => {
@@ -167,12 +161,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       return date >= range.startDate && date <= range.endDate;
     };
 
-    const isDateInRange = (date: Date) => {
-      if (minDate && date < minDate) return false;
-      if (maxDate && date > maxDate) return false;
-      return true;
-    };
-
     const renderCalendarGrid = () => {
       const firstDay = new Date(currentYear, currentMonth, 1).getDay();
 
@@ -191,12 +179,10 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       for (let i = 0; i < firstDay; i++) {
         const prevMonthDay = daysInPrevMonth - firstDay + i + 1;
         days.push(
-          <Flex paddingY="2">
-            <Flex width="40" height="40" key={`prev-${currentYear}-${currentMonth}-${i}`}>
-              <Button fillWidth weight="default" variant="tertiary" size="m" disabled>
-                {prevMonthDay}
-              </Button>
-            </Flex>
+          <Flex width="40" height="40" key={`prev-${currentYear}-${currentMonth}-${i}`}>
+            <Button fillWidth weight="default" variant="tertiary" size="m" disabled>
+              {prevMonthDay}
+            </Button>
           </Flex>,
         );
       }
@@ -216,8 +202,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           range?.startDate && currentDate.getTime() === range.startDate.getTime();
         const isLastInRange = range?.endDate && currentDate.getTime() === range.endDate.getTime();
 
-        const isDisabled = !isDateInRange(currentDate);
-
         days.push(
           <Flex paddingY="2" key={`day-${currentYear}-${currentMonth}-${day}`}>
             <Flex
@@ -234,10 +218,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                 weight={isSelected ? "strong" : "default"}
                 variant={isSelected ? "primary" : "tertiary"}
                 size="m"
-                onClick={() => !isDisabled && handleDateSelect(currentDate)}
+                onClick={() => handleDateSelect(currentDate)}
                 onMouseEnter={() => onHover?.(currentDate)}
                 onMouseLeave={() => onHover?.(null)}
-                disabled={isDisabled}
               >
                 {day}
               </Button>
@@ -251,18 +234,19 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 
       for (let i = 1; i <= remainingDays; i++) {
         days.push(
-          <Flex paddingY="2">
-            <Flex width="40" height="40" key={`next-${currentYear}-${currentMonth}-${i}`}>
-              <Button fillWidth weight="default" variant="tertiary" size="m" disabled>
-                {i}
-              </Button>
-            </Flex>
+          <Flex width="40" height="40" key={`next-${currentYear}-${currentMonth}-${i}`}>
+            <Button fillWidth weight="default" variant="tertiary" size="m" disabled>
+              {i}
+            </Button>
           </Flex>,
         );
       }
 
       return days;
     };
+
+    const currentMonth = propCurrentMonth ?? value?.getMonth() ?? today.getMonth();
+    const currentYear = propCurrentYear ?? value?.getFullYear() ?? today.getFullYear();
 
     return (
       <Flex
@@ -297,11 +281,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                   variant="tertiary"
                   size={size === "l" ? "l" : "m"}
                   icon="chevronLeft"
-                  onClick={(event: any) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    handleMonthChange(-1);
-                  }}
+                  onClick={() => handleMonthChange(-1)}
                 />
               )}
               <Flex fillWidth direction="column" alignItems="center" gap="8">
@@ -322,11 +302,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                   variant="tertiary"
                   size={size === "l" ? "l" : "m"}
                   icon="chevronRight"
-                  onClick={(event: any) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    handleMonthChange(1);
-                  }}
+                  onClick={() => handleMonthChange(1)}
                 />
               )}
             </>

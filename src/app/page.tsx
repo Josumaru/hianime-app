@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Heading,
@@ -37,20 +37,37 @@ import {
   Column,
   Row,
   StyleOverlay,
+  Skeleton,
+  Flex,
+  Spinner,
 } from "@/once-ui/components";
 import { CodeBlock, MediaUpload } from "@/once-ui/modules";
+import SpotlightCarousel from "@/components/home/spotlight-carousel";
+import { NextPage } from "next";
+import { Hianime } from "@/types/hianime";
+import { getHianime } from "@/lib/hianime";
+import Link from "next/link";
+import LatestEpisodeScroller from "@/components/home/latest-episode-scroller";
+import SearchBar from "@/components/home/common/search-bar";
+import TrendingScroller from "@/components/home/trending-scroller";
 
-export default function Home() {
+const Home: NextPage = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedRange, setSelectedRange] = useState<DateRange>();
   const [isFirstDialogOpen, setIsFirstDialogOpen] = useState(false);
   const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
   const [firstDialogHeight, setFirstDialogHeight] = useState<number>();
+  const [data, setData] = useState<Hianime | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const { addToast } = useToast();
   const [intro, setIntro] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [tags, setTags] = useState<string[]>(["UX / UI", "Design systems", "AI / ML"]);
+  const [tags, setTags] = useState<string[]>([
+    "UX / UI",
+    "Design systems",
+    "AI / ML",
+  ]);
   const [twoFA, setTwoFA] = useState(false);
 
   const handleSelect = (value: string) => {
@@ -96,6 +113,28 @@ export default function Home() {
     return null;
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const response = await getHianime();
+        setData(response);
+        addToast({
+          message: "Data loaded successfully",
+          variant: "success",
+        });
+      } catch (error: any) {
+        addToast({
+          message: error.message,
+          variant: "danger",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <Column fillWidth paddingY="80" paddingX="s" alignItems="center" flex={1}>
       <Fade
@@ -112,7 +151,13 @@ export default function Home() {
         fillWidth
         blur={0.25}
       />
-      <Row position="fixed" top="0" fillWidth justifyContent="center" zIndex={3}>
+      <Row
+        position="fixed"
+        top="0"
+        fillWidth
+        justifyContent="center"
+        zIndex={3}
+      >
         <Row
           data-border="rounded"
           justifyContent="space-between"
@@ -123,6 +168,7 @@ export default function Home() {
         >
           <Logo size="m" icon={false} href="https://once-ui.com" />
           <Row gap="12" hide="s">
+            <SearchBar />
             <Button
               href="https://discord.com/invite/5EyAQ4eNdS"
               prefixIcon="discord"
@@ -171,7 +217,6 @@ export default function Home() {
           alignItems="center"
           gap="48"
           radius="xl"
-          paddingTop="80"
           position="relative"
         >
           <Background
@@ -206,58 +251,125 @@ export default function Home() {
             }}
           />
           <Background
-            mask={{
-              x: 100,
-              y: 0,
-              radius: 100,
-            }}
             position="absolute"
+            mask={{
+              cursor: true,
+            }}
             gradient={{
+              colorEnd: "static-transparent",
+              colorStart: "accent-solid-strong",
+              display: true,
+              height: 100,
+              opacity: 100,
+              tilt: 0,
+              width: 150,
+              x: 0,
+              y: 0,
+            }}
+            dots={{
+              color: "accent-on-background-medium",
               display: true,
               opacity: 100,
-              tilt: -35,
-              height: 20,
-              width: 120,
-              x: 120,
-              y: 35,
-              colorStart: "brand-solid-strong",
-              colorEnd: "static-transparent",
+              size: "64",
+            }}
+            grid={{
+              color: "neutral-alpha-medium",
+              display: true,
+              height: "var(--static-space-32)",
+              opacity: 100,
+              width: "var(--static-space-32)",
+            }}
+            lines={{
+              display: false,
+              opacity: 100,
+              size: "24",
             }}
           />
-          <Column fillWidth alignItems="center" gap="32" padding="32" position="relative">
-            <InlineCode radius="xl" shadow="m" fit paddingX="16" paddingY="8">
-              Start by editing
-              <Text onBackground="brand-medium" marginLeft="8">
-                app/page.tsx
-              </Text>
-            </InlineCode>
-            <Heading wrap="balance" variant="display-default-l" align="center" marginBottom="16">
+          <Column fillWidth alignItems="center" gap="32" position="relative">
+            {loading ? (
+              <Flex
+                width={"l"}
+                alignItems="center"
+                justifyContent="center"
+                aspectRatio={"16/9"}
+              >
+                <Spinner />
+              </Flex>
+            ) : (
+              <>
+                <SpotlightCarousel params={data?.results.spotlights ?? []} />
+                <InlineCode
+                  radius="xl"
+                  shadow="m"
+                  fit
+                  paddingX="16"
+                  paddingY="8"
+                >
+                  Start by watching
+                  <SmartLink href={`/${data?.results.latestEpisode[0].id}`}>
+                    <Text
+                      onBackground="brand-medium"
+                      marginLeft="8"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {data?.results.latestEpisode[0].japanese_title}
+                    </Text>
+                  </SmartLink>
+                </InlineCode>
+                <Heading as="h2" variant="display-default-m">
+                  Latest Episode
+                </Heading>
+                <Text
+                  marginBottom="32"
+                  align="center"
+                  onBackground="neutral-weak"
+                >
+                  Tiny snippets to inspire your next project
+                </Text>
+                <LatestEpisodeScroller
+                  params={data?.results.latestEpisode ?? []}
+                />
+                <Heading as="h2" variant="display-default-m">
+                  Trending
+                </Heading>
+                <Text
+                  marginBottom="32"
+                  align="center"
+                  onBackground="neutral-weak"
+                >
+                  Tiny snippets to inspire your next project
+                </Text>
+                <TrendingScroller params={data?.results.trending ?? []} />
+              </>
+            )}
+            <Heading
+              wrap="balance"
+              variant="display-default-l"
+              align="center"
+              marginBottom="16"
+            >
               We let designers code and developers design
             </Heading>
-            <Button
-              id="readDocs"
-              target="_blank"
-              label="Open docs"
-              href="https://once-ui.com/docs"
-              variant="secondary"
-              arrowIcon
-            />
             <Column alignItems="center" paddingTop="64" fillWidth gap="24">
-              <Line maxWidth={4} marginBottom="16" background="neutral-alpha-medium" />
               <AvatarGroup
                 marginBottom="8"
                 reverse
                 size="s"
                 avatars={[
                   {
-                    src: "/images/l.jpg",
+                    src: "https://github.com/josumaru",
                   },
                   {
-                    src: "/images/z.jpg",
+                    src: "https://github.com/josumaru",
                   },
                 ]}
               />
-              <Heading marginBottom="12" as="h2" align="center" variant="heading-default-l">
+              <Heading
+                marginBottom="12"
+                as="h2"
+                align="center"
+                variant="heading-default-l"
+              >
                 Brought to you by indie creators
                 <br /> behind stellar projects:
               </Heading>
@@ -296,7 +408,13 @@ export default function Home() {
               />
             </Column>
           </Column>
-          <Column fillWidth paddingX="32" gap="12" alignItems="center" position="relative">
+          <Column
+            fillWidth
+            paddingX="32"
+            gap="12"
+            alignItems="center"
+            position="relative"
+          >
             <Heading as="h2" variant="display-default-m">
               Showcase
             </Heading>
@@ -314,9 +432,19 @@ export default function Home() {
               overflow="hidden"
             >
               <Row fill hide="m">
-                <SmartImage src="/images/login.png" alt="Preview image" sizes="560px" />
+                <SmartImage
+                  src="/images/login.png"
+                  alt="Preview image"
+                  sizes="560px"
+                />
               </Row>
-              <Column fillWidth alignItems="center" gap="20" padding="32" position="relative">
+              <Column
+                fillWidth
+                alignItems="center"
+                gap="20"
+                padding="32"
+                position="relative"
+              >
                 <Background
                   mask={{
                     x: 100,
@@ -359,7 +487,12 @@ export default function Home() {
                   />
                 </Column>
                 <Row fillWidth paddingY="24">
-                  <Row onBackground="neutral-weak" fillWidth gap="24" alignItems="center">
+                  <Row
+                    onBackground="neutral-weak"
+                    fillWidth
+                    gap="24"
+                    alignItems="center"
+                  >
                     <Line />/<Line />
                   </Row>
                 </Row>
@@ -477,7 +610,9 @@ export default function Home() {
                     >
                       <Column gap="4">
                         <Text variant="body-default-m">08 / 27</Text>
-                        <Text variant="body-default-m">1234 5678 1234 5678</Text>
+                        <Text variant="body-default-m">
+                          1234 5678 1234 5678
+                        </Text>
                       </Column>
                       <Icon name="visa" size="xl" />
                     </Row>
@@ -487,7 +622,12 @@ export default function Home() {
             </TiltFx>
           </Row>
           <Column position="relative" fillWidth gap="-1">
-            <Row fillWidth alignItems="center" justifyContent="space-between" marginBottom="32">
+            <Row
+              fillWidth
+              alignItems="center"
+              justifyContent="space-between"
+              marginBottom="32"
+            >
               <Heading as="h3" variant="display-default-xs">
                 Fill in your card details
               </Heading>
@@ -655,7 +795,13 @@ export default function Home() {
             }}
           />
           <Column maxWidth={32} gap="-1">
-            <Feedback icon variant="success" radius={undefined} topRadius="l" zIndex={1}>
+            <Feedback
+              icon
+              variant="success"
+              radius={undefined}
+              topRadius="l"
+              zIndex={1}
+            >
               Your profile is public.
             </Feedback>
             <Column
@@ -670,7 +816,9 @@ export default function Home() {
             >
               <MediaUpload
                 border={undefined}
-                emptyState={<Row paddingBottom="80">Drag and drop or click to browse</Row>}
+                emptyState={
+                  <Row paddingBottom="80">Drag and drop or click to browse</Row>
+                }
                 position="absolute"
                 aspectRatio="16 / 9"
                 sizes="560px"
@@ -697,11 +845,17 @@ export default function Home() {
                 <Heading marginTop="24" as="h3" variant="display-default-m">
                   Lorant One
                 </Heading>
-                <Text align="center" onBackground="neutral-weak" marginBottom="24">
+                <Text
+                  align="center"
+                  onBackground="neutral-weak"
+                  marginBottom="24"
+                >
                   165 connections
                 </Text>
                 <SegmentedControl
-                  onToggle={(value) => console.log("SegmentedControl changed", value)}
+                  onToggle={(value) =>
+                    console.log("SegmentedControl changed", value)
+                  }
                   buttons={[
                     {
                       size: "l",
@@ -916,39 +1070,68 @@ export default function Home() {
               height: "0.25rem",
             }}
           />
-          <Row position="relative" textVariant="display-default-m" align="center">
+          <Row
+            position="relative"
+            textVariant="display-default-m"
+            align="center"
+          >
             Learn more
           </Row>
         </Row>
         <Row fillWidth overflow="hidden">
-          <Row maxWidth="32" borderTop="neutral-alpha-weak" borderBottom="neutral-medium"></Row>
+          <Row
+            maxWidth="32"
+            borderTop="neutral-alpha-weak"
+            borderBottom="neutral-medium"
+          ></Row>
           <Row fillWidth border="neutral-alpha-weak" mobileDirection="column">
             {links.map((link, index) => (
-              <SmartLink unstyled fillWidth target="_blank" key={link.href} href={link.href}>
+              <SmartLink
+                unstyled
+                fillWidth
+                target="_blank"
+                key={link.href}
+                href={link.href}
+              >
                 <Card
                   fillWidth
                   padding="40"
                   gap="8"
                   direction="column"
                   background={undefined}
-                  borderRight={index < links.length - 1 ? "neutral-alpha-weak" : undefined}
+                  borderRight={
+                    index < links.length - 1 ? "neutral-alpha-weak" : undefined
+                  }
                   border={undefined}
                   radius={undefined}
                 >
-                  <Row fillWidth justifyContent="center" gap="12" alignItems="center">
+                  <Row
+                    fillWidth
+                    justifyContent="center"
+                    gap="12"
+                    alignItems="center"
+                  >
                     <Text variant="body-strong-m" onBackground="neutral-strong">
                       {link.title}
                     </Text>
                     <Icon size="s" name="arrowUpRight" />
                   </Row>
-                  <Text align="center" variant="body-default-s" onBackground="neutral-weak">
+                  <Text
+                    align="center"
+                    variant="body-default-s"
+                    onBackground="neutral-weak"
+                  >
                     {link.description}
                   </Text>
                 </Card>
               </SmartLink>
             ))}
           </Row>
-          <Row maxWidth="32" borderTop="neutral-alpha-weak" borderBottom="neutral-medium"></Row>
+          <Row
+            maxWidth="32"
+            borderTop="neutral-alpha-weak"
+            borderBottom="neutral-medium"
+          ></Row>
         </Row>
         <Row
           position="relative"
@@ -1001,7 +1184,10 @@ export default function Home() {
         onHeightChange={(height) => setFirstDialogHeight(height)}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setIsFirstDialogOpen(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setIsFirstDialogOpen(false)}
+            >
               Close
             </Button>
           </>
@@ -1015,7 +1201,9 @@ export default function Home() {
             label="2FA"
             description="Enable two factor authentication"
           />
-          <Button onClick={() => setIsSecondDialogOpen(true)}>Change password</Button>
+          <Button onClick={() => setIsSecondDialogOpen(true)}>
+            Change password
+          </Button>
         </Column>
       </Dialog>
       <Dialog
@@ -1027,7 +1215,10 @@ export default function Home() {
         minHeight={firstDialogHeight}
         footer={
           <>
-            <Button variant="secondary" onClick={() => setIsSecondDialogOpen(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => setIsSecondDialogOpen(false)}
+            >
               Close
             </Button>
             <Button onClick={() => setIsSecondDialogOpen(false)}>Save</Button>
@@ -1038,4 +1229,6 @@ export default function Home() {
       </Dialog>
     </Column>
   );
-}
+};
+
+export default Home;

@@ -57,6 +57,8 @@ const ToggleButton = forwardRef<HTMLElement, ToggleButtonProps>(
     },
     ref,
   ) => {
+    const radiusSize = size === "s" || size === "m" ? "m" : "l";
+
     return (
       <ElementType
         ref={ref}
@@ -69,8 +71,8 @@ const ToggleButton = forwardRef<HTMLElement, ToggleButtonProps>(
           radius === "none"
             ? "radius-none"
             : radius
-              ? `radius-${size}-${radius}`
-              : `radius-${size}`,
+              ? `radius-${radiusSize}-${radius}`
+              : `radius-${radiusSize}`,
           "text-decoration-none",
           "button",
           "cursor-interactive",
@@ -89,7 +91,7 @@ const ToggleButton = forwardRef<HTMLElement, ToggleButtonProps>(
         )}
         {(label || children) && (
           <Flex
-            padding={size === "s" ? "2" : "4"}
+            padding="4"
             textWeight={weight}
             textSize={size === "l" ? "m" : "s"}
             className="font-label"

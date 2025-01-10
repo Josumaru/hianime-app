@@ -6,7 +6,6 @@ import { DropdownWrapper, Flex, Icon, IconButton, Input, InputProps, Option } fr
 import inputStyles from "./Input.module.scss";
 import type { OptionProps } from "./Option";
 import type { DropdownWrapperProps } from "./DropdownWrapper";
-import { Placement } from "@floating-ui/react-dom";
 
 type SelectOptionType = Omit<OptionProps, "selected">;
 
@@ -17,7 +16,6 @@ interface SelectProps
   value?: string;
   emptyState?: ReactNode;
   onSelect?: (value: string) => void;
-  floatingPlacement?: Placement;
   searchable?: boolean;
   className?: string;
   style?: React.CSSProperties;
@@ -34,7 +32,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       minHeight,
       minWidth,
       maxWidth,
-      floatingPlacement,
       className,
       style,
       ...rest
@@ -159,7 +156,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         }}
         isOpen={isDropdownOpen}
         onOpenChange={setIsDropdownOpen}
-        floatingPlacement={floatingPlacement}
         minHeight={minHeight}
         trigger={
           <Input
@@ -258,4 +254,5 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 );
 
 Select.displayName = "Select";
+
 export { Select };

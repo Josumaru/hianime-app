@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, forwardRef, useImperativeHandle } from "react";
-import { Flex, Icon, Heading, Column } from ".";
+import { Flex, Icon, Heading } from ".";
 import styles from "./Accordion.module.scss";
 
-interface AccordionProps extends Omit<React.ComponentProps<typeof Flex>, "title">{
+interface AccordionProps {
   title: React.ReactNode;
   children: React.ReactNode;
   open?: boolean;
@@ -19,7 +19,6 @@ const Accordion: React.FC<AccordionProps> = forwardRef(
     };
 
     useImperativeHandle(ref, () => ({
-      ...((ref as React.MutableRefObject<HTMLDivElement>)?.current ?? {}),
       toggle: toggleAccordion,
       open: () => {
         setIsOpen(true);
@@ -30,7 +29,7 @@ const Accordion: React.FC<AccordionProps> = forwardRef(
     }));
 
     return (
-      <Flex fillWidth direction="column" className={styles.border}>
+      <Flex fillWidth direction="column" className={styles.border} {...rest}>
         <Flex
           tabIndex={0}
           className={styles.accordion}
@@ -68,10 +67,10 @@ const Accordion: React.FC<AccordionProps> = forwardRef(
           }}
           aria-hidden={!isOpen}
         >
-          <Flex fillWidth minHeight={0} overflow="hidden">
-            <Column fillWidth paddingX="20" paddingTop="8" paddingBottom="16"  {...rest}>
+          <Flex fillWidth minHeight={0} overflow="hidden" direction="column">
+            <Flex fillWidth paddingX="20" paddingTop="8" paddingBottom="16">
               {children}
-            </Column>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -80,4 +79,5 @@ const Accordion: React.FC<AccordionProps> = forwardRef(
 );
 
 Accordion.displayName = "Accordion";
+
 export { Accordion };
