@@ -10,14 +10,20 @@ import {
 } from "@vidstack/react/player/layouts/default";
 import { Suspense, useEffect, useState } from "react";
 import { Stream } from "@/types/stream";
-import { Flex, Spinner, useToast } from "@/once-ui/components";
+import { Button, Column, Flex, Row, Spinner, useToast } from "@/once-ui/components";
 import { getStream } from "@/lib/hianime";
+import { Servers } from "@/types/servers";
 interface Props {}
+
+interface StreamProps {
+  stream: Stream;
+  servers: Servers;
+}
 
 const VideoPlayer = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const [data, setData] = useState<Stream | null>(null);
+  const [data, setData] = useState<StreamProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const { addToast } = useToast();
 
@@ -29,7 +35,7 @@ const VideoPlayer = () => {
           throw new Error("Hmm, miss something???");
         }
         const response = await getStream(id);
-        if (response.results.streamingLink.link) {
+        if (response.stream.results.streamingLink.link) {
           setData(response);
           addToast({
             message: "Yeay, enjoy your anime... ( ˶ˆᗜˆ˵ )",
@@ -55,30 +61,34 @@ const VideoPlayer = () => {
       <Spinner />
     </Flex>
   ) : (
-    <MediaPlayer
-      src={data?.results.streamingLink.link.file}
-    >
-      <MediaProvider>
-        {data?.results.streamingLink.tracks.map((track, index) => (
-          <Track
-            key={`${index}`}
-            src={track.file}
-            kind={track.kind as TextTrackKind}
-            label={track.label}
-            default={track.label === "English"}
-          />
-        ))}
-      </MediaProvider>
-      <DefaultVideoLayout icons={defaultLayoutIcons} />
-    </MediaPlayer>
+    <Row>
+      <Column>
+        <MediaPlayer src={data?.stream.results.streamingLink.link.file}>
+          <MediaProvider>
+            {data?.stream.results.streamingLink.tracks.map((track, index) => (
+              <Track
+                key={`${index}`}
+                src={track.file}
+                kind={track.kind as TextTrackKind}
+                label={track.label}
+                default={track.label === "English"}
+              />
+            ))}
+          </MediaProvider>
+          <DefaultVideoLayout icons={defaultLayoutIcons} />
+        </MediaPlayer>
+        {data?.servers.results.map((server) => <Button key={server.data_id} label={server.serverName}/>)}
+      </Column>
+    </Row>
   );
 };
 
-
 const Page: NextPage = ({}) => {
-  return <Suspense>
-    <VideoPlayer />
-  </Suspense>
-}
+  return (
+    <Suspense>
+      <VideoPlayer />
+    </Suspense>
+  );
+};
 
 export default Page;

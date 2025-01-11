@@ -139,7 +139,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
               spotlight[activeIndex].tvInfo.duration,
               spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
-              <InlineCode radius="xl" shadow="m" fit paddingX="16" paddingY="8">
+              <InlineCode key={info} radius="xl" shadow="m" fit paddingX="16" paddingY="8">
                 {info}
               </InlineCode>
             ))}

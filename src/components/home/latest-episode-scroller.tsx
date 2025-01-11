@@ -15,9 +15,9 @@ interface Props {
 
 const LatestEpisodeScroller: NextPage<Props> = ({ params }) => {
   return (
-    <Scroller direction="row" alignItems="start" justifyContent="start" padding="0">
+    <Scroller direction="row" alignItems="start" justifyContent="start" padding="0" opacity={70}>
       {params.map((episode) => (
-        <SmartLink key={episode.id} href={`/${episode.id}`}>
+        <SmartLink key={episode.id} href={`/${episode.id}`} target="_blank">
           <Column fillHeight overflowX="hidden" maxWidth={12}>
             <SmartImage
               key={episode.id}

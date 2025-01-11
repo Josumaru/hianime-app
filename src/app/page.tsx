@@ -279,7 +279,7 @@ const Home: NextPage = () => {
                   paddingY="8"
                 >
                   Start by watching
-                  <SmartLink href={`/${data?.results.latestEpisode[0].id}`}>
+                  <SmartLink href={`/${data?.results.latestEpisode[0].id}`} target="_blank">
                     <Text
                       onBackground="brand-medium"
                       marginLeft="8"
@@ -1141,7 +1141,7 @@ const Home: NextPage = () => {
             <Text size="m">
               <Text onBackground="neutral-weak">2024 /</Text> Once UI
             </Text>
-            <SmartLink href="https://github.com/once-ui-system/nextjs-starter?tab=MIT-1-ov-file">
+            <SmartLink href="https://github.com/once-ui-system/nextjs-starter?tab=MIT-1-ov-file" target="_blank">
               MIT License
             </SmartLink>
           </Column>

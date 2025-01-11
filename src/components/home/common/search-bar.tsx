@@ -129,7 +129,7 @@ const SearchBar: NextPage<Props> = ({}) => {
               </Flex>
             ) : data ? (
               data?.results.data.map((result) => (
-                <SmartLink href={`/${result.id}`} key={result.id}>
+                <SmartLink href={`/${result.id}`} key={result.id} target="_blank">
                   <User
                     name={result.title.length > 50 ? `${result.title.substring(0, 50)}...` : result.title}
                     subline={result.japanese_title.length > 80 ? `${result.japanese_title.substring(0, 80)}...` : result.japanese_title}
