@@ -139,24 +139,31 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
               spotlight[activeIndex].tvInfo.duration,
               spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
-              <InlineCode key={info} radius="xl" shadow="m" fit paddingX="16" paddingY="8">
+              <InlineCode
+                key={info}
+                radius="xl"
+                shadow="m"
+                fit
+                paddingX="16"
+                paddingY="8"
+              >
                 {info}
               </InlineCode>
             ))}
           </Row>
-          <Text
-            variant="code-default-l"
-            style={{
-              width: "50%",
-              maskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
-              WebkitMaskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
-              display: "-webkit-box",
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              WebkitLineClamp: 6,
-            }}
-          >
-            <RevealFx speed="medium">
+          <Text variant="code-default-l">
+            <RevealFx
+              speed="medium"
+              style={{
+                width: "50%",
+                maskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
+                WebkitMaskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                WebkitLineClamp: 6,
+              }}
+            >
               {spotlight[activeIndex].description}
             </RevealFx>
           </Text>

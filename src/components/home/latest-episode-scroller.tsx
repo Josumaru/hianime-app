@@ -1,3 +1,4 @@
+import { encrypt } from "@/lib/crypto";
 import {
   Column,
   LetterFx,
@@ -8,7 +9,6 @@ import {
 } from "@/once-ui/components";
 import { Anime } from "@/types/hianime";
 import { NextPage } from "next";
-
 interface Props {
   params: Anime[];
 }
@@ -17,7 +17,7 @@ const LatestEpisodeScroller: NextPage<Props> = ({ params }) => {
   return (
     <Scroller direction="row" alignItems="start" justifyContent="start" padding="0" opacity={70}>
       {params.map((episode) => (
-        <SmartLink key={episode.id} href={`/${episode.id}`} target="_blank">
+        <SmartLink key={episode.id} href={`/anime/detail/${encrypt(episode.id)}`}>
           <Column fillHeight overflowX="hidden" maxWidth={12}>
             <SmartImage
               key={episode.id}

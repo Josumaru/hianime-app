@@ -1,3 +1,4 @@
+import { encrypt } from "@/lib/crypto";
 import {
   Column,
   LetterFx,
@@ -20,9 +21,10 @@ const TrendingScroller: NextPage<Props> = ({ params }) => {
       alignItems="start"
       justifyContent="start"
       padding="0"
+      opacity={70}
     >
       {params.map((episode) => (
-        <SmartLink key={episode.id} href={`/${episode.id}`} target="_blank">
+        <SmartLink key={episode.id} href={`/anime/detail/${encrypt(episode.id)}`}>
           <Column fillHeight overflowX="hidden" maxWidth={12}>
             <SmartImage
               key={episode.id}

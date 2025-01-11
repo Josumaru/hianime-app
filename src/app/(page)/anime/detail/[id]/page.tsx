@@ -1,4 +1,5 @@
 "use client";
+import { decrypt, encrypt } from "@/lib/crypto";
 import { getEpisodes, getInfo } from "@/lib/hianime";
 import {
   Avatar,
@@ -22,6 +23,7 @@ import {
 import { Episodes } from "@/types/episodes";
 import { Info } from "@/types/info";
 import { NextPage } from "next";
+import { useSearchParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 
 interface Props {
@@ -31,7 +33,7 @@ interface Props {
 }
 
 const Page: NextPage<Props> = ({ params }) => {
-  const { id } = use(params);
+  const id = decrypt(use(params).id);
   const [info, setInfo] = useState<Info | null>(null);
   const [episodes, setEpisodes] = useState<Episodes | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,6 +43,9 @@ const Page: NextPage<Props> = ({ params }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        if (!id) {
+          throw new Error("Hmm, where yout get the url ? Hahaha !!!");
+        }
         const infoResponse = await getInfo(id);
         const episodeResponse = await getEpisodes(id);
         if (episodeResponse.results.episodes) {
@@ -70,19 +75,22 @@ const Page: NextPage<Props> = ({ params }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
   return error ? (
-    <Text
-      style={{
-        fontFamily: "var(--font-family-code)",
-        maxLines: 1,
-        lineClamp: 1,
-      }}
-    >
-      <LetterFx speed="medium" trigger="instant">
-        {error}
-      </LetterFx>
-    </Text>
+    <Flex fillHeight fillWidth justifyContent="center" alignItems="center">
+      <Text
+        style={{
+          fontFamily: "var(--font-family-code)",
+          maxLines: 1,
+          lineClamp: 1,
+        }}
+      >
+        <LetterFx speed="medium" trigger="instant">
+          {error}
+        </LetterFx>
+      </Text>
+
+    </Flex>
   ) : loading ? (
     <Flex fillWidth fillHeight justifyContent="center" alignItems="center">
       <Spinner size="xl" />
@@ -285,7 +293,10 @@ const Page: NextPage<Props> = ({ params }) => {
             background="brand-medium"
           >
             {episodes?.results.episodes.map((episode) => (
-              <SmartLink href={`/watch?id=${episode.id}`} key={episode.id} target="_blank">
+              <SmartLink
+                href={`/anime/watch/${encrypt(episode.id)}`}
+                key={episode.id}
+              >
                 <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
                   {episode.title}
                   <Text as="span" onBackground="accent-strong">

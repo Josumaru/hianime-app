@@ -48,6 +48,10 @@ export interface AnimeInfoTvInfo {
 export enum ShowType {
   Ona = "ONA",
   Tv = "TV",
+  Movie = "Movie",
+  Ova = "OVA",
+  Special = "Special",
+  None = ""
 }
 
 export interface EdDatum {

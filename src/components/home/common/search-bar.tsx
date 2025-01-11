@@ -1,4 +1,5 @@
 "use client";
+import { encrypt } from "@/lib/crypto";
 import { getSearch } from "@/lib/hianime";
 import {
   Button,
@@ -16,7 +17,9 @@ import {
 } from "@/once-ui/components";
 import { Search } from "@/types/search";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
+import { BiSearch } from "react-icons/bi";
+import { BsSearch } from "react-icons/bs";
 
 interface Props {}
 
@@ -26,6 +29,7 @@ const SearchBar: NextPage<Props> = ({}) => {
   const [keyword, setKeyword] = useState<string>("");
   const [debouncedKeyword, setDebouncedKeyword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -83,24 +87,42 @@ const SearchBar: NextPage<Props> = ({}) => {
     };
     fetchData();
   }, [debouncedKeyword]);
+
+  useEffect(() => {
+    if (open) {
+      inputRef.current?.click();
+    }
+  }, [open]);
   return (
     <Flex>
-      <Button
-        variant="tertiary"
-        onClick={() => setOpen(true)}
-        style={{ padding: 2 }}
-      >
-        <Flex
+      <Flex show="s">
+        <Tag
+          variant="brand"
+          cursor="pointer"
+          label="Search anime..."
+          prefixIcon="search"
+          textVariant="code-default-l"
           onClick={() => setOpen(true)}
-          alignItems="center"
-          gap="12"
-          fillWidth
-          justifyContent="space-between"
+        />
+      </Flex>
+      <Flex hide="s">
+        <Button
+          variant="tertiary"
+          onClick={() => setOpen(true)}
+          style={{ padding: 2 }}
         >
-          <Text variant="code-default-l">Search anime...</Text>
-          <Tag variant="info" size="l" label="⌘ + K" />
-        </Flex>
-      </Button>
+          <Flex
+            onClick={() => setOpen(true)}
+            alignItems="center"
+            gap="12"
+            fillWidth
+            justifyContent="space-between"
+          >
+            <Text variant="code-default-l">Search anime...</Text>
+            <Tag variant="brand" size="l" label="⌘ + K" />
+          </Flex>
+        </Button>
+      </Flex>
 
       <Dialog
         onClose={() => setOpen(false)}
@@ -129,17 +151,28 @@ const SearchBar: NextPage<Props> = ({}) => {
               </Flex>
             ) : data ? (
               data?.results.data.map((result) => (
-                <SmartLink href={`/${result.id}`} key={result.id} target="_blank">
+                <SmartLink
+                  href={`/anime/detail/${encrypt(result.id)}`}
+                  key={result.id}
+                  target="_blank"
+                >
                   <User
-                    name={result.title.length > 50 ? `${result.title.substring(0, 50)}...` : result.title}
-                    subline={result.japanese_title.length > 80 ? `${result.japanese_title.substring(0, 80)}...` : result.japanese_title}
+                    name={
+                      result.title.length > 50
+                        ? `${result.title.substring(0, 50)}...`
+                        : result.title
+                    }
+                    subline={
+                      result.japanese_title.length > 80
+                        ? `${result.japanese_title.substring(0, 80)}...`
+                        : result.japanese_title
+                    }
                     tagProps={{
                       label: result.tvInfo.showType,
                       variant: "accent",
                     }}
                     avatarProps={{
-                      src:
-                        result.poster,
+                      src: result.poster,
                     }}
                   />
                 </SmartLink>
@@ -169,7 +202,9 @@ const SearchBar: NextPage<Props> = ({}) => {
       >
         <Column paddingY="12" fillWidth>
           <Input
+            ref={inputRef}
             id="password"
+            autoFocus
             label="Anime title"
             onChange={(e) => setKeyword(e.target.value)}
           />

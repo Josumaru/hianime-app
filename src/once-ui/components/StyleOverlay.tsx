@@ -14,7 +14,7 @@ const StyleOverlay = forwardRef<HTMLDivElement, StyleOverlayProps>(({ ...rest },
   };
 
   return (
-    <Flex ref={ref} {...rest} fillHeight position="fixed" zIndex={1}>
+    <Flex ref={ref} {...rest} fillHeight zIndex={1} alignItems="center">
       <IconButton
         variant={isOpen ? "secondary" : "primary"}
         onClick={togglePanel}

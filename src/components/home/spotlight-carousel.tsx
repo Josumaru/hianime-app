@@ -27,7 +27,7 @@ const SpotlightCarousel: NextPage<Props> = ({ params }) => {
       variant: "danger",
     });    
   }
-  return <AnimeCarousel aspectRatio="16 / 9" indicator="line" spotlight={params} opacity={70} />;
+  return <AnimeCarousel aspectRatio="16 / 9" indicator="thumbnail" spotlight={params} opacity={70} />;
 };
 
 export default SpotlightCarousel;
