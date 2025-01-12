@@ -2,6 +2,7 @@
 import { Episodes } from "@/types/episodes";
 import { Hianime } from "@/types/hianime";
 import { Info } from "@/types/info";
+import { Schedule } from "@/types/schedule";
 import { Search } from "@/types/search";
 import { Servers } from "@/types/servers";
 import { Stream } from "@/types/stream";
@@ -78,16 +79,46 @@ export const getStream = async (
 ): Promise<{ servers: Servers; stream: Stream }> => {
   try {
     const serversEndpoint = `${apiBaseUrl}/api/servers/${id}`;
-    const serversData:Servers = (await axios.get<Servers>(serversEndpoint)).data;
+    const serversData: Servers = (await axios.get<Servers>(serversEndpoint))
+      .data;
     const filteredServer = serversData.results.find(
-      (result) => result.type === (type ?? "sub") && result.serverName === (server ?? "hd-1")
+      (result) =>
+        result.type === (type ?? "sub") &&
+        result.serverName === (server ?? "hd-1")
     );
-    
+
     const selectedServer = filteredServer || serversData.results[0];
     const streamEndpoint = `${apiBaseUrl}/api/stream?id=${id}&server=${selectedServer.serverName}&type=${selectedServer.type}`;
     const streamData: Stream = (await axios.get<Stream>(streamEndpoint)).data;
 
-    return {servers: serversData, stream: streamData};
+    return { servers: serversData, stream: streamData };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Noo, something went wrong, relax it's not your fault ( ˶ˆᗜˆ˵ )`
+      );
+    } else {
+      throw new Error(`Hmm, you do it correctly, right?  (╭ರ_•́)`);
+    }
+  }
+};
+
+export const getSchedule = async (): Promise<Schedule[]> => {
+  let schedules: Schedule[] = [];
+  const today = new Date();
+
+  try {
+    for (let i = 0; i < 7; i++) {
+      const nextDate = new Date(today);
+      nextDate.setDate(today.getDate() + i);
+      const year = nextDate.getFullYear();
+      const month = String(nextDate.getMonth() + 1).padStart(2, "0");
+      const day = String(nextDate.getDate()).padStart(2, "0");
+      const endpoint = `${apiBaseUrl}/api/schedule?date=${year}-${month}-${day}`;
+      const data: Schedule = (await axios.get<Schedule>(endpoint)).data;
+      schedules.push(data);
+    }
+    return schedules;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(

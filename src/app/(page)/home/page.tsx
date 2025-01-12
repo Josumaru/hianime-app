@@ -17,7 +17,6 @@ import {
   Fade,
   Column,
   Row,
-  StyleOverlay,
   Flex,
   Spinner,
 } from "@/once-ui/components";
@@ -29,6 +28,7 @@ import LatestEpisodeScroller from "@/components/home/latest-episode-scroller";
 import SearchBar from "@/components/home/common/search-bar";
 import TrendingScroller from "@/components/home/trending-scroller";
 import { useHianimeStore } from "@/lib/store";
+import AnimeSchedule from "@/components/home/anime-schedule";
 
 const Home: NextPage = () => {
   const { hianime, setHianime } = useHianimeStore();
@@ -55,7 +55,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (hianime) return
+      if (hianime) return;
       try {
         setLoading(true);
         const response = await getHianime();
@@ -180,6 +180,7 @@ const Home: NextPage = () => {
                   fit
                   paddingX="16"
                   paddingY="8"
+                  hide="s"
                 >
                   Start by watching
                   <SmartLink
@@ -195,6 +196,34 @@ const Home: NextPage = () => {
                     </Text>
                   </SmartLink>
                 </InlineCode>
+                <InlineCode
+                  radius="xl"
+                  shadow="m"
+                  fit
+                  paddingX="16"
+                  paddingY="8"
+                  show="s"
+                >
+                  Start by watching
+                  <SmartLink
+                    href={`/${hianime?.results.latestEpisode[0].id}`}
+                    target="_blank"
+                  >
+                    <Text
+                      onBackground="brand-medium"
+                      marginLeft="8"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {hianime.results.latestEpisode[0].japanese_title.length >
+                      10
+                        ? `${hianime.results.latestEpisode[0].japanese_title.substring(
+                            0,
+                            10
+                          )}...`
+                        : hianime.results.latestEpisode[0].japanese_title}
+                    </Text>
+                  </SmartLink>
+                </InlineCode>
                 <Heading as="h2" variant="display-default-m">
                   Latest Episode
                 </Heading>
@@ -203,7 +232,7 @@ const Home: NextPage = () => {
                   align="center"
                   onBackground="neutral-weak"
                 >
-                  Tiny snippets to inspire your next project
+                  New episodes that are sure to get you excited
                 </Text>
                 <LatestEpisodeScroller
                   params={hianime?.results.latestEpisode ?? []}
@@ -216,12 +245,23 @@ const Home: NextPage = () => {
                   align="center"
                   onBackground="neutral-weak"
                 >
-                  Tiny snippets to inspire your next project
+                  There are so many who see this anime
                 </Text>
                 <TrendingScroller params={hianime?.results.trending ?? []} />
+                <Heading as="h2" variant="display-default-m">
+                  Schedule
+                </Heading>
+                <Text
+                  marginBottom="32"
+                  align="center"
+                  onBackground="neutral-weak"
+                >
+                  Stay tuned for the latest anime episodes today
+                </Text>
+                <AnimeSchedule schedule={hianime.results.today.schedule} />
               </>
             )}
-            <Heading
+            {/* <Heading
               wrap="balance"
               variant="display-default-l"
               align="center"
@@ -285,9 +325,9 @@ const Home: NextPage = () => {
                   },
                 ]}
               />
-            </Column>
+            </Column> */}
           </Column>
-          <Row
+          {/* <Row
             position="relative"
             fillWidth
             paddingX="32"
@@ -377,7 +417,7 @@ const Home: NextPage = () => {
               borderTop="neutral-alpha-weak"
               borderBottom="neutral-medium"
             ></Row>
-          </Row>
+          </Row> */}
           <Row
             position="relative"
             as="footer"

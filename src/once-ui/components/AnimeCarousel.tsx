@@ -1,22 +1,24 @@
 "use client";
 
+import { encrypt } from "@/lib/crypto";
 import {
   Badge,
-  Button,
   Column,
   Flex,
   Heading,
-  InlineCode,
   LetterFx,
   RevealFx,
   Row,
   Scroller,
   SmartImage,
+  SmartLink,
   Tag,
   Text,
 } from "@/once-ui/components";
 import { Spotlight } from "@/types/hianime";
 import { useEffect, useState, useRef } from "react";
+import { IoPlayCircleOutline, IoPlayOutline } from "react-icons/io5";
+import { PiPlayCircleDuotone } from "react-icons/pi";
 
 interface Image {
   src: string;
@@ -127,8 +129,9 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
             background: `linear-gradient(90deg, var(--brand-background-strong) 50%, transparent 100%)`,
           }}
         />
-        <Column padding="l" position="absolute" bottom="0">
-          <Heading as="h2" variant="display-default-m">
+        <Row></Row>
+        <Column padding="l" position="absolute" bottom="0" fillWidth hide="s">
+          <Heading variant="code-default-xl" style={{ width: "70%" }}>
             <LetterFx trigger="instant" speed="medium">
               {spotlight[activeIndex].japanese_title}
             </LetterFx>
@@ -139,16 +142,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
               spotlight[activeIndex].tvInfo.duration,
               spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
-              <InlineCode
-                key={info}
-                radius="xl"
-                shadow="m"
-                fit
-                paddingX="16"
-                paddingY="8"
-              >
-                {info}
-              </InlineCode>
+              <Tag key={info} variant="brand" size="m" label={info} />
             ))}
           </Row>
           <Text variant="code-default-l">
@@ -167,6 +161,76 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
               {spotlight[activeIndex].description}
             </RevealFx>
           </Text>
+        </Column>
+        <Flex>
+          <Flex
+            style={{ width: "50%" }}
+            position="absolute"
+            right="0"
+            fillHeight
+            justifyContent="center"
+          >
+            <SmartLink
+              href={`/anime/detail/${encrypt(spotlight[activeIndex].id)}`}
+            >
+              <Tag
+                variant="brand"
+                margin="0"
+                radius="full"
+                aspectRatio={1}
+                padding="xl"
+              >
+                <Flex
+                  fillWidth
+                  justifyContent="center"
+                  alignItems="center"
+                  paddingLeft="8"
+                >
+                  <IoPlayOutline size={"50"} />
+                </Flex>
+              </Tag>
+            </SmartLink>
+          </Flex>
+        </Flex>
+        <Column padding="s" position="absolute" bottom="0" fillWidth show="s">
+          <Text variant="code-default-xl" style={{ width: "70%" }}>
+            <LetterFx trigger="instant" speed="medium">
+              {spotlight[activeIndex].japanese_title}
+            </LetterFx>
+          </Text>
+          <Row gap={"8"} paddingY="8">
+            {[
+              spotlight[activeIndex].tvInfo.showType,
+              spotlight[activeIndex].tvInfo.duration,
+            ].map((info) => (
+              <Tag key={info} variant="brand" size="m" label={info} />
+            ))}
+          </Row>
+          <Text variant="code-default-s">
+            <RevealFx
+              speed="medium"
+              style={{
+                width:"70%",
+                maskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
+                WebkitMaskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                WebkitLineClamp: 3,
+              }}
+            >
+              {spotlight[activeIndex].description}
+            </RevealFx>
+          </Text>
+          {/* <Badge
+            textVariant="code-default-l"
+            margin="0"
+            arrow
+            effect
+            href={`/anime/detail/${encrypt(spotlight[activeIndex].id)}`}
+          >
+            Watch
+          </Badge> */}
         </Column>
       </RevealFx>
       {spotlight.length > 1 && (
