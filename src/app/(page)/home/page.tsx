@@ -31,7 +31,7 @@ import TrendingScroller from "@/components/home/trending-scroller";
 import { useHianimeStore } from "@/lib/store";
 
 const Home: NextPage = () => {
-  const { data, setData } = useHianimeStore();
+  const { hianime, setHianime } = useHianimeStore();
   const [loading, setLoading] = useState<boolean>(false);
   const { addToast } = useToast();
 
@@ -55,11 +55,11 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (data) return
+      if (hianime) return
       try {
         setLoading(true);
         const response = await getHianime();
-        setData(response);
+        setHianime(response);
         addToast({
           message: "Data loaded successfully",
           variant: "success",
@@ -162,7 +162,7 @@ const Home: NextPage = () => {
             }}
           />
           <Column fillWidth alignItems="center" gap="32" position="relative">
-            {loading || !data ? (
+            {loading || !hianime ? (
               <Flex
                 width={"l"}
                 alignItems="center"
@@ -173,7 +173,7 @@ const Home: NextPage = () => {
               </Flex>
             ) : (
               <>
-                <SpotlightCarousel params={data?.results.spotlights ?? []} />
+                <SpotlightCarousel params={hianime?.results.spotlights ?? []} />
                 <InlineCode
                   radius="xl"
                   shadow="m"
@@ -183,7 +183,7 @@ const Home: NextPage = () => {
                 >
                   Start by watching
                   <SmartLink
-                    href={`/${data?.results.latestEpisode[0].id}`}
+                    href={`/${hianime?.results.latestEpisode[0].id}`}
                     target="_blank"
                   >
                     <Text
@@ -191,7 +191,7 @@ const Home: NextPage = () => {
                       marginLeft="8"
                       style={{ cursor: "pointer" }}
                     >
-                      {data?.results.latestEpisode[0].japanese_title}
+                      {hianime?.results.latestEpisode[0].japanese_title}
                     </Text>
                   </SmartLink>
                 </InlineCode>
@@ -206,7 +206,7 @@ const Home: NextPage = () => {
                   Tiny snippets to inspire your next project
                 </Text>
                 <LatestEpisodeScroller
-                  params={data?.results.latestEpisode ?? []}
+                  params={hianime?.results.latestEpisode ?? []}
                 />
                 <Heading as="h2" variant="display-default-m">
                   Trending
@@ -218,7 +218,7 @@ const Home: NextPage = () => {
                 >
                   Tiny snippets to inspire your next project
                 </Text>
-                <TrendingScroller params={data?.results.trending ?? []} />
+                <TrendingScroller params={hianime?.results.trending ?? []} />
               </>
             )}
             <Heading

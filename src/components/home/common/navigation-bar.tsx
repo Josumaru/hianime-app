@@ -1,7 +1,17 @@
-import { Fade, Flex, Logo, Row, SmartLink, StyleOverlay, Text } from "@/once-ui/components";
+import {
+  Fade,
+  Flex,
+  Logo,
+  NavIcon,
+  Row,
+  SmartLink,
+  StyleOverlay,
+  Text,
+} from "@/once-ui/components";
 import { NextPage } from "next";
 import SearchBar from "./search-bar";
-
+import { Sidebar } from "@/once-ui/modules";
+import { NavbarOverlay } from "@/once-ui/components/NavbarOverlay";
 
 const NavigationBar: NextPage = ({}) => {
   return (
@@ -33,7 +43,8 @@ const NavigationBar: NextPage = ({}) => {
           maxWidth="l"
           padding="12"
         >
-          <Row gap="12">
+        <NavbarOverlay  top="20" right="24" show="s"/>
+          <Row gap="12" hide="s">
             <SmartLink href="/home">
               <Text>Home</Text>
             </SmartLink>
