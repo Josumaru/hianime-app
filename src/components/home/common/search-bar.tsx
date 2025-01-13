@@ -154,7 +154,7 @@ const SearchBar: NextPage<Props> = ({}) => {
                 <SmartLink
                   href={`/anime/detail/${encrypt(result.id)}`}
                   key={result.id}
-                  target="_blank"
+                  onClick={() => setOpen(false)}
                 >
                   <User
                     name={

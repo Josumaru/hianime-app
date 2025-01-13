@@ -76,8 +76,8 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
         <Column fillWidth>
           <table>
             {schedule?.map((schedule, index) => (
-              <>
-                <tr key={index}>
+              <tbody key={index}>
+                <tr>
                   <td>
                     <Row
                       style={{ display: index != 0 ? "none" : "block" }}
@@ -142,7 +142,7 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
                     )}
                   </td>
                 </tr>
-              </>
+              </tbody>
             ))}
           </table>
         </Column>

@@ -185,8 +185,18 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
                   justifyContent="center"
                   alignItems="center"
                   paddingLeft="8"
+                  show="s"
                 >
-                  <IoPlayOutline size={"50"} />
+                  <IoPlayOutline size={"20"}/>
+                </Flex>
+                <Flex
+                hide="s"
+                  fillWidth
+                  justifyContent="center"
+                  alignItems="center"
+                  paddingLeft="8"
+                >
+                  <IoPlayOutline size={"50"}/>
                 </Flex>
               </Tag>
             </SmartLink>
