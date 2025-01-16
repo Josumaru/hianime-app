@@ -40,7 +40,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
   const preloadNextImage = (nextIndex: number) => {
     if (nextIndex >= 0 && nextIndex < mangas.length) {
       nextImageRef.current = new Image();
-      nextImageRef.current.src = `${reverseProxyBaseUrl}${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+      nextImageRef.current.src = `https://uploads.mangadex.org/covers/${
         mangas[nextIndex].id
       }/${
         mangas[nextIndex].relationships.find(
@@ -107,7 +107,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
           objectFit="cover"
           alt={mangas[activeIndex]?.attributes.title.en}
           aspectRatio={aspectRatio}
-          src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+          src={`https://uploads.mangadex.org/covers/${
             mangas[activeIndex].id
           }/${
             mangas[activeIndex].relationships.find(
@@ -134,7 +134,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                 radius="l"
                 alt={mangas[activeIndex]?.attributes.title.en}
                 width={"xs"}
-                src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+                src={`https://uploads.mangadex.org/covers/${
                   mangas[activeIndex].id
                 }/${
                   mangas[activeIndex].relationships.find(
@@ -234,7 +234,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                     alt={image.attributes.title.en}
                     aspectRatio="1 / 1"
                     sizes="120px"
-                    src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+                    src={`https://uploads.mangadex.org/covers/${
                       image.id
                     }/${
                       image.relationships.find(

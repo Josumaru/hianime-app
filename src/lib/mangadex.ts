@@ -23,8 +23,8 @@ export const getLatestUpdate = async (): Promise<MangadexManga> => {
     const chapterEndpoint = `${baseUrl}/chapter?includes[]=scanlation_group&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[readableAt]=desc&limit=64`;
 
     const chapterResponse = await axios.get<MangadexChapter>(chapterEndpoint);
-    // const ids = chapterResponse.data.data.flatMap((data) =>
-      const ids = chapterData.data.flatMap((data) =>
+    // const ids = chapterData.data.flatMap((data) =>
+    const ids = chapterResponse.data.data.flatMap((data) =>
       data.relationships
         .map((rel) => rel.id)
     );

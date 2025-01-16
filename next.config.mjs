@@ -7,25 +7,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: "cdn.noitatnemucod.net"
+        hostname: "**"
       },
-      {
-        protocol: 'https',
-        hostname: "avatar.vercel.sh"
-      },
-      {
-        protocol: 'https',
-        hostname: "github.com"
-      },
-      {
-        protocol: 'https',
-        hostname: "uploads.mangadex.org"
-      },
-      {
-        protocol: 'https',
-        hostname: "proxy.josumaru.my.id"
-      }
     ]
   },
   eslint: {
