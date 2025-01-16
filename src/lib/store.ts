@@ -1,7 +1,7 @@
 import { Episodes } from "@/types/episodes";
 import { Hianime } from "@/types/hianime";
 import { Info } from "@/types/info";
-import { PopularManga } from "@/types/manga/popular";
+import { MangadexManga, PopularManga } from "@/types/manga/popular";
 import { Servers } from "@/types/servers";
 import { Stream } from "@/types/stream";
 import { create } from "zustand";
@@ -37,9 +37,13 @@ export const useHianimeStore = create<HianimeStore>((set) => ({
 interface MangadexStore {
   popularManga: PopularManga | null;
   setPopularManga: (popularManga: PopularManga) => void;
+  latestUpdate: MangadexManga | null;
+  setLatestUpdate: (latestUpdate: MangadexManga) => void;
 }
 
 export const useMangadexStore = create<MangadexStore>((set) => ({
   popularManga: null,
   setPopularManga: (popularManga) => set({ popularManga }),
+  latestUpdate: null,
+  setLatestUpdate: (latestUpdate) => set({ latestUpdate }),
 }));

@@ -1,7 +1,18 @@
 "use client";
 
-import { Flex, RevealFx, Scroller, SmartImage } from "@/once-ui/components";
-import { Data, PopularManga } from "@/types/manga/popular";
+import {
+  Column,
+  Flex,
+  Heading,
+  LetterFx,
+  RevealFx,
+  Row,
+  Scroller,
+  SmartImage,
+  Tag,
+  Text,
+} from "@/once-ui/components";
+import { Data } from "@/types/manga/popular";
 import { useEffect, useState, useRef } from "react";
 
 interface CarouselProps extends React.ComponentProps<typeof Flex> {
@@ -25,15 +36,17 @@ const MangaCarousel: React.FC<CarouselProps> = ({
   const [initialTransition, setInitialTransition] = useState(revealedByDefault);
   const nextImageRef = useRef<HTMLImageElement | null>(null);
   const transitionTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
+  const reverseProxyBaseUrl = process.env.NEXT_PUBLIC_REVRESE_PROXY;
   const preloadNextImage = (nextIndex: number) => {
     if (nextIndex >= 0 && nextIndex < mangas.length) {
       nextImageRef.current = new Image();
-      nextImageRef.current.src = `https://uploads.mangadex.org/covers/${
+      nextImageRef.current.src = `${reverseProxyBaseUrl}${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
         mangas[nextIndex].id
-      }/${mangas[nextIndex].relationships.find(
-        (relationship) => relationship.type == "cover_art"
-      )?.attributes?.fileName}.512.jpg`;
+      }/${
+        mangas[nextIndex].relationships.find(
+          (relationship) => relationship.type == "cover_art"
+        )?.attributes?.fileName
+      }.512.jpg`;
     }
   };
 
@@ -91,20 +104,92 @@ const MangaCarousel: React.FC<CarouselProps> = ({
           sizes={sizes}
           priority
           radius="l"
+          objectFit="cover"
           alt={mangas[activeIndex]?.attributes.title.en}
           aspectRatio={aspectRatio}
-          src={`https://uploads.mangadex.org/covers/${mangas[activeIndex].id}/${
+          src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+            mangas[activeIndex].id
+          }/${
             mangas[activeIndex].relationships.find(
               (relationship) => relationship.type == "cover_art"
             )?.attributes?.fileName
-          }.512.jpg`}
+          }.256.jpg`}
           style={{
             border: "1px solid var(--neutral-alpha-weak)",
             ...(mangas.length > 1 && {
               cursor: "pointer",
+              transform: "translateX(-50)",
             }),
+            filter: "blur(90px)",
           }}
+          opacity={40}
         />
+
+        <Flex position="absolute" fillWidth fillHeight>
+          <Row padding="l" gap="l">
+            <Flex width={"xs"}>
+              <SmartImage
+                sizes={sizes}
+                priority
+                radius="l"
+                alt={mangas[activeIndex]?.attributes.title.en}
+                width={"xs"}
+                src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+                  mangas[activeIndex].id
+                }/${
+                  mangas[activeIndex].relationships.find(
+                    (relationship) => relationship.type == "cover_art"
+                  )?.attributes?.fileName
+                }.512.jpg`}
+                style={{
+                  border: "1px solid var(--neutral-alpha-weak)",
+                  ...(mangas.length > 1 && {
+                    cursor: "pointer",
+                  }),
+                }}
+              />
+            </Flex>
+            <Flex direction="column" justifyContent="space-between">
+              <Column gap="2">
+                <Heading>
+                  <LetterFx trigger="instant">
+                    {mangas[activeIndex]?.attributes.altTitles.find(
+                      (title) => title
+                    )?.["ja-ro"] ?? mangas[activeIndex]?.attributes.title.en}
+                  </LetterFx>
+                </Heading>
+                <Row gap="8">
+                  {mangas[activeIndex]?.attributes.tags
+                    .slice(0, 3)
+                    .map((tag) => (
+                      <Tag
+                        key={tag.id}
+                        opacity={80}
+                        variant="brand"
+                        label={tag.attributes.name.en}
+                      />
+                    ))}
+                </Row>
+                <Text variant="code-default-xl">
+                  {mangas[activeIndex]?.attributes.description.en}
+                </Text>
+              </Column>
+              <Flex justifyContent="space-between">
+                <Text
+                  variant="body-strong-l"
+                  style={{
+                    fontStyle: "italic",
+                  }}
+                >
+                  {mangas[activeIndex]?.relationships.find(
+                    (relationship) => relationship.type == "author"
+                  )?.attributes?.name ?? "Unknown"}
+                </Text>
+                <Text variant="body-strong-l">NO. {activeIndex + 1}</Text>
+              </Flex>
+            </Flex>
+          </Row>
+        </Flex>
       </RevealFx>
       {mangas.length > 1 && (
         <>
@@ -149,11 +234,13 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                     alt={image.attributes.title.en}
                     aspectRatio="1 / 1"
                     sizes="120px"
-                    src={`https://uploads.mangadex.org/covers/${image.id}/${
+                    src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+                      image.id
+                    }/${
                       image.relationships.find(
                         (relationship) => relationship.type == "cover_art"
                       )?.attributes?.fileName
-                    }.512.jpg`}
+                    }.256.jpg`}
                     style={{
                       cursor: "pointer",
                       borderRadius: "var(--radius-m)",

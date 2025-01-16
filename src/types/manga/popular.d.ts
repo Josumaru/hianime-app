@@ -1,4 +1,4 @@
-export interface PopularManga {
+export interface MangadexManga {
   result: string;
   response: string;
   data: Data[];

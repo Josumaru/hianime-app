@@ -1,6 +1,6 @@
 "use client";
 import PopularTitles from "@/components/manga/popular-titles";
-import { getPopular } from "@/lib/mangadex";
+import { getLatestUpdate, getPopular } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
   Background,
@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const { popularManga, setPopularManga } = useMangadexStore();
+  const { popularManga, setPopularManga, latestUpdate, setLatestUpdate } =
+    useMangadexStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
@@ -27,9 +28,14 @@ const Page: NextPage<Props> = ({}) => {
       setLoading(true);
       setError(null);
       try {
-        if (popularManga) return;
-        const popularMangaResponse = await getPopular();
-        setPopularManga(popularMangaResponse);
+        if (!popularManga) {
+          const popularMangaResponse = await getPopular();
+          setPopularManga(popularMangaResponse);
+        }
+        if (!latestUpdate) {
+          const latestUpdateResponse = await getLatestUpdate();
+          setLatestUpdate(latestUpdateResponse);
+        }
       } catch (error: any) {
         setError(error.message);
         addToast({
@@ -130,7 +136,10 @@ const Page: NextPage<Props> = ({}) => {
             <Spinner />
           ) : (
             <Column fillWidth>
-              <PopularTitles params={popularManga?.data ?? []}/>
+              <PopularTitles params={popularManga?.data ?? []} />
+              {latestUpdate?.data.map((manga) => (
+                <Text key={manga.id}>{manga.attributes.title.en}</Text>
+              ))}
             </Column>
           )}
         </Flex>

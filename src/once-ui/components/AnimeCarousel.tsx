@@ -129,7 +129,6 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
             background: `linear-gradient(90deg, var(--brand-background-strong) 50%, transparent 100%)`,
           }}
         />
-        <Row></Row>
         <Column padding="l" position="absolute" bottom="0" fillWidth hide="s">
           <Heading variant="code-default-xl" style={{ width: "70%" }}>
             <LetterFx trigger="instant" speed="medium">
@@ -187,16 +186,16 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
                   paddingLeft="8"
                   show="s"
                 >
-                  <IoPlayOutline size={"20"}/>
+                  <IoPlayOutline size={"20"} />
                 </Flex>
                 <Flex
-                hide="s"
+                  hide="s"
                   fillWidth
                   justifyContent="center"
                   alignItems="center"
                   paddingLeft="8"
                 >
-                  <IoPlayOutline size={"50"}/>
+                  <IoPlayOutline size={"50"} />
                 </Flex>
               </Tag>
             </SmartLink>
@@ -220,7 +219,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
             <RevealFx
               speed="medium"
               style={{
-                width:"70%",
+                width: "70%",
                 maskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
                 WebkitMaskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
                 display: "-webkit-box",
