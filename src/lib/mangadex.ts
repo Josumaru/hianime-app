@@ -24,10 +24,7 @@ export const getLatestUpdate = async (): Promise<MangadexManga> => {
 
     const chapterResponse = await axios.get<MangadexChapter>(chapterEndpoint);
     // const ids = chapterData.data.flatMap((data) =>
-    const ids = chapterResponse.data.data.flatMap((data) =>
-      data.relationships
-        .map((rel) => rel.id)
-    );
+    const ids = chapterResponse.data.data.flatMap((data) => data.id);
     const mangaEndpoint = `${baseUrl}/manga?${ids
       .map((id) => `ids[]=${id}`)
       .join(
