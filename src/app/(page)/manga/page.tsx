@@ -1,7 +1,9 @@
 "use client";
+import PopularTitles from "@/components/manga/popular-titles";
 import { getPopular } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
+  Background,
   Column,
   Flex,
   LetterFx,
@@ -41,21 +43,99 @@ const Page: NextPage<Props> = ({}) => {
     fetchData();
   }, []);
   return (
-    <Flex fillHeight fillWidth justifyContent={"center"} alignItems={"center"}>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Column>
-          {popularManga?.data.map((manga) => (
-            <Text variant="code-default-l" key={manga.id}>
-              <LetterFx speed="medium" trigger="instant">
-                {manga.attributes.title.en}
-              </LetterFx>
-            </Text>
-          ))}
-        </Column>
-      )}
-    </Flex>
+    <Column fillWidth paddingY="80" paddingX="s" alignItems="center" flex={1}>
+      <Background
+        mask={{
+          x: 0,
+          y: 100,
+        }}
+        position="fixed"
+        grid={{
+          display: true,
+          width: "0.25rem",
+          color: "neutral-alpha-medium",
+          height: "0.25rem",
+        }}
+      />
+      <Background
+        mask={{
+          x: 100,
+          y: 100,
+          radius: 100,
+        }}
+        position="fixed"
+        gradient={{
+          display: true,
+          tilt: -35,
+          height: 50,
+          width: 75,
+          x: 100,
+          y: 40,
+          colorStart: "accent-solid-medium",
+          colorEnd: "static-transparent",
+        }}
+      />
+      <Background
+        position="absolute"
+        mask={{
+          cursor: true,
+        }}
+        gradient={{
+          colorEnd: "static-transparent",
+          colorStart: "accent-solid-strong",
+          display: true,
+          height: 100,
+          opacity: 100,
+          tilt: 0,
+          width: 150,
+          x: 0,
+          y: 0,
+        }}
+        dots={{
+          color: "accent-on-background-medium",
+          display: true,
+          opacity: 100,
+          size: "64",
+        }}
+        grid={{
+          color: "neutral-alpha-medium",
+          display: true,
+          height: "var(--static-space-32)",
+          opacity: 100,
+          width: "var(--static-space-32)",
+        }}
+        lines={{
+          display: false,
+          opacity: 100,
+          size: "24",
+        }}
+      />
+      <Column
+        overflow="hidden"
+        as="main"
+        maxWidth="l"
+        position="relative"
+        radius="xl"
+        alignItems="center"
+        border="neutral-alpha-weak"
+        fillWidth
+      >
+        <Flex
+          fillHeight
+          fillWidth
+          justifyContent={"center"}
+          alignItems={"center"}
+        >
+          {loading ? (
+            <Spinner />
+          ) : (
+            <Column fillWidth>
+              <PopularTitles params={popularManga?.data ?? []}/>
+            </Column>
+          )}
+        </Flex>
+      </Column>
+    </Column>
   );
 };
 

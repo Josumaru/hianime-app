@@ -14,6 +14,9 @@ const nextConfig = {
       },
       {
         hostname: "github.com"
+      },
+      {
+        hostname: "uploads.mangadex.org"
       }
     ]
   },

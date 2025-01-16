@@ -5,16 +5,11 @@ import React, { useEffect, useState } from "react";
 import {
   Heading,
   Text,
-  Icon,
   InlineCode,
   Logo,
-  AvatarGroup,
   SmartLink,
-  LogoCloud,
   Background,
   useToast,
-  Card,
-  Fade,
   Column,
   Row,
   Flex,
@@ -22,10 +17,8 @@ import {
 } from "@/once-ui/components";
 import SpotlightCarousel from "@/components/home/spotlight-carousel";
 import { NextPage } from "next";
-import { Hianime } from "@/types/hianime";
 import { getHianime } from "@/lib/hianime";
 import LatestEpisodeScroller from "@/components/home/latest-episode-scroller";
-import SearchBar from "@/components/home/common/search-bar";
 import TrendingScroller from "@/components/home/trending-scroller";
 import { useHianimeStore } from "@/lib/store";
 import AnimeSchedule from "@/components/home/anime-schedule";
@@ -34,24 +27,6 @@ const Home: NextPage = () => {
   const { hianime, setHianime } = useHianimeStore();
   const [loading, setLoading] = useState<boolean>(false);
   const { addToast } = useToast();
-
-  const links = [
-    {
-      href: "https://once-ui.com/docs/theming",
-      title: "Themes",
-      description: "Style your app in minutes",
-    },
-    {
-      href: "https://once-ui.com/docs/RowComponent",
-      title: "Layout",
-      description: "Build responsive layouts",
-    },
-    {
-      href: "https://once-ui.com/docs/typography",
-      title: "Typography",
-      description: "Scale text automatically",
-    },
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
