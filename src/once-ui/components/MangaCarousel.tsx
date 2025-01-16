@@ -126,14 +126,13 @@ const MangaCarousel: React.FC<CarouselProps> = ({
         />
 
         <Flex position="absolute" fillWidth fillHeight>
-          <Row padding="l" gap="l">
-            <Flex width={"xs"}>
+          <Row padding="l" gap="l" hide="s">
+            <Flex fillWidth>
               <SmartImage
-                sizes={sizes}
                 priority
                 radius="l"
                 alt={mangas[activeIndex]?.attributes.title.en}
-                width={"xs"}
+                aspectRatio="9/16"
                 src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
                   mangas[activeIndex].id
                 }/${
@@ -146,12 +145,20 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                   ...(mangas.length > 1 && {
                     cursor: "pointer",
                   }),
+                  aspectRatio: "9/16",
                 }}
               />
             </Flex>
             <Flex direction="column" justifyContent="space-between">
               <Column gap="2">
-                <Heading>
+                <Heading
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 1,
+                  }}
+                >
                   <LetterFx trigger="instant">
                     {mangas[activeIndex]?.attributes.altTitles.find(
                       (title) => title
@@ -186,6 +193,85 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                   )?.attributes?.name ?? "Unknown"}
                 </Text>
                 <Text variant="body-strong-l">NO. {activeIndex + 1}</Text>
+              </Flex>
+            </Flex>
+          </Row>
+          <Row gap="s" show="s">
+            <Flex fillWidth>
+              <SmartImage
+                priority
+                radius="l"
+                alt={mangas[activeIndex]?.attributes.title.en}
+                aspectRatio="9/16"
+                src={`${reverseProxyBaseUrl}https://uploads.mangadex.org/covers/${
+                  mangas[activeIndex].id
+                }/${
+                  mangas[activeIndex].relationships.find(
+                    (relationship) => relationship.type == "cover_art"
+                  )?.attributes?.fileName
+                }.512.jpg`}
+                style={{
+                  border: "1px solid var(--neutral-alpha-weak)",
+                  ...(mangas.length > 1 && {
+                    cursor: "pointer",
+                  }),
+                  aspectRatio: "9/16",
+                }}
+              />
+            </Flex>
+            <Flex direction="column" justifyContent="space-between">
+              <Column gap="2">
+                <Heading
+                  as={"h3"}
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  <LetterFx trigger="instant">
+                    {mangas[activeIndex]?.attributes.altTitles.find(
+                      (title) => title
+                    )?.["ja-ro"] ?? mangas[activeIndex]?.attributes.title.en}
+                  </LetterFx>
+                </Heading>
+                <Row gap="8">
+                  {mangas[activeIndex]?.attributes.tags
+                    .slice(0, 2)
+                    .map((tag) => (
+                      <Tag
+                        key={tag.id}
+                        opacity={80}
+                        variant="brand"
+                        label={tag.attributes.name.en}
+                      />
+                    ))}
+                </Row>
+                <Text
+                  variant="code-default-s"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 6,
+                  }}
+                >
+                  {mangas[activeIndex]?.attributes.description.en}
+                </Text>
+              </Column>
+              <Flex justifyContent="space-between">
+                <Text
+                  variant="body-strong-m"
+                  style={{
+                    fontStyle: "italic",
+                  }}
+                >
+                  {mangas[activeIndex]?.relationships.find(
+                    (relationship) => relationship.type == "author"
+                  )?.attributes?.name ?? "Unknown"}
+                </Text>
+                <Text variant="body-strong-m">NO. {activeIndex + 1}</Text>
               </Flex>
             </Flex>
           </Row>

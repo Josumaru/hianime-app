@@ -1,6 +1,7 @@
 "use client";
 import { encrypt } from "@/lib/crypto";
 import { getSearch } from "@/lib/hianime";
+import { getMangadexSearch } from "@/lib/mangadex";
 import {
   Button,
   Column,
@@ -15,17 +16,17 @@ import {
   User,
   useToast,
 } from "@/once-ui/components";
+import { MangadexManga } from "@/types/manga/popular";
 import { Search } from "@/types/search";
 import { NextPage } from "next";
-import { InputHTMLAttributes, useEffect, useRef, useState } from "react";
-import { BiSearch } from "react-icons/bi";
-import { BsSearch } from "react-icons/bs";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {}
 
 const SearchBar: NextPage<Props> = ({}) => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<Search | null>(null);
+  const [mangaData, setMangaData] = useState<MangadexManga | null>(null);
   const [keyword, setKeyword] = useState<string>("");
   const [debouncedKeyword, setDebouncedKeyword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,6 +63,20 @@ const SearchBar: NextPage<Props> = ({}) => {
         if (debouncedKeyword) {
           setLoading(true);
           const response = await getSearch(debouncedKeyword);
+          const mangaResponse = await getMangadexSearch(debouncedKeyword);
+          if (mangaResponse.data.length > 0) {
+            setMangaData(mangaResponse);
+            addToast({
+              message: `Haha, I got the manga you were looking for ( ˶ˆᗜˆ˵ )`,
+              variant: "success",
+            });
+          } else {
+            addToast({
+              message: `Wait a minute...( •̀ - • )?, are you sure you're looking for ${keyword} manga here?`,
+              variant: "danger",
+            });
+            setData(null);
+          }
           if (response.results.data.length != 0) {
             setData(response);
             addToast({
@@ -150,33 +165,73 @@ const SearchBar: NextPage<Props> = ({}) => {
                 <Spinner />
               </Flex>
             ) : data ? (
-              data?.results.data.map((result) => (
-                <SmartLink
-                  href={`/anime/detail/${encrypt(result.id)}`}
-                  key={result.id}
-                  onClick={() => setOpen(false)}
-                >
-                  <User
-                    name={
-                      result.title.length > 50
-                        ? `${result.title.substring(0, 50)}...`
-                        : result.title
-                    }
-                    subline={
-                      result.japanese_title.length > 80
-                        ? `${result.japanese_title.substring(0, 80)}...`
-                        : result.japanese_title
-                    }
-                    tagProps={{
-                      label: result.tvInfo.showType,
-                      variant: "accent",
-                    }}
-                    avatarProps={{
-                      src: result.poster,
-                    }}
-                  />
-                </SmartLink>
-              ))
+              <>
+                {data?.results.data.map((result) => (
+                  <SmartLink
+                    href={`/anime/detail/${encrypt(result.id)}`}
+                    key={result.id}
+                    onClick={() => setOpen(false)}
+                  >
+                    <User
+                      name={
+                        result.title.length > 50
+                          ? `${result.title.substring(0, 50)}...`
+                          : result.title
+                      }
+                      subline={
+                        result.japanese_title.length > 80
+                          ? `${result.japanese_title.substring(0, 80)}...`
+                          : result.japanese_title
+                      }
+                      tagProps={{
+                        label: result.tvInfo.showType,
+                        variant: "accent",
+                      }}
+                      avatarProps={{
+                        src: result.poster,
+                      }}
+                    />
+                  </SmartLink>
+                ))}
+                {mangaData?.data.map((result) => (
+                  <SmartLink
+                    href={`/manga/detail/${encrypt(result.id)}`}
+                    key={result.id}
+                    onClick={() => setOpen(false)}
+                  >
+                    <User
+                      name={
+                        result.attributes.title.en?.length > 50
+                          ? `${result.attributes.title.en.substring(0, 50)}...`
+                          : result.attributes.title.en
+                      }
+                      subline={
+                        result.attributes.altTitles.find((title) => title)?.[
+                          "ja-ro"
+                        ] ??
+                        result.attributes.altTitles.find((title) => title)
+                          ?.ja ??
+                        result.attributes.altTitles.find((title) => title)?.en
+                      }
+                      tagProps={{
+                        label:
+                          result.type.charAt(0).toUpperCase() +
+                          result.type.slice(1),
+                        variant: "accent",
+                      }}
+                      avatarProps={{
+                        src: `https://uploads.mangadex.org/covers/${
+                          result.id
+                        }/${
+                          result.relationships.find(
+                            (rel) => rel.type === "cover_art"
+                          )?.attributes?.fileName
+                        }.256.jpg`,
+                      }}
+                    />
+                  </SmartLink>
+                ))}
+              </>
             ) : (
               <Flex
                 fillWidth

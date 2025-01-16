@@ -1,14 +1,21 @@
 "use client";
+import LatestEpisodeScroller from "@/components/home/latest-episode-scroller";
 import PopularTitles from "@/components/manga/popular-titles";
+import { encrypt } from "@/lib/crypto";
 import { getLatestUpdate, getPopular } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
   Background,
   Column,
   Flex,
+  Grid,
+  Heading,
   LetterFx,
   Row,
+  SmartImage,
+  SmartLink,
   Spinner,
+  Tag,
   Text,
   useToast,
 } from "@/once-ui/components";
@@ -82,7 +89,7 @@ const Page: NextPage<Props> = ({}) => {
         }}
       />
       <Background
-        position="absolute"
+        position="fixed"
         mask={{
           cursor: true,
         }}
@@ -137,9 +144,97 @@ const Page: NextPage<Props> = ({}) => {
           ) : (
             <Column fillWidth>
               <PopularTitles params={popularManga?.data ?? []} />
-              {latestUpdate?.data.map((manga) => (
-                <Text key={manga.id}>{manga.attributes.title.en}</Text>
-              ))}
+              <Column padding="s">
+                <Heading
+                  as="h2"
+                  marginTop="l"
+                  variant="display-default-m"
+                  align="right"
+                >
+                  Latest Chapter
+                </Heading>
+                <Text
+                  align="right"
+                  onBackground="neutral-weak"
+                >
+                  The latest chapters to keep you updated and entertained
+                </Text>
+                <Grid gap="4" columns={4} mobileColumns={1} tabletColumns={3}>
+                  {latestUpdate?.data.map((manga) => (
+                    <Row
+                      key={manga.id}
+                      background="brand-medium"
+                      border="brand-medium"
+                      radius="m"
+                      paddingY="8"
+                      opacity={70}
+                    >
+                      <SmartLink href={`/manga/detail/${encrypt(manga.id)}`}>
+                        <SmartImage
+                          aspectRatio="9/16"
+                          radius="s"
+                          width={"128"}
+                          src={`https://uploads.mangadex.org/covers/${
+                            manga.id
+                          }/${
+                            manga.relationships.find(
+                              (relationship) =>
+                                relationship.type === "cover_art"
+                            )?.attributes?.fileName
+                          }.256.jpg`}
+                        />
+                        <Column gap="xs" fillWidth>
+                          <Text
+                            style={{
+                              display: "-webkit-box",
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                              WebkitLineClamp: 1,
+                            }}
+                          >
+                            {manga.attributes.title.en}
+                          </Text>
+                          <Tag
+                            label={manga.attributes.tags[0].attributes.name.en}
+                            variant="danger"
+                          />
+                          <Row gap="xs">
+                            {manga.relationships.find(
+                              (relationship) =>
+                                relationship.type === "cover_art"
+                            )?.attributes?.volume && (
+                              <Text variant="label-default-l">
+                                Vol.{" "}
+                                {
+                                  manga.relationships.find(
+                                    (relationship) =>
+                                      relationship.type === "cover_art"
+                                  )?.attributes?.volume
+                                }
+                              </Text>
+                            )}
+                            {manga.attributes.lastVolume && (
+                              <Text variant="label-default-l">
+                                Vol. {manga.attributes.lastVolume}
+                              </Text>
+                            )}
+                          </Row>
+                        </Column>
+                      </SmartLink>
+                    </Row>
+                  ))}
+                </Grid>
+                <Heading as="h2" variant="display-default-m" align="left">
+                  Latest Chapter
+                </Heading>
+                <Text
+                  align="left"
+                  marginBottom="32"
+                  onBackground="neutral-weak"
+                >
+                  The latest chapters to keep you updated and entertained
+                </Text>
+              </Column>
             </Column>
           )}
         </Flex>
