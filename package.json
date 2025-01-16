@@ -16,6 +16,7 @@
     "compressorjs": "^1.2.1",
     "crypto-js": "^4.2.0",
     "hls.js": "^1.5.18",
+    "mangadex-full-api": "^6.0.0",
     "next": "15.1.0",
     "postcss": "^8.4.39",
     "postcss-preset-env": "^9.5.15",

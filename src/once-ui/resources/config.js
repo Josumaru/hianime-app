@@ -1,4 +1,4 @@
-const baseURL = "demo.once-ui.com";
+const baseURL = "anime.josumaru.my.id";
 
 // default customization applied to the HTML in the main layout.tsx
 const style = {
@@ -16,14 +16,14 @@ const style = {
 
 // default metadata
 const meta = {
-  title: "Once UI - Your Personalized Design System for Next.js",
+  title: "Animanga - Your App for Watching Anime and Reading Manga",
   description:
-    "An open-source design system and component library for Next.js that emphasizes easy styling and accessibility in UI development.",
+    "A platform to explore, watch your favorite anime, and read manga seamlessly in one place.",
 };
 
 // default open graph data
 const og = {
-  title: "Once UI for Next.js",
+  title: "Animanga",
   description: "We let designers code and developers design.",
   type: "website",
   image: "/images/cover.jpg"
