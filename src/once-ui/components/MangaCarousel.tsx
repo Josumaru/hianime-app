@@ -36,7 +36,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
   const [initialTransition, setInitialTransition] = useState(revealedByDefault);
   const nextImageRef = useRef<HTMLImageElement | null>(null);
   const transitionTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const reverseProxyBaseUrl = process.env.NEXT_PUBLIC_REVRESE_PROXY;
+  const reverseProxyBaseUrl = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   const preloadNextImage = (nextIndex: number) => {
     if (nextIndex >= 0 && nextIndex < mangas.length) {
       nextImageRef.current = new Image();

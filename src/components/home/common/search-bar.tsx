@@ -32,7 +32,7 @@ const SearchBar: NextPage<Props> = ({}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
-
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY_URL
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
@@ -220,7 +220,7 @@ const SearchBar: NextPage<Props> = ({}) => {
                         variant: "accent",
                       }}
                       avatarProps={{
-                        src: `https://uploads.mangadex.org/covers/${
+                        src: `${reverseProxy}https://uploads.mangadex.org/covers/${
                           result.id
                         }/${
                           result.relationships.find(

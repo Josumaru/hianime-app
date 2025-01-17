@@ -30,6 +30,7 @@ const Page: NextPage<Props> = ({}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -174,7 +175,7 @@ const Page: NextPage<Props> = ({}) => {
                           aspectRatio="9/16"
                           radius="s"
                           width={"128"}
-                          src={`https://uploads.mangadex.org/covers/${
+                          src={`${reverseProxy}https://uploads.mangadex.org/covers/${
                             manga.id
                           }/${
                             manga.relationships.find(
