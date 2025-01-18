@@ -1,99 +1,93 @@
 "use client";
 import { decrypt, encrypt } from "@/lib/crypto";
-import { getEpisodes, getInfo } from "@/lib/hianime";
+import { getManagdexFeed, getMangadexDetail } from "@/lib/mangadex";
+import { useMangadexStore } from "@/lib/store";
 import {
   Avatar,
   Background,
-  Badge,
-  Button,
   Column,
   Flex,
   GlitchFx,
   Grid,
-  Heading,
   LetterFx,
   RevealFx,
   Row,
-  SmartImage,
   SmartLink,
   Spinner,
   Text,
-  User,
   useToast,
 } from "@/once-ui/components";
-import { Episodes } from "@/types/episodes";
-import { Info } from "@/types/info";
+import { MangadexFeed } from "@/types/manga/feed";
 import { NextPage } from "next";
-import { Fragment, use, useEffect, useState } from "react";
-
+import { use, useEffect, useState } from "react";
+import { remark } from "remark";
+import html from "remark-html";
 interface Props {
   params: Promise<{
-    id: string;
+    mid: string;
   }>;
 }
 
 const Page: NextPage<Props> = ({ params }) => {
-  const id = decrypt(use(params).id);
-  const [info, setInfo] = useState<Info | null>(null);
-  const [episodes, setEpisodes] = useState<Episodes | null>(null);
+  const mid = use(params).mid;
+  const { detailManga, setDetailManga, feedManga, setFeedManga } =
+    useMangadexStore();
+  const [description, setDescription] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  const animeStatus: {
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
+  const mangaStatus: {
     key: string;
     value: string;
   }[] = [
     {
       key: "Status",
-      value: info?.results.data.animeInfo.Status ?? "Finished Airing",
+      value: `${detailManga?.data.attributes.status
+        ?.charAt(0)
+        .toUpperCase()}${detailManga?.data.attributes.status.slice(1)}`,
     },
     {
-      key: "Score",
-      value: info?.results.data.animeInfo["MAL Score"] ?? "10.0",
+      key: "Year",
+      value: `${detailManga?.data.attributes.year}`,
     },
     {
-      key: "Quality",
-      value: info?.results.data.animeInfo.tvInfo.quality ?? "HD",
-    },
-    {
-      key: "Duration",
+      key: "Languages",
       value:
-        info?.results.data.animeInfo.tvInfo.duration.replace("m", " Minutes") ??
-        "23 Minutes",
+        detailManga?.data.attributes.availableTranslatedLanguages
+          .join(", ")
+          .toUpperCase() ?? "",
     },
     {
-      key: "Producers",
-      value: info?.results.data.animeInfo.Producers.join(", ") ?? "Unknown",
-    },
-    {
-      key: "Studio",
-      value: info?.results.data.animeInfo.Studios ?? "Unknown",
+      key: "Author",
+      value:
+        detailManga?.data.relationships.find((rel) => rel.type == "author")
+          ?.attributes?.name ?? "Unknown",
     },
   ];
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        if (!id) {
+        if (!mid) {
           throw new Error("Hmm, where yout get the url ? Hahaha !!!");
         }
-        const infoResponse = await getInfo(id);
-        const episodeResponse = await getEpisodes(id);
-        if (episodeResponse.results.episodes) {
-          setEpisodes(episodeResponse);
+        if (!detailManga) {
+          const detailResponse = await getMangadexDetail(decrypt(mid));
+          setDetailManga(detailResponse);
         } else {
           throw new Error(
-            "Oooh no..., Your anime episodes is not available (ㅠ﹏ㅠ)"
+            "Oooh no..., Your manga episodes is not available (ㅠ﹏ㅠ)"
           );
         }
-        if (infoResponse.results.data) {
-          setInfo(infoResponse);
-          addToast({
-            message: `Yeay..., ${infoResponse?.results.data.title} online (,,>ヮ<,,)!`,
-            variant: "success",
-          });
+
+        if (!feedManga) {
+          const feedResponse = await getManagdexFeed(decrypt(mid));
+          setFeedManga(feedResponse);
         } else {
-          throw new Error("Oooh no..., Your anime not available (っ◞‸◟ c)");
+          throw new Error(
+            "Oooh no..., Your manga episodes is not available (ㅠ﹏ㅠ)"
+          );
         }
       } catch (error: any) {
         setError(error.message);
@@ -106,7 +100,18 @@ const Page: NextPage<Props> = ({ params }) => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [mid]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const processedContent = await remark()
+        .use(html)
+        .process(detailManga?.data.attributes.description.en ?? "");
+      const contentHtml = processedContent.toString();
+      setDescription(contentHtml);
+    };
+    fetchData();
+  }, [detailManga]);
   return error ? (
     <Flex fillHeight fillWidth justifyContent="center" alignItems="center">
       <Text
@@ -175,8 +180,12 @@ const Page: NextPage<Props> = ({ params }) => {
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
-                src={info?.results.data.poster}
-                loading={info?.results.data.poster == undefined}
+                src={
+                  detailManga?.data.relationships.find(
+                    (rel) => rel.type == "cover_art"
+                  )?.attributes?.fileName
+                }
+                loading={loading}
               />
             </GlitchFx>
             <Column>
@@ -186,26 +195,28 @@ const Page: NextPage<Props> = ({ params }) => {
                 translateY={0}
                 justifyContent="start"
               >
-                 <table>
-                  {animeStatus.map((status, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Text variant="label-strong-xl">{status.key}</Text>
-                      </td>
-                      <td
-                        style={{
-                          paddingLeft: 20,
-                        }}
-                      >
-                        <Text
-                          variant="label-default-xl"
-                          onBackground="info-medium"
+                <table>
+                  <tbody>
+                    {mangaStatus.map((status, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Text variant="label-strong-xl">{status.key}</Text>
+                        </td>
+                        <td
+                          style={{
+                            paddingLeft: 20,
+                          }}
                         >
-                          {status.value}
-                        </Text>
-                      </td>
-                    </tr>
-                  ))}
+                          <Text
+                            variant="label-default-xl"
+                            onBackground="info-medium"
+                          >
+                            {status.value}
+                          </Text>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </RevealFx>
             </Column>
@@ -214,8 +225,14 @@ const Page: NextPage<Props> = ({ params }) => {
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
-                src={info?.results.data.poster}
-                loading={info?.results.data.poster == undefined}
+                src={`${reverseProxy}https://uploads.mangadex.org/covers/${decrypt(
+                  mid
+                )}/${
+                  detailManga?.data.relationships.find(
+                    (rel) => rel.type == "cover_art"
+                  )?.attributes?.fileName
+                }.256.jpg`}
+                loading={loading}
               />
             </GlitchFx>
             <Column>
@@ -228,10 +245,16 @@ const Page: NextPage<Props> = ({ params }) => {
                 justifyContent="start"
               >
                 <Text variant="body-strong-xl">
-                  {info?.results.data.japanese_title}
+                  {detailManga?.data.attributes.title.en}
                   <Text as="span" variant="label-default-xl">
                     {" "}
-                    ({info?.results.data.animeInfo.Japanese})
+                    (
+                    {
+                      detailManga?.data.attributes.altTitles.find(
+                        (alt) => alt.ja
+                      )?.ja
+                    }
+                    )
                   </Text>
                 </Text>
               </RevealFx>
@@ -243,7 +266,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 justifyContent="start"
               >
                 <table>
-                  {animeStatus.map((status, index) => (
+                  {mangaStatus.map((status, index) => (
                     <tr key={index}>
                       <td>
                         <Text variant="label-strong-xl">{status.key}</Text>
@@ -267,15 +290,15 @@ const Page: NextPage<Props> = ({ params }) => {
             </Column>
           </Column>
           <Row gap="12">
-            {info?.results.data.animeInfo.Genres.map((genre) => (
+            {detailManga?.data.attributes.tags.map((genre) => (
               <Grid
-                key={genre}
+                key={genre.id}
                 background="brand-medium"
                 border="brand-medium"
                 radius="l"
                 padding="12"
               >
-                <Text>{genre}</Text>
+                <Text>{genre.attributes.name.en}</Text>
               </Grid>
             ))}
           </Row>
@@ -283,13 +306,9 @@ const Page: NextPage<Props> = ({ params }) => {
           <Text
             as="span"
             variant="label-default-xl"
-            style={{
-              fontFamily: "var(--font-family-code)",
-            }}
-          >
-            {info?.results.data.animeInfo.Overview}
-          </Text>
-          {info?.results.data.charactersVoiceActors != undefined &&
+            dangerouslySetInnerHTML={{ __html: description ?? "" }}
+          ></Text>
+          {/* {info?.results.data.charactersVoiceActors != undefined &&
             info?.results.data.charactersVoiceActors.length > 0 && (
               <Text onBackground="brand-medium">Character</Text>
             )}
@@ -311,7 +330,13 @@ const Page: NextPage<Props> = ({ params }) => {
             info?.results.seasons.length > 0 && (
               <Text onBackground="brand-medium">Related</Text>
             )}
-          <Grid columns={4} gap="12" tabletColumns={3} mobileColumns={1} fillWidth>
+          <Grid
+            columns={4}
+            gap="12"
+            tabletColumns={3}
+            mobileColumns={1}
+            fillWidth
+          >
             {info?.results.seasons.slice(0, 8).map((season, index) => (
               <Fragment>
                 <User
@@ -325,8 +350,8 @@ const Page: NextPage<Props> = ({ params }) => {
                 />
               </Fragment>
             ))}
-          </Grid>
-          <Text onBackground="brand-medium">Episodes</Text>
+          </Grid> */}
+          <Text onBackground="brand-medium">Chapter</Text>
           <Column
             border="brand-medium"
             gap="2"
@@ -335,15 +360,15 @@ const Page: NextPage<Props> = ({ params }) => {
             paddingTop="16"
             background="brand-medium"
           >
-            {episodes?.results.episodes.map((episode, index) => (
+            {feedManga?.data.map((chapter, index) => (
               <SmartLink
-                href={`/anime/watch/${encrypt(episode.id)}`}
-                key={episode.id}
+                href={`/manga/watch/${encrypt(chapter.id)}`}
+                key={chapter.id}
               >
                 <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
-                  {episode.title}
+                  {chapter.attributes.title}
                   <Text as="span" onBackground="accent-strong">
-                    {" - "}Episode {episode.episode_no}
+                    {" - "}Chapter {chapter.attributes.chapter}
                   </Text>
                 </Text>
               </SmartLink>

@@ -1,7 +1,9 @@
 import { Episodes } from "@/types/episodes";
 import { Hianime } from "@/types/hianime";
 import { Info } from "@/types/info";
-import { MangadexManga, PopularManga } from "@/types/manga/popular";
+import { MangadexDetail } from "@/types/manga/detail";
+import { MangadexFeed } from "@/types/manga/feed";
+import { MangadexManga } from "@/types/manga/popular";
 import { Servers } from "@/types/servers";
 import { Stream } from "@/types/stream";
 import { create } from "zustand";
@@ -35,10 +37,14 @@ export const useHianimeStore = create<HianimeStore>((set) => ({
 }));
 
 interface MangadexStore {
-  popularManga: PopularManga | null;
-  setPopularManga: (popularManga: PopularManga) => void;
+  popularManga: MangadexManga | null;
+  setPopularManga: (popularManga: MangadexManga) => void;
   latestUpdate: MangadexManga | null;
   setLatestUpdate: (latestUpdate: MangadexManga) => void;
+  detailManga: MangadexDetail | null;
+  setDetailManga: (detailManga: MangadexDetail) => void;
+  feedManga: MangadexFeed | null;
+  setFeedManga: (feedManga: MangadexFeed) => void;
 }
 
 export const useMangadexStore = create<MangadexStore>((set) => ({
@@ -46,4 +52,8 @@ export const useMangadexStore = create<MangadexStore>((set) => ({
   setPopularManga: (popularManga) => set({ popularManga }),
   latestUpdate: null,
   setLatestUpdate: (latestUpdate) => set({ latestUpdate }),
+  detailManga: null,
+  setDetailManga: (detailManga) => set({ detailManga }),
+  feedManga: null,
+  setFeedManga: (feedManga) => set({ feedManga }),
 }));

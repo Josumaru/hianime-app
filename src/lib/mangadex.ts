@@ -1,5 +1,7 @@
 "use server";
 import { MangadexChapter } from "@/types/manga/chapter";
+import { MangadexDetail } from "@/types/manga/detail";
+import { MangadexFeed } from "@/types/manga/feed";
 import { MangadexManga } from "@/types/manga/popular";
 import axios from "axios";
 const baseUrl = process.env.MANGADEX_BASE_URL;
@@ -50,6 +52,28 @@ export const getMangadexSearch = async (
     const response = await axios.get<MangadexManga>(endpoint);
     return response.data;
   } catch (error: any) {
-    throw new Error("Oh hell, Something went wrong ( ?? ?? ??) ");
+    throw new Error("Oh hell, Something went wrong (◡︵◡)");
+  }
+};
+
+export const getMangadexDetail = async (
+  id: string
+): Promise<MangadexDetail> => {
+  try {
+    const endpoint = `${baseUrl}/manga/${id}?includes[]=cover_art&includes[]=manga&includes[]=author&includes[]=artist&includes[]=tag&includes[]=creator`;
+    const response = await axios.get<MangadexDetail>(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error("Oh hell, Something went wrong (◡︵◡)");
+  }
+};
+
+export const getManagdexFeed = async (id: string): Promise<MangadexFeed> => {
+  try {
+    const endpoint = `${baseUrl}/manga/${id}/feed`;
+    const response = await axios.get<MangadexFeed>(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error("Oh hell, Something went wrong (◡︵◡)");
   }
 };

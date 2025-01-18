@@ -32,7 +32,7 @@ const SearchBar: NextPage<Props> = ({}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
-  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY_URL
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
