@@ -1,6 +1,7 @@
 import { Episodes } from "@/types/episodes";
 import { Hianime } from "@/types/hianime";
 import { Info } from "@/types/info";
+import { MangadexChapterImage } from "@/types/manga/chapter-image";
 import { MangadexDetail } from "@/types/manga/detail";
 import { MangadexFeed } from "@/types/manga/feed";
 import { MangadexManga } from "@/types/manga/popular";
@@ -45,6 +46,8 @@ interface MangadexStore {
   setDetailManga: (detailManga: MangadexDetail) => void;
   feedManga: MangadexFeed | null;
   setFeedManga: (feedManga: MangadexFeed) => void;
+  chapterImage: MangadexChapterImage | null;
+  setChapterImage: (chapterImage: MangadexChapterImage) => void;
 }
 
 export const useMangadexStore = create<MangadexStore>((set) => ({
@@ -56,4 +59,6 @@ export const useMangadexStore = create<MangadexStore>((set) => ({
   setDetailManga: (detailManga) => set({ detailManga }),
   feedManga: null,
   setFeedManga: (feedManga) => set({ feedManga }),
+  chapterImage: null,
+  setChapterImage: (chapterImage) => set({ chapterImage }),
 }));

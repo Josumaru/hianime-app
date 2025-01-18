@@ -12,6 +12,7 @@ import {
   LetterFx,
   RevealFx,
   Row,
+  Scroller,
   SmartLink,
   Spinner,
   Text,
@@ -24,12 +25,12 @@ import { remark } from "remark";
 import html from "remark-html";
 interface Props {
   params: Promise<{
-    mid: string;
+    id: string;
   }>;
 }
 
 const Page: NextPage<Props> = ({ params }) => {
-  const mid = use(params).mid;
+  const id = use(params).id;
   const { detailManga, setDetailManga, feedManga, setFeedManga } =
     useMangadexStore();
   const [description, setDescription] = useState<string | null>(null);
@@ -69,11 +70,11 @@ const Page: NextPage<Props> = ({ params }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        if (!mid) {
+        if (!id) {
           throw new Error("Hmm, where yout get the url ? Hahaha !!!");
         }
         if (!detailManga) {
-          const detailResponse = await getMangadexDetail(decrypt(mid));
+          const detailResponse = await getMangadexDetail(decrypt(id));
           setDetailManga(detailResponse);
         } else {
           throw new Error(
@@ -82,7 +83,7 @@ const Page: NextPage<Props> = ({ params }) => {
         }
 
         if (!feedManga) {
-          const feedResponse = await getManagdexFeed(decrypt(mid));
+          const feedResponse = await getManagdexFeed(decrypt(id));
           setFeedManga(feedResponse);
         } else {
           throw new Error(
@@ -100,7 +101,7 @@ const Page: NextPage<Props> = ({ params }) => {
       }
     };
     fetchData();
-  }, [mid]);
+  }, [id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -180,15 +181,38 @@ const Page: NextPage<Props> = ({ params }) => {
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
-                src={
+                src={`${reverseProxy}https://uploads.mangadex.org/covers/${decrypt(
+                  id
+                )}/${
                   detailManga?.data.relationships.find(
                     (rel) => rel.type == "cover_art"
                   )?.attributes?.fileName
-                }
+                }.256.jpg`}
                 loading={loading}
               />
             </GlitchFx>
             <Column>
+              <RevealFx
+                speed="medium"
+                delay={0}
+                align="center"
+                translateY={0}
+                onBackground="brand-medium"
+                justifyContent="start"
+              >
+                <Text variant="body-strong-xl">
+                  {detailManga?.data.attributes.title.en}
+                  <Text as="span" variant="label-default-xl">
+                    (
+                    {
+                      detailManga?.data.attributes.altTitles.find(
+                        (alt) => alt.ja
+                      )?.ja
+                    }
+                    )
+                  </Text>
+                </Text>
+              </RevealFx>
               <RevealFx
                 speed="medium"
                 delay={0}
@@ -221,12 +245,12 @@ const Page: NextPage<Props> = ({ params }) => {
               </RevealFx>
             </Column>
           </Row>
-          <Column gap="12" show="s" justifyContent="center" alignItems="center">
+          <Column gap="12" show="s" justifyContent="center" alignItems="center" maxWidth={"l"}>
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
                 src={`${reverseProxy}https://uploads.mangadex.org/covers/${decrypt(
-                  mid
+                  id
                 )}/${
                   detailManga?.data.relationships.find(
                     (rel) => rel.type == "cover_art"
@@ -247,7 +271,6 @@ const Page: NextPage<Props> = ({ params }) => {
                 <Text variant="body-strong-xl">
                   {detailManga?.data.attributes.title.en}
                   <Text as="span" variant="label-default-xl">
-                    {" "}
                     (
                     {
                       detailManga?.data.attributes.altTitles.find(
@@ -266,42 +289,54 @@ const Page: NextPage<Props> = ({ params }) => {
                 justifyContent="start"
               >
                 <table>
-                  {mangaStatus.map((status, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Text variant="label-strong-xl">{status.key}</Text>
-                      </td>
-                      <td
-                        style={{
-                          paddingLeft: 20,
-                        }}
-                      >
-                        <Text
-                          variant="label-default-xl"
-                          onBackground="info-medium"
+                  <tbody>
+                    {mangaStatus.map((status, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Text variant="label-strong-xl">{status.key}</Text>
+                        </td>
+                        <td
+                          style={{
+                            paddingLeft: 20,
+                          }}
                         >
-                          {status.value}
-                        </Text>
-                      </td>
-                    </tr>
-                  ))}
+                          <Text
+                            variant="label-default-xl"
+                            onBackground="info-medium"
+                          >
+                            {status.value}
+                          </Text>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </RevealFx>
             </Column>
           </Column>
-          <Row gap="12">
+          <Scroller fillWidth border="transparent" maxWidth={"l"}>
             {detailManga?.data.attributes.tags.map((genre) => (
-              <Grid
+              <Flex
                 key={genre.id}
                 background="brand-medium"
                 border="brand-medium"
                 radius="l"
+                marginRight="12"
                 padding="12"
               >
-                <Text>{genre.attributes.name.en}</Text>
-              </Grid>
+                <Text
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  {genre.attributes.name.en}
+                </Text>
+              </Flex>
             ))}
-          </Row>
+          </Scroller>
           <Text onBackground="brand-medium">Overview</Text>
           <Text
             as="span"
@@ -360,13 +395,13 @@ const Page: NextPage<Props> = ({ params }) => {
             paddingTop="16"
             background="brand-medium"
           >
-            {feedManga?.data.map((chapter, index) => (
+            {feedManga?.data.map((chapter) => (
               <SmartLink
-                href={`/manga/watch/${encrypt(chapter.id)}`}
+                href={`/manga/read/${encrypt(chapter.id)}`}
                 key={chapter.id}
               >
                 <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
-                  {chapter.attributes.title}
+                {chapter.attributes.volume ?? "No Title"} - {chapter.attributes.title ?? "No Title"}
                   <Text as="span" onBackground="accent-strong">
                     {" - "}Chapter {chapter.attributes.chapter}
                   </Text>

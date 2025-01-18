@@ -1,5 +1,6 @@
 "use server";
 import { MangadexChapter } from "@/types/manga/chapter";
+import { MangadexChapterImage } from "@/types/manga/chapter-image";
 import { MangadexDetail } from "@/types/manga/detail";
 import { MangadexFeed } from "@/types/manga/feed";
 import { MangadexManga } from "@/types/manga/popular";
@@ -70,8 +71,22 @@ export const getMangadexDetail = async (
 
 export const getManagdexFeed = async (id: string): Promise<MangadexFeed> => {
   try {
-    const endpoint = `${baseUrl}/manga/${id}/feed`;
+    const endpoint = `${baseUrl}/manga/${id}/feed?limit=499&order[volume]=asc`;
     const response = await axios.get<MangadexFeed>(endpoint);
+    console.log(endpoint);
+
+    return response.data;
+  } catch (error) {
+    throw new Error("Oh hell, Something went wrong (◡︵◡)");
+  }
+};
+
+export const getMangadexChapterImage = async (
+  id: string
+): Promise<MangadexChapterImage> => {
+  try {
+    const endpoint = `${baseUrl}/at-home/server/${id}?forcePort443=true`;
+    const response = await axios.get<MangadexChapterImage>(endpoint);
     return response.data;
   } catch (error) {
     throw new Error("Oh hell, Something went wrong (◡︵◡)");
