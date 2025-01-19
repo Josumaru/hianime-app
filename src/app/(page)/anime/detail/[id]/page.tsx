@@ -81,11 +81,7 @@ const Page: NextPage<Props> = ({ params }) => {
         const episodeResponse = await getEpisodes(id);
         if (episodeResponse.results.episodes) {
           setEpisodes(episodeResponse);
-        } else {
-          throw new Error(
-            "Oooh no..., Your anime episodes is not available (ㅠ﹏ㅠ)"
-          );
-        }
+        } 
         if (infoResponse.results.data) {
           setInfo(infoResponse);
           addToast({

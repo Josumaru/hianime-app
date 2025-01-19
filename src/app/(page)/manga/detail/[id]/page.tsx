@@ -1,8 +1,10 @@
 "use client";
+import ChapterList from "@/components/manga/chapter-list";
 import { decrypt, encrypt } from "@/lib/crypto";
 import { getManagdexFeed, getMangadexDetail } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
+  Accordion,
   Avatar,
   Background,
   Column,
@@ -20,7 +22,7 @@ import {
 } from "@/once-ui/components";
 import { MangadexFeed } from "@/types/manga/feed";
 import { NextPage } from "next";
-import { use, useEffect, useState } from "react";
+import { Fragment, use, useEffect, useState } from "react";
 import { remark } from "remark";
 import html from "remark-html";
 interface Props {
@@ -37,6 +39,10 @@ const Page: NextPage<Props> = ({ params }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
+  let currrentVolume = "1";
+  let currrentChapter = "1";
+  let currentVolumeShowed = false;
+  let currentChapterShowed = false;
   const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   const mangaStatus: {
     key: string;
@@ -78,7 +84,7 @@ const Page: NextPage<Props> = ({ params }) => {
           setDetailManga(detailResponse);
         } else {
           throw new Error(
-            "Oooh no..., Your manga episodes is not available (ㅠ﹏ㅠ)"
+            "Oooh no..., Your manga chapter is not available (ㅠ﹏ㅠ)"
           );
         }
 
@@ -245,7 +251,13 @@ const Page: NextPage<Props> = ({ params }) => {
               </RevealFx>
             </Column>
           </Row>
-          <Column gap="12" show="s" justifyContent="center" alignItems="center" maxWidth={"l"}>
+          <Column
+            gap="12"
+            show="s"
+            justifyContent="center"
+            alignItems="center"
+            maxWidth={"l"}
+          >
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
@@ -386,29 +398,7 @@ const Page: NextPage<Props> = ({ params }) => {
               </Fragment>
             ))}
           </Grid> */}
-          <Text onBackground="brand-medium">Chapter</Text>
-          <Column
-            border="brand-medium"
-            gap="2"
-            radius="l"
-            padding="12"
-            paddingTop="16"
-            background="brand-medium"
-          >
-            {feedManga?.data.map((chapter) => (
-              <SmartLink
-                href={`/manga/read/${encrypt(chapter.id)}`}
-                key={chapter.id}
-              >
-                <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
-                {chapter.attributes.volume ?? "No Title"} - {chapter.attributes.title ?? "No Title"}
-                  <Text as="span" onBackground="accent-strong">
-                    {" - "}Chapter {chapter.attributes.chapter}
-                  </Text>
-                </Text>
-              </SmartLink>
-            ))}
-          </Column>
+          <ChapterList />          
         </Column>
       </Flex>
     </Column>

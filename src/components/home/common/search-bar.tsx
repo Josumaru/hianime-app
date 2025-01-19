@@ -114,7 +114,7 @@ const SearchBar: NextPage<Props> = ({}) => {
         <Tag
           variant="brand"
           cursor="pointer"
-          label="Search anime..."
+          label="Search ..."
           prefixIcon="search"
           textVariant="code-default-l"
           onClick={() => setOpen(true)}
@@ -133,7 +133,7 @@ const SearchBar: NextPage<Props> = ({}) => {
             fillWidth
             justifyContent="space-between"
           >
-            <Text variant="code-default-l">Search anime...</Text>
+            <Text variant="code-default-l">Search ...</Text>
             <Tag variant="brand" size="l" label="⌘ + K" />
           </Flex>
         </Button>

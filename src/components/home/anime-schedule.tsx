@@ -4,23 +4,23 @@ import { getSchedule } from "@/lib/hianime";
 import {
   Column,
   Flex,
+  Heading,
   Line,
   Row,
   SmartLink,
   Tag,
   Text,
 } from "@/once-ui/components";
-import { Schedule } from "@/types/hianime";
-// import { Schedule } from "@/types/schedule";
+import { Schedule } from "@/types/schedule";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 
-interface Props {
-  schedule: Schedule[];
-}
+interface Props {}
 
-const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
+const AnimeSchedule: NextPage<Props> = ({}) => {
   const [currentLine, setCurrentLine] = useState<number>(0);
+
+  const [schedules, setSchedules] = useState<Schedule[] | null>();
 
   const formatTo12Hour = (time: string): string => {
     const [hour, minute] = time.split(":").map(Number); // Pisahkan jam dan menit
@@ -30,7 +30,6 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
   };
   const isAfterSpecificTime = (specificTime: string): boolean => {
     const [hour, minute] = specificTime.split(":").map(Number);
-
     const now = new Date();
     const specificDate = new Date(
       now.getFullYear(),
@@ -39,7 +38,6 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
       hour,
       minute
     );
-
     return now > specificDate;
   };
   const getDayAbbreviation = (dateString: string): string => {
@@ -49,22 +47,32 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      //   const schedules = await getSchedule();
-      //   setSchedules(schedules);
-      //   setCurrentSchedules(schedules[0]);
-      schedule.map((schedule, index) => {
+      const schedules = await getSchedule();
+      setSchedules(schedules);
+      schedules[0].results.some((schedule, index) => {
         const isAfter = isAfterSpecificTime(schedule.time);
         if (!isAfter) {
-          setCurrentLine(index == 0 ? 0 : index - 1);
-          return;
+          setCurrentLine(index === 0 ? 0 : index - 1);
+          return true;
         }
+        return false;
       });
     };
     fetchData();
   }, []);
 
+  if (!schedules) {
+    return null;
+  }
+
   return (
-    <Flex fillWidth padding="s">
+    <Flex fillWidth padding="s" direction="column" justifyContent="center">
+      <Heading as="h2" variant="display-default-m" align="center">
+        Schedule
+      </Heading>
+      <Text marginBottom="32" align="center" onBackground="neutral-weak">
+        Stay tuned for the latest anime episodes today
+      </Text>
       <Flex
         fillWidth
         padding="4"
@@ -75,8 +83,21 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
       >
         <Column fillWidth>
           <table>
-            {schedule?.map((schedule, index) => (
+            {schedules[0].results?.map((schedule, index) => (
               <tbody key={index}>
+                 <tr>
+                  <td></td>
+                  <td colSpan={2}>
+                    {currentLine == index && (
+                      <Flex
+                        style={{ height: 4 }}
+                        fillWidth
+                        radius="s"
+                        background="warning-strong"
+                      />
+                    )}
+                  </td>
+                </tr>
                 <tr>
                   <td>
                     <Row
@@ -99,7 +120,7 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
                       <Column
                         marginTop="8"
                         onBackground={
-                          index <= currentLine ? "brand-medium" : "info-strong"
+                          index  < currentLine ? "brand-medium" : "info-strong"
                         }
                         fillWidth
                       >
@@ -129,19 +150,7 @@ const AnimeSchedule: NextPage<Props> = ({ schedule }) => {
                     </Flex>
                   </td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td colSpan={2}>
-                    {currentLine == index && (
-                      <Flex
-                        style={{ height: 4 }}
-                        fillWidth
-                        radius="s"
-                        background="warning-strong"
-                      />
-                    )}
-                  </td>
-                </tr>
+               
               </tbody>
             ))}
           </table>

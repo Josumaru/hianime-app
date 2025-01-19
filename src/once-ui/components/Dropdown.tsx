@@ -27,7 +27,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         flex={1}
         border="neutral-medium"
         background="surface"
-        overflow="hidden"
+        // overflow="hidden"
         {...rest}>
         <Flex
           flex={1}

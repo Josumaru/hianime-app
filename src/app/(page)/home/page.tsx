@@ -223,17 +223,8 @@ const Home: NextPage = () => {
                   There are so many who see this anime
                 </Text>
                 <TrendingScroller params={hianime?.results.trending ?? []} />
-                <Heading as="h2" variant="display-default-m">
-                  Schedule
-                </Heading>
-                <Text
-                  marginBottom="32"
-                  align="center"
-                  onBackground="neutral-weak"
-                >
-                  Stay tuned for the latest anime episodes today
-                </Text>
-                <AnimeSchedule schedule={hianime.results.today.schedule} />
+
+                <AnimeSchedule />
               </>
             )}
             {/* <Heading

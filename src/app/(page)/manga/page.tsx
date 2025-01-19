@@ -10,7 +10,6 @@ import {
   Flex,
   Grid,
   Heading,
-  LetterFx,
   Row,
   SmartImage,
   SmartLink,
@@ -27,10 +26,10 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   const { popularManga, setPopularManga, latestUpdate, setLatestUpdate } =
     useMangadexStore();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -133,6 +132,7 @@ const Page: NextPage<Props> = ({}) => {
         alignItems="center"
         border="neutral-alpha-weak"
         fillWidth
+        fillHeight
       >
         <Flex
           fillHeight
@@ -141,7 +141,7 @@ const Page: NextPage<Props> = ({}) => {
           alignItems={"center"}
         >
           {loading ? (
-            <Spinner />
+              <Spinner />
           ) : (
             <Column fillWidth>
               <PopularTitles params={popularManga?.data ?? []} />
@@ -154,10 +154,7 @@ const Page: NextPage<Props> = ({}) => {
                 >
                   Latest Chapter
                 </Heading>
-                <Text
-                  align="right"
-                  onBackground="neutral-weak"
-                >
+                <Text align="right" onBackground="neutral-weak">
                   The latest chapters to keep you updated and entertained
                 </Text>
                 <Grid gap="4" columns={4} mobileColumns={1} tabletColumns={3}>

@@ -2,18 +2,11 @@
 import { decrypt } from "@/lib/crypto";
 import { getMangadexChapterImage } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
-import {
-  Column,
-  Flex,
-  Scroller,
-  SmartImage,
-  Spinner,
-  Text,
-  useToast,
-} from "@/once-ui/components";
+import { Flex, Scroller, Spinner, useToast } from "@/once-ui/components";
 import { NextPage } from "next";
 import { use, useEffect, useState } from "react";
-
+import "react-inner-image-zoom/lib/InnerImageZoom/styles.min.css";
+import InnerImageZoom from "react-inner-image-zoom";
 interface Props {
   params: Promise<{
     id: string;
@@ -54,20 +47,26 @@ const Page: NextPage<Props> = ({ params }) => {
         <Spinner />
       ) : (
         <Scroller
-          direction="row"
+          direction="column"
           maxWidth={"l"}
           fillHeight
           background="brand-medium"
           border="brand-medium"
-          overflow="scroll"
         >
           {chapterImage?.chapter.data.map((image, index) => (
-            <img
-              style={{ marginTop: index == 0 ? "65px" : "0px" }}
-              key={image}
-              alt={image}
-              src={`${chapterImage.baseUrl}/data/${chapterImage.chapter.hash}/${image}`}
-            />
+            <Flex
+              fillWidth
+              justifyContent="center"
+              paddingTop={index == 0 ? "64" : "0"}
+            >
+              <InnerImageZoom
+                key={index}
+                hideHint
+                src={`${chapterImage.baseUrl}/data/${chapterImage.chapter.hash}/${image}`}
+                zoomScale={2}
+                width={1920}
+              />
+            </Flex>
           ))}
         </Scroller>
       )}
