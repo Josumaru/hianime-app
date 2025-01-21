@@ -4,19 +4,17 @@ import { getEpisodes, getInfo } from "@/lib/hianime";
 import {
   Avatar,
   Background,
-  Badge,
-  Button,
   Column,
   Flex,
   GlitchFx,
   Grid,
-  Heading,
   LetterFx,
   RevealFx,
   Row,
-  SmartImage,
+  Scroller,
   SmartLink,
   Spinner,
+  Tag,
   Text,
   User,
   useToast,
@@ -49,21 +47,26 @@ const Page: NextPage<Props> = ({ params }) => {
     },
     {
       key: "Score",
-      value: info?.results.data.animeInfo["MAL Score"] ?? "10.0",
+      value:
+        info?.results.data.animeInfo["MAL Score"] == "?"
+          ? "10.0"
+          : info?.results.data.animeInfo["MAL Score"] ?? "10.0",
     },
     {
       key: "Quality",
-      value: info?.results.data.animeInfo.tvInfo.quality ?? "HD",
+      value: info?.results.data.animeInfo.tvInfo?.quality ?? "HD",
     },
     {
       key: "Duration",
       value:
-        info?.results.data.animeInfo.tvInfo.duration.replace("m", " Minutes") ??
-        "23 Minutes",
+        info?.results.data.animeInfo.tvInfo.duration?.replace(
+          "m",
+          " Minutes"
+        ) ?? "23 Minutes",
     },
     {
       key: "Producers",
-      value: info?.results.data.animeInfo.Producers.join(", ") ?? "Unknown",
+      value: info?.results.data.animeInfo?.Producers?.join(", ") ?? "Unknown",
     },
     {
       key: "Studio",
@@ -166,8 +169,14 @@ const Page: NextPage<Props> = ({ params }) => {
         alignItems="center"
         fillWidth
       >
-        <Column gap="12" border="neutral-alpha-weak" radius="xl" padding="12">
-          <Row gap="12" hide="s">
+        <Column
+          gap="12"
+          border="neutral-alpha-weak"
+          radius="xl"
+          padding="12"
+          fillWidth
+        >
+          <Row gap="12" hide="s" fillWidth>
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
@@ -208,7 +217,13 @@ const Page: NextPage<Props> = ({ params }) => {
               </RevealFx>
             </Column>
           </Row>
-          <Column gap="12" show="s" justifyContent="center" alignItems="center">
+          <Column
+            fillWidth
+            gap="12"
+            show="s"
+            justifyContent="center"
+            alignItems="center"
+          >
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
@@ -266,29 +281,42 @@ const Page: NextPage<Props> = ({ params }) => {
               </RevealFx>
             </Column>
           </Column>
-          <Row gap="12">
+          <Scroller fillWidth>
             {info?.results.data.animeInfo.Genres.map((genre) => (
-              <Grid
+              <Tag
+                marginRight="8"
+                fillWidth
                 key={genre}
                 background="brand-medium"
                 border="brand-medium"
                 radius="l"
                 padding="12"
+                variant="brand"
               >
-                <Text>{genre}</Text>
-              </Grid>
+                <Text
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 1,
+                  }}
+                >
+                  {genre}
+                </Text>
+              </Tag>
             ))}
-          </Row>
+          </Scroller>
           <Text onBackground="brand-medium">Overview</Text>
           <Text
             as="span"
-            variant="label-default-xl"
             style={{
-              fontFamily: "var(--font-family-code)",
+              textAlign: "justify",
             }}
-          >
-            {info?.results.data.animeInfo.Overview}
-          </Text>
+            variant="label-default-xl"
+            dangerouslySetInnerHTML={{
+              __html: info?.results.data.animeInfo.Overview ?? "",
+            }}
+          ></Text>
           {info?.results.data.charactersVoiceActors != undefined &&
             info?.results.data.charactersVoiceActors.length > 0 && (
               <Text onBackground="brand-medium">Character</Text>

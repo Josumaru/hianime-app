@@ -106,8 +106,8 @@ const Scroller: React.FC<ScrollerProps> = ({
       fillWidth
       position="relative"
       radius="m"
-      borderLeft="brand-medium"
-      borderRight="brand-medium"
+      // borderLeft="info-medium"
+      // borderRight="info-medium"
       className={classNames(styles.container, className)}
       style={style}
       {...rest}

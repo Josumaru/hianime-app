@@ -1,21 +1,19 @@
 "use client";
-import LatestEpisodeScroller from "@/components/home/latest-episode-scroller";
+import LatestChapter from "@/components/manga/latest-chapter";
 import PopularTitles from "@/components/manga/popular-titles";
-import { encrypt } from "@/lib/crypto";
-import { getLatestUpdate, getPopular } from "@/lib/mangadex";
+import UserIncludesManga from "@/components/manga/user-includes-manga";
+import {
+  getLatestUpdate,
+  getMangadexRecentlyAdded,
+  getMangadexUserInlcludes,
+  getPopular,
+} from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
   Background,
   Column,
   Flex,
-  Grid,
-  Heading,
-  Row,
-  SmartImage,
-  SmartLink,
   Spinner,
-  Tag,
-  Text,
   useToast,
 } from "@/once-ui/components";
 import { NextPage } from "next";
@@ -24,12 +22,25 @@ import { useEffect, useState } from "react";
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const { popularManga, setPopularManga, latestUpdate, setLatestUpdate } =
-    useMangadexStore();
+  const {
+    popularManga,
+    setPopularManga,
+    latestUpdate,
+    setLatestUpdate,
+    selfPublished,
+    setSelfPublished,
+    staffPicks,
+    setStaffPicks,
+    seasonal,
+    setSeasonal,
+    featuredBySupporters,
+    setFeaturedBySupporters,
+    recentlyAdded,
+    setRecentlyAdded,
+  } = useMangadexStore();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -39,9 +50,37 @@ const Page: NextPage<Props> = ({}) => {
           const popularMangaResponse = await getPopular();
           setPopularManga(popularMangaResponse);
         }
+        if (!selfPublished) {
+          const selfPublishedResponse = await getMangadexUserInlcludes(
+            "f66ebc10-ef89-46d1-be96-bb704559e04a"
+          );
+          setSelfPublished(selfPublishedResponse);
+        }
+        if (!staffPicks) {
+          const staffPicksResponse = await getMangadexUserInlcludes(
+            "805ba886-dd99-4aa4-b460-4bd7c7b71352"
+          );
+          setStaffPicks(staffPicksResponse);
+        }
+        if (!featuredBySupporters) {
+          const featuredBySupportersResponse = await getMangadexUserInlcludes(
+            "5c5e6e39-0b4b-413e-be59-27b1ba03d1b9"
+          );
+          setFeaturedBySupporters(featuredBySupportersResponse);
+        }
+        if (!seasonal) {
+          const seasonalResponse = await getMangadexUserInlcludes(
+            "a5ba5473-07b2-4d0a-aefd-90d9d4a04521"
+          );
+          setSeasonal(seasonalResponse);
+        }
         if (!latestUpdate) {
           const latestUpdateResponse = await getLatestUpdate();
           setLatestUpdate(latestUpdateResponse);
+        }
+        if (!recentlyAdded) {
+          const recentlyAddedResponse = await getMangadexRecentlyAdded();
+          setRecentlyAdded(recentlyAddedResponse);
         }
       } catch (error: any) {
         setError(error.message);
@@ -141,97 +180,40 @@ const Page: NextPage<Props> = ({}) => {
           alignItems={"center"}
         >
           {loading ? (
-              <Spinner />
+            <Spinner />
           ) : (
             <Column fillWidth>
               <PopularTitles params={popularManga?.data ?? []} />
               <Column padding="s">
-                <Heading
-                  as="h2"
-                  marginTop="l"
-                  variant="display-default-m"
-                  align="right"
-                >
-                  Latest Chapter
-                </Heading>
-                <Text align="right" onBackground="neutral-weak">
-                  The latest chapters to keep you updated and entertained
-                </Text>
-                <Grid gap="4" columns={4} mobileColumns={1} tabletColumns={3}>
-                  {latestUpdate?.data.map((manga) => (
-                    <Row
-                      key={manga.id}
-                      background="brand-medium"
-                      border="brand-medium"
-                      radius="m"
-                      paddingY="8"
-                      opacity={70}
-                    >
-                      <SmartLink href={`/manga/detail/${encrypt(manga.id)}`}>
-                        <SmartImage
-                          aspectRatio="9/16"
-                          radius="s"
-                          width={"128"}
-                          src={`${reverseProxy}https://uploads.mangadex.org/covers/${
-                            manga.id
-                          }/${
-                            manga.relationships.find(
-                              (relationship) =>
-                                relationship.type === "cover_art"
-                            )?.attributes?.fileName
-                          }.256.jpg`}
-                        />
-                        <Column gap="xs" fillWidth>
-                          <Text
-                            style={{
-                              display: "-webkit-box",
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                              WebkitLineClamp: 1,
-                            }}
-                          >
-                            {manga.attributes.title.en}
-                          </Text>
-                          <Tag
-                            label={manga.attributes.tags[0].attributes.name.en}
-                            variant="danger"
-                          />
-                          <Row gap="xs">
-                            {manga.relationships.find(
-                              (relationship) =>
-                                relationship.type === "cover_art"
-                            )?.attributes?.volume && (
-                              <Text variant="label-default-l">
-                                Vol.{" "}
-                                {
-                                  manga.relationships.find(
-                                    (relationship) =>
-                                      relationship.type === "cover_art"
-                                  )?.attributes?.volume
-                                }
-                              </Text>
-                            )}
-                            {manga.attributes.lastVolume && (
-                              <Text variant="label-default-l">
-                                Vol. {manga.attributes.lastVolume}
-                              </Text>
-                            )}
-                          </Row>
-                        </Column>
-                      </SmartLink>
-                    </Row>
-                  ))}
-                </Grid>
-                <Heading as="h2" variant="display-default-m" align="left">
-                  Latest Chapter
-                </Heading>
-                <Text
-                  align="left"
-                  marginBottom="32"
-                  onBackground="neutral-weak"
-                >
-                  The latest chapters to keep you updated and entertained
-                </Text>
+                <LatestChapter />
+                <UserIncludesManga
+                  manga={selfPublished}
+                  left
+                  title="Self Published"
+                  subtitle="The latest chapters to keep you updated and entertained"
+                />
+                <UserIncludesManga
+                  manga={staffPicks}
+                  title="Staff Picks"
+                  subtitle="The latest chapters to keep you updated and entertained"
+                />
+                <UserIncludesManga
+                  manga={featuredBySupporters}
+                  left
+                  title="Featured by Supporters"
+                  subtitle="The latest chapters to keep you updated and entertained"
+                />
+                <UserIncludesManga
+                  manga={seasonal}
+                  title="Seasonal"
+                  subtitle="The latest chapters to keep you updated and entertained"
+                />
+                <UserIncludesManga
+                  manga={recentlyAdded}
+                  left
+                  title="Recently Added"
+                  subtitle="The latest chapters to keep you updated and entertained"
+                />
               </Column>
             </Column>
           )}

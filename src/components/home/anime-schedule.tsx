@@ -5,7 +5,6 @@ import {
   Column,
   Flex,
   Heading,
-  Line,
   Row,
   SmartLink,
   Tag,
@@ -23,22 +22,15 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
   const [schedules, setSchedules] = useState<Schedule[] | null>();
 
   const formatTo12Hour = (time: string): string => {
-    const [hour, minute] = time.split(":").map(Number); // Pisahkan jam dan menit
-    const period = hour >= 12 ? "PM" : "AM"; // Tentukan AM atau PM
-    const formattedHour = hour % 12 || 12; // Ubah ke format 12 jam (0 jadi 12)
+    const [hour, minute] = time.split(":").map(Number);
+    const period = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour % 12 || 12;
     return `${formattedHour}:${minute.toString().padStart(2, "0")} ${period}`;
   };
   const isAfterSpecificTime = (specificTime: string): boolean => {
-    const [hour, minute] = specificTime.split(":").map(Number);
-    const now = new Date();
-    const specificDate = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      hour,
-      minute
-    );
-    return now > specificDate;
+    const time = parseInt(specificTime.split(":").join(""));
+    const now = parseInt(`${new Date().getHours()}${new Date().getMinutes()}`);
+    return now > time;
   };
   const getDayAbbreviation = (dateString: string): string => {
     const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -51,11 +43,12 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
       setSchedules(schedules);
       schedules[0].results.some((schedule, index) => {
         const isAfter = isAfterSpecificTime(schedule.time);
+        console.log(schedule.time);
+        console.log(new Date().getHours());
         if (!isAfter) {
           setCurrentLine(index === 0 ? 0 : index - 1);
           return true;
         }
-        return false;
       });
     };
     fetchData();
@@ -85,7 +78,7 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
           <table>
             {schedules[0].results?.map((schedule, index) => (
               <tbody key={index}>
-                 <tr>
+                <tr>
                   <td></td>
                   <td colSpan={2}>
                     {currentLine == index && (
@@ -120,7 +113,7 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
                       <Column
                         marginTop="8"
                         onBackground={
-                          index  < currentLine ? "brand-medium" : "info-strong"
+                          index < currentLine ? "brand-medium" : "info-strong"
                         }
                         fillWidth
                       >
@@ -150,7 +143,6 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
                     </Flex>
                   </td>
                 </tr>
-               
               </tbody>
             ))}
           </table>

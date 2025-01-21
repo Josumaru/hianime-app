@@ -48,6 +48,16 @@ interface MangadexStore {
   setFeedManga: (feedManga: MangadexFeed) => void;
   chapterImage: MangadexChapterImage | null;
   setChapterImage: (chapterImage: MangadexChapterImage) => void;
+  selfPublished: MangadexManga | null;
+  setSelfPublished: (selfPublished: MangadexManga) => void;
+  staffPicks: MangadexManga | null;
+  setStaffPicks: (staffPicks: MangadexManga) => void;
+  featuredBySupporters: MangadexManga | null;
+  setFeaturedBySupporters: (featuredBySupporters: MangadexManga) => void;
+  seasonal: MangadexManga | null;
+  setSeasonal: (seasonal: MangadexManga) => void;
+  recentlyAdded: MangadexManga | null;
+  setRecentlyAdded: (recentlyAdded: MangadexManga) => void;
 }
 
 export const useMangadexStore = create<MangadexStore>((set) => ({
@@ -61,4 +71,15 @@ export const useMangadexStore = create<MangadexStore>((set) => ({
   setFeedManga: (feedManga) => set({ feedManga }),
   chapterImage: null,
   setChapterImage: (chapterImage) => set({ chapterImage }),
+  selfPublished: null,
+  setSelfPublished: (selfPublished) => set({ selfPublished }),
+  staffPicks: null,
+  setStaffPicks: (staffPicks) => set({ staffPicks }),
+  featuredBySupporters: null,
+  setFeaturedBySupporters: (featuredBySupporters) =>
+    set({ featuredBySupporters }),
+  seasonal: null,
+  setSeasonal: (seasonal) => set({ seasonal }),
+  recentlyAdded: null,
+  setRecentlyAdded: (recentlyAdded) => set({ recentlyAdded }),
 }));

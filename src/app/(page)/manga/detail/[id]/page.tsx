@@ -1,28 +1,25 @@
 "use client";
 import ChapterList from "@/components/manga/chapter-list";
 import { decrypt, encrypt } from "@/lib/crypto";
-import { getManagdexFeed, getMangadexDetail } from "@/lib/mangadex";
+import { getMangadexFeed, getMangadexDetail } from "@/lib/mangadex";
 import { useMangadexStore } from "@/lib/store";
 import {
-  Accordion,
   Avatar,
   Background,
   Column,
   Flex,
   GlitchFx,
-  Grid,
   LetterFx,
   RevealFx,
   Row,
   Scroller,
-  SmartLink,
   Spinner,
+  Tag,
   Text,
   useToast,
 } from "@/once-ui/components";
-import { MangadexFeed } from "@/types/manga/feed";
 import { NextPage } from "next";
-import { Fragment, use, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { remark } from "remark";
 import html from "remark-html";
 interface Props {
@@ -39,10 +36,6 @@ const Page: NextPage<Props> = ({ params }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToast } = useToast();
-  let currrentVolume = "1";
-  let currrentChapter = "1";
-  let currentVolumeShowed = false;
-  let currentChapterShowed = false;
   const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   const mangaStatus: {
     key: string;
@@ -56,7 +49,7 @@ const Page: NextPage<Props> = ({ params }) => {
     },
     {
       key: "Year",
-      value: `${detailManga?.data.attributes.year}`,
+      value: `${detailManga?.data.attributes.year ?? new Date().getFullYear()}`,
     },
     {
       key: "Languages",
@@ -79,22 +72,11 @@ const Page: NextPage<Props> = ({ params }) => {
         if (!id) {
           throw new Error("Hmm, where yout get the url ? Hahaha !!!");
         }
-        if (!detailManga) {
+        if (!detailManga || detailManga.data.id != id) {
           const detailResponse = await getMangadexDetail(decrypt(id));
           setDetailManga(detailResponse);
-        } else {
-          throw new Error(
-            "Oooh no..., Your manga chapter is not available (ㅠ﹏ㅠ)"
-          );
-        }
-
-        if (!feedManga) {
-          const feedResponse = await getManagdexFeed(decrypt(id));
+          const feedResponse = await getMangadexFeed(decrypt(id));
           setFeedManga(feedResponse);
-        } else {
-          throw new Error(
-            "Oooh no..., Your manga episodes is not available (ㅠ﹏ㅠ)"
-          );
         }
       } catch (error: any) {
         setError(error.message);
@@ -182,8 +164,14 @@ const Page: NextPage<Props> = ({ params }) => {
         alignItems="center"
         fillWidth
       >
-        <Column gap="12" border="neutral-alpha-weak" radius="xl" padding="12">
-          <Row gap="12" hide="s">
+        <Column
+          fillWidth
+          gap="12"
+          border="neutral-alpha-weak"
+          radius="xl"
+          padding="12"
+        >
+          <Row gap="12" hide="s" fillWidth>
             <GlitchFx speed="medium">
               <Avatar
                 size="xl"
@@ -257,6 +245,7 @@ const Page: NextPage<Props> = ({ params }) => {
             justifyContent="center"
             alignItems="center"
             maxWidth={"l"}
+            fillWidth
           >
             <GlitchFx speed="medium">
               <Avatar
@@ -328,12 +317,11 @@ const Page: NextPage<Props> = ({ params }) => {
           </Column>
           <Scroller fillWidth border="transparent" maxWidth={"l"}>
             {detailManga?.data.attributes.tags.map((genre) => (
-              <Flex
+              <Tag
                 key={genre.id}
-                background="brand-medium"
-                border="brand-medium"
                 radius="l"
-                marginRight="12"
+                variant="brand"
+                marginRight="8"
                 padding="12"
               >
                 <Text
@@ -346,59 +334,17 @@ const Page: NextPage<Props> = ({ params }) => {
                 >
                   {genre.attributes.name.en}
                 </Text>
-              </Flex>
+              </Tag>
             ))}
           </Scroller>
-          <Text onBackground="brand-medium">Overview</Text>
+          {description && <Text onBackground="brand-medium">Overview</Text>}
           <Text
             as="span"
             variant="label-default-xl"
+            align="justify"
             dangerouslySetInnerHTML={{ __html: description ?? "" }}
           ></Text>
-          {/* {info?.results.data.charactersVoiceActors != undefined &&
-            info?.results.data.charactersVoiceActors.length > 0 && (
-              <Text onBackground="brand-medium">Character</Text>
-            )}
-          <Grid columns={4} gap="12" tabletColumns={3} mobileColumns={1}>
-            {info?.results.data.charactersVoiceActors.map((char, index) => (
-              <Fragment key={index}>
-                <User
-                  name={char.character.name}
-                  subline={char.character.cast}
-                  avatarProps={{
-                    empty: false,
-                    src: char.character.poster,
-                  }}
-                />
-              </Fragment>
-            ))}
-          </Grid>
-          {info?.results.seasons != undefined &&
-            info?.results.seasons.length > 0 && (
-              <Text onBackground="brand-medium">Related</Text>
-            )}
-          <Grid
-            columns={4}
-            gap="12"
-            tabletColumns={3}
-            mobileColumns={1}
-            fillWidth
-          >
-            {info?.results.seasons.slice(0, 8).map((season, index) => (
-              <Fragment>
-                <User
-                  key={index}
-                  name={season.title}
-                  subline={season.season}
-                  avatarProps={{
-                    empty: false,
-                    src: season.season_poster,
-                  }}
-                />
-              </Fragment>
-            ))}
-          </Grid> */}
-          <ChapterList />          
+          <ChapterList />
         </Column>
       </Flex>
     </Column>

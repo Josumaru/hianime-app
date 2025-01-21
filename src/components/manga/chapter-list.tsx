@@ -148,7 +148,7 @@ const ChapterList: NextPage = ({}) => {
                 );
               }
             }
-            return result;
+            return result.length == 1 ? null : result;
           })()}
       </Row>
     </Fragment>
