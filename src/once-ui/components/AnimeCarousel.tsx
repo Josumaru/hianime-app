@@ -130,7 +130,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
           }}
         />
         <Column padding="l" position="absolute" bottom="0" fillWidth hide="s">
-          <Heading variant="code-default-xl" style={{ width: "70%" }}>
+          <Heading variant="display-default-m" style={{ width: "50%" }}>
             <LetterFx trigger="instant" speed="medium">
               {spotlight[activeIndex].japanese_title}
             </LetterFx>
@@ -141,10 +141,10 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
               spotlight[activeIndex].tvInfo.duration,
               spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
-              <Tag key={info} variant="brand" size="m" label={info} />
+              <Tag key={info} variant="accent" size="m" label={info} />
             ))}
           </Row>
-          <Text variant="code-default-l">
+          <Text variant="body-default-l" align="justify">
             <RevealFx
               speed="medium"
               style={{
@@ -202,7 +202,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
           </Flex>
         </Flex>
         <Column padding="s" position="absolute" bottom="0" fillWidth show="s">
-          <Text variant="code-default-xl" style={{ width: "70%" }}>
+          <Text variant="display-default-xs" style={{ width: "60%" }}>
             <LetterFx trigger="instant" speed="medium">
               {spotlight[activeIndex].japanese_title}
             </LetterFx>
@@ -210,36 +210,12 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
           <Row gap={"8"} paddingY="8">
             {[
               spotlight[activeIndex].tvInfo.showType,
-              spotlight[activeIndex].tvInfo.duration,
+              spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
               <Tag key={info} variant="brand" size="m" label={info} />
             ))}
           </Row>
-          <Text variant="code-default-s">
-            <RevealFx
-              speed="medium"
-              style={{
-                width: "70%",
-                maskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
-                WebkitMaskImage: `linear-gradient(to top, transparent, #ffffff 100%)`,
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                WebkitLineClamp: 3,
-              }}
-            >
-              {spotlight[activeIndex].description}
-            </RevealFx>
-          </Text>
-          {/* <Badge
-            textVariant="code-default-l"
-            margin="0"
-            arrow
-            effect
-            href={`/anime/detail/${encrypt(spotlight[activeIndex].id)}`}
-          >
-            Watch
-          </Badge> */}
+         
         </Column>
       </RevealFx>
       {spotlight.length > 1 && (

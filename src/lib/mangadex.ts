@@ -65,6 +65,8 @@ export const getMangadexDetail = async (
     const response = await axios.get<MangadexDetail>(endpoint);
     return response.data;
   } catch (error) {
+    console.log(error);
+    
     throw new Error("Oh hell, Something went wrong (◡︵◡)");
   }
 };

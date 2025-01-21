@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "@/components/home/common/footer";
 import NavigationBar from "@/components/home/common/navigation-bar";
 import { Column } from "@/once-ui/components";
 import { NextPage } from "next";
@@ -12,6 +13,7 @@ const Layout: NextPage<Props> = ({ children }) => {
     <Column fillWidth fillHeight>
       <NavigationBar />
       {children}
+      <Footer />
     </Column>
   );
 };

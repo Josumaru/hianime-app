@@ -1,5 +1,7 @@
 "use client";
+import Loading from "@/components/home/common/loading";
 import LatestChapter from "@/components/manga/latest-chapter";
+import MangaBackground from "@/components/manga/manga-background";
 import PopularTitles from "@/components/manga/popular-titles";
 import UserIncludesManga from "@/components/manga/user-includes-manga";
 import {
@@ -17,7 +19,7 @@ import {
   useToast,
 } from "@/once-ui/components";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 interface Props {}
 
@@ -70,7 +72,7 @@ const Page: NextPage<Props> = ({}) => {
         }
         if (!seasonal) {
           const seasonalResponse = await getMangadexUserInlcludes(
-            "a5ba5473-07b2-4d0a-aefd-90d9d4a04521"
+            "5c5e6e39-0b4b-413e-be59-27b1ba03d1b9"
           );
           setSeasonal(seasonalResponse);
         }
@@ -94,74 +96,46 @@ const Page: NextPage<Props> = ({}) => {
     };
     fetchData();
   }, []);
+  const mangaSections = [
+    {
+      manga: latestUpdate,
+      left: true,
+      title: "Latest Chapter",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+    {
+      manga: selfPublished,
+      left: true,
+      title: "Self Published",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+    {
+      manga: staffPicks,
+      title: "Staff Picks",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+    {
+      manga: featuredBySupporters,
+      left: true,
+      title: "Featured by Supporters",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+    {
+      manga: seasonal,
+      title: "Seasonal",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+    {
+      manga: recentlyAdded,
+      left: true,
+      title: "Recently Added",
+      subtitle: "The latest chapters to keep you updated and entertained",
+    },
+  ];
+
   return (
     <Column fillWidth paddingY="80" paddingX="s" alignItems="center" flex={1}>
-      <Background
-        mask={{
-          x: 0,
-          y: 100,
-        }}
-        position="fixed"
-        grid={{
-          display: true,
-          width: "0.25rem",
-          color: "neutral-alpha-medium",
-          height: "0.25rem",
-        }}
-      />
-      <Background
-        mask={{
-          x: 100,
-          y: 100,
-          radius: 100,
-        }}
-        position="fixed"
-        gradient={{
-          display: true,
-          tilt: -35,
-          height: 50,
-          width: 75,
-          x: 100,
-          y: 40,
-          colorStart: "accent-solid-medium",
-          colorEnd: "static-transparent",
-        }}
-      />
-      <Background
-        position="fixed"
-        mask={{
-          cursor: true,
-        }}
-        gradient={{
-          colorEnd: "static-transparent",
-          colorStart: "accent-solid-strong",
-          display: true,
-          height: 100,
-          opacity: 100,
-          tilt: 0,
-          width: 150,
-          x: 0,
-          y: 0,
-        }}
-        dots={{
-          color: "accent-on-background-medium",
-          display: true,
-          opacity: 100,
-          size: "64",
-        }}
-        grid={{
-          color: "neutral-alpha-medium",
-          display: true,
-          height: "var(--static-space-32)",
-          opacity: 100,
-          width: "var(--static-space-32)",
-        }}
-        lines={{
-          display: false,
-          opacity: 100,
-          size: "24",
-        }}
-      />
+      <MangaBackground />
       <Column
         overflow="hidden"
         as="main"
@@ -173,51 +147,22 @@ const Page: NextPage<Props> = ({}) => {
         fillWidth
         fillHeight
       >
-        <Flex
-          fillHeight
-          fillWidth
-          justifyContent={"center"}
-          alignItems={"center"}
-        >
-          {loading ? (
-            <Spinner />
-          ) : (
-            <Column fillWidth>
-              <PopularTitles params={popularManga?.data ?? []} />
-              <Column padding="s">
-                <LatestChapter />
-                <UserIncludesManga
-                  manga={selfPublished}
-                  left
-                  title="Self Published"
-                  subtitle="The latest chapters to keep you updated and entertained"
-                />
-                <UserIncludesManga
-                  manga={staffPicks}
-                  title="Staff Picks"
-                  subtitle="The latest chapters to keep you updated and entertained"
-                />
-                <UserIncludesManga
-                  manga={featuredBySupporters}
-                  left
-                  title="Featured by Supporters"
-                  subtitle="The latest chapters to keep you updated and entertained"
-                />
-                <UserIncludesManga
-                  manga={seasonal}
-                  title="Seasonal"
-                  subtitle="The latest chapters to keep you updated and entertained"
-                />
-                <UserIncludesManga
-                  manga={recentlyAdded}
-                  left
-                  title="Recently Added"
-                  subtitle="The latest chapters to keep you updated and entertained"
-                />
-              </Column>
-            </Column>
-          )}
-        </Flex>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            <PopularTitles params={popularManga?.data ?? []} />
+            {mangaSections.map((section, index) => (
+              <UserIncludesManga
+                key={index}
+                manga={section.manga}
+                left={section.left}
+                title={section.title}
+                subtitle={section.subtitle}
+              />
+            ))}
+          </Fragment>
+        )}
       </Column>
     </Column>
   );

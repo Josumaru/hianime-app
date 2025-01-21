@@ -1,6 +1,8 @@
 "use client";
 
+import { encrypt } from "@/lib/crypto";
 import {
+  Button,
   Column,
   Flex,
   Heading,
@@ -26,7 +28,7 @@ interface CarouselProps extends React.ComponentProps<typeof Flex> {
 const MangaCarousel: React.FC<CarouselProps> = ({
   mangas = [],
   indicator = "line",
-  aspectRatio = "16 / 9",
+  aspectRatio = "16 / 7",
   sizes,
   revealedByDefault = false,
   ...rest
@@ -145,13 +147,14 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                   ...(mangas.length > 1 && {
                     cursor: "pointer",
                   }),
-                  aspectRatio: "9/16",
+                  aspectRatio: "11/16",
                 }}
               />
             </Flex>
             <Flex direction="column" justifyContent="space-between">
               <Column gap="2">
                 <Heading
+                  variant="display-default-m"
                   style={{
                     display: "-webkit-box",
                     WebkitBoxOrient: "vertical",
@@ -171,15 +174,28 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                     .map((tag) => (
                       <Tag
                         key={tag.id}
-                        opacity={80}
+                        opacity={50}
                         variant="brand"
                         label={tag.attributes.name.en}
                       />
                     ))}
                 </Row>
-                <Text variant="code-default-xl">
+                <Text
+                  variant="body-default-l"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    WebkitLineClamp: 6,
+                    textAlign: "justify",
+                  }}
+                >
                   {mangas[activeIndex]?.attributes.description.en}
                 </Text>
+                <Button
+                  label="Read manga"
+                  href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
+                />
               </Column>
               <Flex justifyContent="space-between">
                 <Text
@@ -196,7 +212,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
               </Flex>
             </Flex>
           </Row>
-          <Row gap="s" show="s">
+          <Row gap="s" show="s" padding="4">
             <Flex fillWidth>
               <SmartImage
                 priority
@@ -215,14 +231,14 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                   ...(mangas.length > 1 && {
                     cursor: "pointer",
                   }),
-                  aspectRatio: "9/16",
+                  aspectRatio: "10/16",
                 }}
               />
             </Flex>
             <Flex direction="column" justifyContent="space-between">
               <Column gap="2">
                 <Heading
-                  as={"h3"}
+                  variant="display-default-xs"
                   style={{
                     display: "-webkit-box",
                     WebkitBoxOrient: "vertical",
@@ -248,31 +264,26 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                       />
                     ))}
                 </Row>
-                <Text
-                  variant="code-default-s"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    WebkitLineClamp: 6,
-                  }}
-                >
-                  {mangas[activeIndex]?.attributes.description.en}
-                </Text>
               </Column>
-              <Flex justifyContent="space-between">
-                <Text
-                  variant="body-strong-m"
-                  style={{
-                    fontStyle: "italic",
-                  }}
-                >
-                  {mangas[activeIndex]?.relationships.find(
-                    (relationship) => relationship.type == "author"
-                  )?.attributes?.name ?? "Unknown"}
-                </Text>
-                <Text variant="body-strong-m">NO. {activeIndex + 1}</Text>
-              </Flex>
+              <Column gap="8">
+                <Button
+                  label="Read manga"
+                  href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
+                />
+                <Flex justifyContent="space-between">
+                  <Text
+                    variant="body-strong-s"
+                    style={{
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {mangas[activeIndex]?.relationships.find(
+                      (relationship) => relationship.type == "author"
+                    )?.attributes?.name ?? "Unknown"}
+                  </Text>
+                  <Text variant="body-strong-s">NO. {activeIndex + 1}</Text>
+                </Flex>
+              </Column>
             </Flex>
           </Row>
         </Flex>

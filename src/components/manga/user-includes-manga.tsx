@@ -2,6 +2,7 @@ import { encrypt } from "@/lib/crypto";
 import { useMangadexStore } from "@/lib/store";
 import {
   Column,
+  Flex,
   Heading,
   LetterFx,
   Scroller,
@@ -28,22 +29,26 @@ const UserIncludesManga: NextPage<Props> = ({
   const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
 
   return (
-    <Column>
-      <Heading
-        as="h2"
-        marginTop="24"
-        variant="display-default-m"
-        align={left ? "left" : "right"}
-      >
-        {title}
-      </Heading>
-      <Text
-        align={left ? "left" : "right"}
-        marginBottom="8"
-        onBackground="neutral-weak"
-      >
-        {subtitle}
-      </Text>
+    <Column fillWidth>
+      <Column paddingX="8">
+        <Heading
+          as="h2"
+          marginTop="24"
+          variant="display-default-m"
+          align={left ? "left" : "right"}
+        >
+          {title}
+        </Heading>
+        <Flex>
+          <Text
+            align={left ? "left" : "right"}
+            marginBottom="8"
+            onBackground="neutral-weak"
+          >
+            {subtitle}
+          </Text>
+        </Flex>
+      </Column>
       <Scroller
         direction="row"
         alignItems="start"
@@ -54,7 +59,7 @@ const UserIncludesManga: NextPage<Props> = ({
         border="accent-alpha-weak"
       >
         {manga?.data.map((manga) => (
-          <SmartLink key={manga.id} href={`/anime/detail/${encrypt(manga.id)}`}>
+          <SmartLink key={manga.id} href={`/manga/detail/${encrypt(manga.id)}`}>
             <Column fillHeight overflowX="hidden" maxWidth={12} hide="s">
               <SmartImage
                 key={manga.id}
