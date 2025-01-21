@@ -81,7 +81,7 @@ const Page: NextPage<Props> = ({ params }) => {
         const episodeResponse = await getEpisodes(id);
         if (episodeResponse.results.episodes) {
           setEpisodes(episodeResponse);
-        } 
+        }
         if (infoResponse.results.data) {
           setInfo(infoResponse);
           addToast({
@@ -182,26 +182,28 @@ const Page: NextPage<Props> = ({ params }) => {
                 translateY={0}
                 justifyContent="start"
               >
-                 <table>
-                  {animeStatus.map((status, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Text variant="label-strong-xl">{status.key}</Text>
-                      </td>
-                      <td
-                        style={{
-                          paddingLeft: 20,
-                        }}
-                      >
-                        <Text
-                          variant="label-default-xl"
-                          onBackground="info-medium"
+                <table>
+                  <tbody>
+                    {animeStatus.map((status, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Text variant="label-strong-xl">{status.key}</Text>
+                        </td>
+                        <td
+                          style={{
+                            paddingLeft: 20,
+                          }}
                         >
-                          {status.value}
-                        </Text>
-                      </td>
-                    </tr>
-                  ))}
+                          <Text
+                            variant="label-default-xl"
+                            onBackground="info-medium"
+                          >
+                            {status.value}
+                          </Text>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </RevealFx>
             </Column>
@@ -239,25 +241,27 @@ const Page: NextPage<Props> = ({ params }) => {
                 justifyContent="start"
               >
                 <table>
-                  {animeStatus.map((status, index) => (
-                    <tr key={index}>
-                      <td>
-                        <Text variant="label-strong-xl">{status.key}</Text>
-                      </td>
-                      <td
-                        style={{
-                          paddingLeft: 20,
-                        }}
-                      >
-                        <Text
-                          variant="label-default-xl"
-                          onBackground="info-medium"
+                  <tbody>
+                    {animeStatus.map((status, index) => (
+                      <tr key={index}>
+                        <td>
+                          <Text variant="label-strong-xl">{status.key}</Text>
+                        </td>
+                        <td
+                          style={{
+                            paddingLeft: 20,
+                          }}
                         >
-                          {status.value}
-                        </Text>
-                      </td>
-                    </tr>
-                  ))}
+                          <Text
+                            variant="label-default-xl"
+                            onBackground="info-medium"
+                          >
+                            {status.value}
+                          </Text>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </RevealFx>
             </Column>
@@ -307,7 +311,13 @@ const Page: NextPage<Props> = ({ params }) => {
             info?.results.seasons.length > 0 && (
               <Text onBackground="brand-medium">Related</Text>
             )}
-          <Grid columns={4} gap="12" tabletColumns={3} mobileColumns={1} fillWidth>
+          <Grid
+            columns={4}
+            gap="12"
+            tabletColumns={3}
+            mobileColumns={1}
+            fillWidth
+          >
             {info?.results.seasons.slice(0, 8).map((season, index) => (
               <Fragment>
                 <User
