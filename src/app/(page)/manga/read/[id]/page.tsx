@@ -194,7 +194,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 <Text>
                   Chapter {currentChapter?.attributes.chapter ?? "Unavailable"}
                 </Text>
-                <Text onBackground="info-weak">
+                <Text onBackground="info-weak" align="center">
                   {currentChapter?.attributes.title}
                 </Text>
               </Column>
@@ -240,7 +240,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 )}`}
               >
                 <Row gap="4" fillWidth>
-                  <Text variant="body-default-l" onBackground="brand-medium">
+                  <Text variant="body-default-m" onBackground="brand-medium">
                     {feed.attributes.translatedLanguage.toUpperCase()}
                   </Text>
                 </Row>
