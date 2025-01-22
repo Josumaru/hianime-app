@@ -17,9 +17,10 @@ import {
   useToast,
 } from "@/once-ui/components";
 import { MangadexManga } from "@/types/manga/popular";
-import { Search } from "@/types/search";
+import { Search } from "@/types/anime/search";
 import { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
+import { HiSearch } from "react-icons/hi";
 
 interface Props {}
 
@@ -32,7 +33,7 @@ const SearchBar: NextPage<Props> = ({}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { addToast } = useToast();
-  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "k") {
@@ -110,7 +111,7 @@ const SearchBar: NextPage<Props> = ({}) => {
   }, [open]);
   return (
     <Flex>
-      <Flex show="s">
+      {/* <Flex show="s">
         <Tag
           variant="brand"
           cursor="pointer"
@@ -120,6 +121,34 @@ const SearchBar: NextPage<Props> = ({}) => {
           textVariant="code-default-l"
           onClick={() => setOpen(true)}
         />
+      </Flex> */}
+      <Flex show="s">
+        <Button
+          variant="tertiary"
+          onClick={() => setOpen(true)}
+          style={{ padding: 2 }}
+        >
+          <Flex
+            onClick={() => setOpen(true)}
+            alignItems="center"
+            gap="12"
+            fillWidth
+            justifyContent="space-between"
+          >
+            <Text
+              onBackground="brand-medium"
+              variant="body-default-l"
+              paddingLeft="12"
+            >
+              Search ...
+            </Text>
+            <Tag variant="brand" size="l">
+              <Flex>
+                <HiSearch />
+              </Flex>
+            </Tag>
+          </Flex>
+        </Button>
       </Flex>
       <Flex hide="s">
         <Button
@@ -134,7 +163,13 @@ const SearchBar: NextPage<Props> = ({}) => {
             fillWidth
             justifyContent="space-between"
           >
-            <Text onBackground="brand-medium" variant="body-default-l" paddingLeft="12">Search ...</Text>
+            <Text
+              onBackground="brand-medium"
+              variant="body-default-l"
+              paddingLeft="12"
+            >
+              Search ...
+            </Text>
             <Tag variant="brand" size="l" label="⌘ + K" />
           </Flex>
         </Button>

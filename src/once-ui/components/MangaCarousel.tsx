@@ -2,6 +2,7 @@
 
 import { encrypt } from "@/lib/crypto";
 import {
+  Badge,
   Button,
   Column,
   Flex,
@@ -129,7 +130,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
 
         <Flex position="absolute" fillWidth fillHeight>
           <Row padding="l" gap="l" hide="s">
-            <Flex fillWidth>
+            <Flex fillWidth flex={1}>
               <SmartImage
                 priority
                 radius="l"
@@ -192,28 +193,34 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                 >
                   {mangas[activeIndex]?.attributes.description.en}
                 </Text>
-                <Button
-                  label="Read manga"
-                  href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
-                />
               </Column>
-              <Flex justifyContent="space-between">
-                <Text
-                  variant="body-strong-l"
-                  style={{
-                    fontStyle: "italic",
-                  }}
-                >
-                  {mangas[activeIndex]?.relationships.find(
-                    (relationship) => relationship.type == "author"
-                  )?.attributes?.name ?? "Unknown"}
-                </Text>
-                <Text variant="body-strong-l">NO. {activeIndex + 1}</Text>
-              </Flex>
+              <Column gap="4">
+                <Flex justifyContent="space-between" alignItems="center">
+                  <Badge
+                    arrow
+                    effect
+                    icon="HiOutlinePaperAirplane"
+                    href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
+                  >
+                    Raad Manga
+                  </Badge>
+                  <Text
+                    variant="body-strong-l"
+                    style={{
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {mangas[activeIndex]?.relationships.find(
+                      (relationship) => relationship.type == "author"
+                    )?.attributes?.name ?? "Unknown"}
+                  </Text>
+                  {/* <Text variant="body-strong-l">NO. {activeIndex + 1}</Text> */}
+                </Flex>
+              </Column>
             </Flex>
           </Row>
           <Row gap="s" show="s" padding="4">
-            <Flex fillWidth>
+            <Flex fillWidth flex={1}>
               <SmartImage
                 priority
                 radius="l"
@@ -266,11 +273,15 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                 </Row>
               </Column>
               <Column gap="8">
-                <Button
-                  label="Read manga"
-                  href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
-                />
-                <Flex justifyContent="space-between">
+                <Flex justifyContent="space-between" alignItems="center">
+                  <Badge
+                    arrow
+                    effect
+                    icon="HiOutlinePaperAirplane"
+                    href={`/manga/detail/${encrypt(mangas[activeIndex].id)}`}
+                  >
+                    Raad
+                  </Badge>
                   <Text
                     variant="body-strong-s"
                     style={{
@@ -281,7 +292,7 @@ const MangaCarousel: React.FC<CarouselProps> = ({
                       (relationship) => relationship.type == "author"
                     )?.attributes?.name ?? "Unknown"}
                   </Text>
-                  <Text variant="body-strong-s">NO. {activeIndex + 1}</Text>
+                  {/* <Text variant="body-strong-l">NO. {activeIndex + 1}</Text> */}
                 </Flex>
               </Column>
             </Flex>

@@ -8,7 +8,7 @@ import {
   SmartLink,
   Text,
 } from "@/once-ui/components";
-import { Trending } from "@/types/hianime";
+import { Trending } from "@/types/anime/hianime";
 import { NextPage } from "next";
 
 interface Props {
@@ -18,8 +18,16 @@ interface Props {
 const TrendingScroller: NextPage<Props> = ({ params }) => {
   return (
     <Column fillWidth marginTop="24">
-      <Column paddingLeft="8">
+      <Column paddingLeft="8" hide="s">
         <Heading as="h2" align="left" variant="display-default-m">
+          Trending Anime
+        </Heading>
+        <Text marginBottom="8" align="left" onBackground="neutral-weak">
+          There are so many who see this anime
+        </Text>
+      </Column>
+      <Column paddingLeft="8" show="s">
+        <Heading as="h2" align="left" variant="display-default-xs">
           Trending Anime
         </Heading>
         <Text marginBottom="8" align="left" onBackground="neutral-weak">
@@ -51,7 +59,6 @@ const TrendingScroller: NextPage<Props> = ({ params }) => {
               />
               <Text
                 style={{
-                  fontFamily: "var(--font-family-code)",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",

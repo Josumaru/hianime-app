@@ -1,8 +1,6 @@
 import { encrypt } from "@/lib/crypto";
-import { useMangadexStore } from "@/lib/store";
 import {
   Column,
-  Flex,
   Heading,
   LetterFx,
   Scroller,
@@ -10,59 +8,54 @@ import {
   SmartLink,
   Text,
 } from "@/once-ui/components";
-import { MangadexManga } from "@/types/manga/popular";
+import { Category } from "@/types/anime/category";
 import { NextPage } from "next";
-
 interface Props {
-  manga: MangadexManga | null;
-  left?: boolean;
+  anime: Category;
   title: string;
   subtitle: string;
+  left?: boolean;
 }
 
-const UserIncludesManga: NextPage<Props> = ({
-  manga,
-  left = false,
+const CategoryScroller: NextPage<Props> = ({
+  anime,
   title,
   subtitle,
+  left = true,
 }) => {
-  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
-
   return (
-    <Column fillWidth>
+    <Column fillWidth marginTop="24">
       <Column paddingX="8" hide="s">
         <Heading
+          align={left ? "left" : "right"}
           as="h2"
-          marginTop="24"
           variant="display-default-m"
-          align={left ? "left" : "right"}
         >
           {title}
         </Heading>
-          <Text
-            align={left ? "left" : "right"}
-            marginBottom="8"
-            onBackground="neutral-weak"
-          >
-            {subtitle}
-          </Text>
+        <Text
+          marginBottom="8"
+          align={left ? "left" : "right"}
+          onBackground="neutral-weak"
+        >
+          {subtitle}
+        </Text>
       </Column>
-      <Column paddingX="8" show="s">
+      <Column paddingLeft="8" show="s">
         <Heading
-          as="h2"
-          marginTop="24"
-          variant="display-default-xs"
           align={left ? "left" : "right"}
+          as="h2"
+          variant="display-default-xs"
         >
           {title}
         </Heading>
-          <Text
-            align={left ? "left" : "right"}
-            marginBottom="8"
-            onBackground="neutral-weak"
-          >
-            {subtitle}
-          </Text>
+        <Text
+          marginBottom="8"
+          align={left ? "left" : "right"}
+          onBackground="neutral-weak"
+        >
+          {subtitle}
+        </Text>
       </Column>
       <Scroller
         direction="row"
@@ -70,26 +63,22 @@ const UserIncludesManga: NextPage<Props> = ({
         justifyContent="start"
         padding="0"
         opacity={70}
-        marginTop="0"
         border="accent-alpha-weak"
       >
-        {manga?.data.map((manga) => (
-          <SmartLink key={manga.id} href={`/manga/detail/${encrypt(manga.id)}`}>
+        {anime.results.data.map((episode) => (
+          <SmartLink
+            key={episode.id}
+            href={`/anime/detail/${encrypt(episode.id)}`}
+          >
             <Column fillHeight overflowX="hidden" maxWidth={12} hide="s">
               <SmartImage
-                key={manga.id}
+                key={episode.id}
                 aspectRatio="2/3"
                 radius="l"
                 fillWidth
                 width={12}
-                title={manga.attributes.title.en}
-                src={`${reverseProxy}https://uploads.mangadex.org/covers/${
-                  manga.id
-                }/${
-                  manga.relationships.find(
-                    (relationship) => relationship.type === "cover_art"
-                  )?.attributes?.fileName
-                }.256.jpg`}
+                title={episode.title}
+                src={episode.poster}
               />
               <Text
                 style={{
@@ -123,25 +112,19 @@ const UserIncludesManga: NextPage<Props> = ({
                     "+",
                   ]}
                 >
-                  {manga.attributes.title.en}
+                  {episode.title}
                 </LetterFx>
               </Text>
             </Column>
             <Column fillHeight overflowX="hidden" maxWidth={8} show="s">
               <SmartImage
-                key={manga.id}
+                key={episode.id}
                 aspectRatio="2/3"
                 radius="l"
                 fillWidth
                 width={8}
-                title={manga.attributes.title.en}
-                src={`${reverseProxy}https://uploads.mangadex.org/covers/${
-                  manga.id
-                }/${
-                  manga.relationships.find(
-                    (relationship) => relationship.type === "cover_art"
-                  )?.attributes?.fileName
-                }.256.jpg`}
+                title={episode.title}
+                src={episode.poster}
               />
               <Text
                 variant="code-default-s"
@@ -176,7 +159,7 @@ const UserIncludesManga: NextPage<Props> = ({
                     "+",
                   ]}
                 >
-                  {manga.attributes.title.en}
+                  {episode.title}
                 </LetterFx>
               </Text>
             </Column>
@@ -187,4 +170,4 @@ const UserIncludesManga: NextPage<Props> = ({
   );
 };
 
-export default UserIncludesManga;
+export default CategoryScroller;

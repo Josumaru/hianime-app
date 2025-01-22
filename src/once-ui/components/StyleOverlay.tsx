@@ -26,6 +26,7 @@ const StyleOverlay = forwardRef<HTMLDivElement, StyleOverlayProps>(
           className={`${styles.panel} ${isOpen && styles.open}`}
           maxWidth={28}
           style={{
+            maxWidth: "calc(100% - var(--static-space-16))",
             maxHeight: "calc(100% - var(--static-space-16))",
           }}
           fillHeight

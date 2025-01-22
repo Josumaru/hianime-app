@@ -3,7 +3,7 @@
     opacity: 0;
     z-index: 2;
     transform: scale(0.2);
-    // transform-origin: top right;
+    transform-origin: top right;
 
     &.open {
         transform: scale(1);

@@ -16,7 +16,7 @@ import {
   DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
 import { use, useEffect, useRef, useState } from "react";
-import { Stream } from "@/types/stream";
+import { Stream } from "@/types/anime/stream";
 import {
   Button,
   Column,
@@ -36,10 +36,10 @@ import {
   useToast,
 } from "@/once-ui/components";
 import { getEpisodes, getInfo, getStream } from "@/lib/hianime";
-import { Servers } from "@/types/servers";
+import { Servers } from "@/types/anime/servers";
 import { decrypt, encrypt } from "@/lib/crypto";
-import { Episode, Episodes } from "@/types/episodes";
-import { Info } from "@/types/info";
+import { Episode, Episodes } from "@/types/anime/episodes";
+import { Info } from "@/types/anime/info";
 import Link from "next/link";
 import { useHianimeStore } from "@/lib/store";
 import { createCookies, getCookies } from "@/action/cookies-action";
@@ -167,7 +167,7 @@ const Page: NextPage<Props> = ({ params }) => {
     player.current?.subscribe(({ currentTime }) => {
       setCurrentTime(currentTime);
     });
-  }, [currentStream, loading, player.current]);
+  }, [currentStream]);
 
   useEffect(() => {
     if (episodes) {

@@ -15,7 +15,7 @@ import {
   Tag,
   Text,
 } from "@/once-ui/components";
-import { Spotlight } from "@/types/hianime";
+import { Spotlight } from "@/types/anime/hianime";
 import { useEffect, useState, useRef } from "react";
 import { IoPlayCircleOutline, IoPlayOutline } from "react-icons/io5";
 import { PiPlayCircleDuotone } from "react-icons/pi";
@@ -103,15 +103,18 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
         trigger={isTransitioning}
         translateY="16"
         speed="fast"
+        radius="l"
       >
         <SmartImage
           sizes={sizes}
           priority
+          radius="xl"
+          overflow="hidden"
           alt={spotlight[activeIndex]?.title}
           aspectRatio={aspectRatio}
           src={spotlight[activeIndex]?.poster}
           style={{
-            transform: "translateX(10%)",
+            // transform: "translateX(10%)",
             border: "1px solid var(--neutral-alpha-weak)",
             ...(spotlight.length > 1 && {
               cursor: "pointer",
@@ -123,14 +126,23 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
           fillWidth
           position="absolute"
           background="brand-medium"
-          opacity={0}
+          opacity={90}
           style={{
             transition: "background 0.5s ease-in-out",
             background: `linear-gradient(90deg, var(--brand-background-strong) 50%, transparent 100%)`,
           }}
         />
         <Column padding="l" position="absolute" bottom="0" fillWidth hide="s">
-          <Heading variant="display-default-m" style={{ width: "50%" }}>
+          <Heading
+            variant="display-default-m"
+            style={{
+              width: "50%",
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              WebkitLineClamp: 2,
+            }}
+          >
             <LetterFx trigger="instant" speed="medium">
               {spotlight[activeIndex].japanese_title}
             </LetterFx>
@@ -183,7 +195,7 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
                   fillWidth
                   justifyContent="center"
                   alignItems="center"
-                  paddingLeft="8"
+                  paddingLeft="2"
                   show="s"
                 >
                   <IoPlayOutline size={"20"} />
@@ -202,20 +214,28 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
           </Flex>
         </Flex>
         <Column padding="s" position="absolute" bottom="0" fillWidth show="s">
-          <Text variant="display-default-xs" style={{ width: "60%" }}>
+          <Text
+            variant="display-default-xs"
+            style={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              WebkitLineClamp: 2,
+              width: "60%",
+            }}
+          >
             <LetterFx trigger="instant" speed="medium">
               {spotlight[activeIndex].japanese_title}
             </LetterFx>
           </Text>
-          <Row gap={"8"} paddingY="8">
+          {/* <Row gap={"8"} paddingY="8">
             {[
               spotlight[activeIndex].tvInfo.showType,
               spotlight[activeIndex].tvInfo.releaseDate,
             ].map((info) => (
               <Tag key={info} variant="brand" size="m" label={info} />
             ))}
-          </Row>
-         
+          </Row> */}
         </Column>
       </RevealFx>
       {spotlight.length > 1 && (

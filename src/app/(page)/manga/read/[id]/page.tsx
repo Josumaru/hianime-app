@@ -118,15 +118,12 @@ const Page: NextPage<Props> = ({ params }) => {
       {loading ? (
         <Spinner />
       ) : (
-        <Flex fillHeight fillWidth>
+        <Flex fillHeight fillWidth justifyContent="center">
           <Scroller
             direction="column"
             maxWidth={"l"}
             fillWidth
             fillHeight
-            style={{
-              zIndex: 11,
-            }}
           >
             {chapterImage?.chapter.data.map((image, index) => (
               <Flex
@@ -135,7 +132,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 justifyContent="center"
                 paddingTop={index == 0 ? "64" : "0"}
                 paddingBottom={
-                  index + 1 == chapterImage.chapter.data.length ? "104" : "0"
+                  index + 1 == chapterImage.chapter.data.length ? "64" : "0"
                 }
               >
                 <InnerImageZoom
@@ -153,7 +150,7 @@ const Page: NextPage<Props> = ({ params }) => {
             style={{
               zIndex: 12,
             }}
-            height={"104"}
+            height={"64"}
             position="fixed"
             zIndex={9}
             bottom="0"
@@ -187,6 +184,8 @@ const Page: NextPage<Props> = ({ params }) => {
               </Row>
               <Column
                 cursor="pointer"
+                alignItems="center"
+                justifyContent="center"
                 onClick={() => {
                   setOpenAll(true);
                   setCurrentTargetChapter(feedManga?.data ?? []);
@@ -195,7 +194,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 <Text>
                   Chapter {currentChapter?.attributes.chapter ?? "Unavailable"}
                 </Text>
-                <Text onBackground="info-medium">
+                <Text onBackground="info-weak">
                   {currentChapter?.attributes.title}
                 </Text>
               </Column>

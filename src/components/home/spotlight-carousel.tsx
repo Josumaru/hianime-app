@@ -1,6 +1,6 @@
 import { useToast } from "@/once-ui/components";
 import { AnimeCarousel } from "@/once-ui/components/AnimeCarousel";
-import { Spotlight } from "@/types/hianime";
+import { Spotlight } from "@/types/anime/hianime";
 import { NextPage } from "next";
 
 interface Props {
@@ -27,7 +27,7 @@ const SpotlightCarousel: NextPage<Props> = ({ params }) => {
       variant: "danger",
     });    
   }
-  return <AnimeCarousel aspectRatio="16 / 9" indicator="line" spotlight={params} opacity={70} />;
+  return <AnimeCarousel aspectRatio="16 / 6" indicator="line" spotlight={params} opacity={70} />;
 };
 
 export default SpotlightCarousel;

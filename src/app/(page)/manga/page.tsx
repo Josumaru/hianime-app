@@ -105,29 +105,28 @@ const Page: NextPage<Props> = ({}) => {
     },
     {
       manga: selfPublished,
-      left: true,
       title: "Self Published",
       subtitle: "The latest chapters to keep you updated and entertained",
     },
     {
       manga: staffPicks,
+      left: true,
       title: "Staff Picks",
       subtitle: "The latest chapters to keep you updated and entertained",
     },
     {
       manga: featuredBySupporters,
-      left: true,
       title: "Featured by Supporters",
       subtitle: "The latest chapters to keep you updated and entertained",
     },
     {
       manga: seasonal,
+      left: true,
       title: "Seasonal",
       subtitle: "The latest chapters to keep you updated and entertained",
     },
     {
       manga: recentlyAdded,
-      left: true,
       title: "Recently Added",
       subtitle: "The latest chapters to keep you updated and entertained",
     },

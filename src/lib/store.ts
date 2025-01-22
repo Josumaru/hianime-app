@@ -1,13 +1,14 @@
-import { Episodes } from "@/types/episodes";
-import { Hianime } from "@/types/hianime";
-import { Info } from "@/types/info";
+import { Episodes } from "@/types/anime/episodes";
+import { Hianime } from "@/types/anime/hianime";
+import { Info } from "@/types/anime/info";
 import { MangadexChapterImage } from "@/types/manga/chapter-image";
 import { MangadexDetail } from "@/types/manga/detail";
 import { MangadexFeed } from "@/types/manga/feed";
 import { MangadexManga } from "@/types/manga/popular";
-import { Servers } from "@/types/servers";
-import { Stream } from "@/types/stream";
+import { Servers } from "@/types/anime/servers";
+import { Stream } from "@/types/anime/stream";
 import { create } from "zustand";
+import { Category } from "@/types/anime/category";
 
 interface StreamProps {
   stream: Stream;
@@ -23,6 +24,16 @@ interface HianimeStore {
   setStream: (stream: StreamProps) => void;
   info: Info | null;
   setInfo: (info: Info) => void;
+  tv: Category | null;
+  setTv: (tv: Category) => void;
+  movie: Category | null;
+  setMovie: (movie: Category) => void;
+  upcoming: Category | null;
+  setUpcoming: (upcoming: Category) => void;
+  topAiring: Category | null;
+  setTopAiring: (topAiring: Category) => void;
+  completed: Category | null;
+  setCompleted: (completed: Category) => void;
 }
 
 export const useHianimeStore = create<HianimeStore>((set) => ({
@@ -35,6 +46,16 @@ export const useHianimeStore = create<HianimeStore>((set) => ({
   setStream: (stream) => set({ stream }),
   info: null,
   setInfo: (info) => set({ info }),
+  tv: null,
+  setTv: (tv) => set({ tv }),
+  movie: null,
+  setMovie: (movie) => set({ movie }),
+  upcoming: null,
+  setUpcoming: (upcoming) => set({ upcoming }),
+  topAiring: null,
+  setTopAiring: (topAiring) => set({ topAiring }),
+  completed: null,
+  setCompleted: (completed) => set({ completed }),
 }));
 
 interface MangadexStore {

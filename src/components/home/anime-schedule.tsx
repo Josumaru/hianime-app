@@ -10,7 +10,7 @@ import {
   Tag,
   Text,
 } from "@/once-ui/components";
-import { Schedule } from "@/types/schedule";
+import { Schedule } from "@/types/anime/schedule";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 

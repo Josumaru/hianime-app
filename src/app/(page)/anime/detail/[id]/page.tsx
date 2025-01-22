@@ -19,8 +19,8 @@ import {
   User,
   useToast,
 } from "@/once-ui/components";
-import { Episodes } from "@/types/episodes";
-import { Info } from "@/types/info";
+import { Episodes } from "@/types/anime/episodes";
+import { Info } from "@/types/anime/info";
 import { NextPage } from "next";
 import { Fragment, use, useEffect, useState } from "react";
 
@@ -360,29 +360,36 @@ const Page: NextPage<Props> = ({ params }) => {
               </Fragment>
             ))}
           </Grid>
-          <Text onBackground="brand-medium">Episodes</Text>
-          <Column
-            border="brand-medium"
-            gap="2"
-            radius="l"
-            padding="12"
-            paddingTop="16"
-            background="brand-medium"
-          >
-            {episodes?.results.episodes.map((episode, index) => (
-              <SmartLink
-                href={`/anime/watch/${encrypt(episode.id)}`}
-                key={episode.id}
+          {episodes?.results.episodes.length != 0 && (
+            <Fragment>
+              <Text onBackground="brand-medium">Episodes</Text>
+              <Column
+                border="brand-medium"
+                gap="2"
+                radius="l"
+                padding="12"
+                paddingTop="16"
+                background="brand-medium"
               >
-                <Text onBackground="brand-medium" style={{ cursor: "pointer" }}>
-                  {episode.title}
-                  <Text as="span" onBackground="accent-strong">
-                    {" - "}Episode {episode.episode_no}
-                  </Text>
-                </Text>
-              </SmartLink>
-            ))}
-          </Column>
+                {episodes?.results.episodes.map((episode, index) => (
+                  <SmartLink
+                    href={`/anime/watch/${encrypt(episode.id)}`}
+                    key={episode.id}
+                  >
+                    <Text
+                      onBackground="brand-medium"
+                      style={{ cursor: "pointer" }}
+                    >
+                      {episode.title}
+                      <Text as="span" onBackground="accent-strong">
+                        {" - "}Episode {episode.episode_no}
+                      </Text>
+                    </Text>
+                  </SmartLink>
+                ))}
+              </Column>
+            </Fragment>
+          )}
         </Column>
       </Flex>
     </Column>

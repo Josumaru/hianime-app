@@ -68,7 +68,7 @@ const Home: NextPage = () => {
         ) : (
           <Fragment>
             <SpotlightCarousel params={hianime?.results.spotlights ?? []} />
-            <InlineHomeUpdate />
+            {/* <InlineHomeUpdate /> */}
             <LatestEpisodeScroller
               params={hianime?.results.latestEpisode ?? []}
             />

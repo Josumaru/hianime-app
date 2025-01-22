@@ -1,11 +1,12 @@
 "use server";
-import { Episodes } from "@/types/episodes";
-import { Hianime } from "@/types/hianime";
-import { Info } from "@/types/info";
-import { Schedule } from "@/types/schedule";
-import { Search } from "@/types/search";
-import { Servers } from "@/types/servers";
-import { Stream } from "@/types/stream";
+import { Category } from "@/types/anime/category";
+import { Episodes } from "@/types/anime/episodes";
+import { Hianime } from "@/types/anime/hianime";
+import { Info } from "@/types/anime/info";
+import { Schedule } from "@/types/anime/schedule";
+import { Search } from "@/types/anime/search";
+import { Servers } from "@/types/anime/servers";
+import { Stream } from "@/types/anime/stream";
 import axios from "axios";
 
 const apiBaseUrl = process.env.API_BASE_URL;
@@ -115,7 +116,7 @@ export const getSchedule = async (): Promise<Schedule[]> => {
       const month = String(nextDate.getMonth() + 1).padStart(2, "0");
       const day = String(nextDate.getDate()).padStart(2, "0");
       const endpoint = `${apiBaseUrl}/api/schedule?date=${year}-${month}-${day}`;
-      console.log(endpoint)
+      console.log(endpoint);
       const data: Schedule = (await axios.get<Schedule>(endpoint)).data;
       schedules.push(data);
     }
@@ -127,6 +128,25 @@ export const getSchedule = async (): Promise<Schedule[]> => {
       );
     } else {
       throw new Error(`Hmm, you do it correctly, right?  (╭ರ_•́)`);
+    }
+  }
+};
+
+export const getCategory = async (
+  category: string,
+  page: number = 1
+): Promise<Category> => {
+  try {
+    const endpoint = `${apiBaseUrl}/api/${category}?page=${page}`;
+    const data = await axios.get(endpoint);
+    return data.data as Category;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        `Noo, something went wrong, relax it's not your fault ( ˶ˆᗜˆ˵ )`
+      );
+    } else {
+      throw new Error(`Hmm, you wrote it correctly, right?  (╭ರ_•́)`);
     }
   }
 };
