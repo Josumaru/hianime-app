@@ -17,7 +17,7 @@ import { NextPage } from "next";
 import { Fragment, useEffect, useState } from "react";
 
 const ChapterList: NextPage = ({}) => {
-  const { feedManga } = useMangadexStore();
+  const { feedManga, detailManga } = useMangadexStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [volume, setVolume] = useState<number[]>();
   const [chapter, setChapter] = useState<number[]>();
@@ -62,7 +62,7 @@ const ChapterList: NextPage = ({}) => {
   return (
     <Fragment>
       <Text onBackground="brand-medium">Chapter</Text>
-      <Column maxHeight={"l"} gap="12" overflow="scroll">
+      <Column marginTop="8" maxHeight={"l"} gap="12" overflow="scroll" opacity={80}>
         {volume?.map((volume, index) => {
           return (
             showedVolume?.includes(volume) && (
@@ -83,7 +83,7 @@ const ChapterList: NextPage = ({}) => {
                     <SmartLink
                       unstyled
                       key={chapter.id}
-                      href={`/manga/read/${encrypt(chapter.id)}`}
+                      href={`/manga/read/${encrypt(`${detailManga?.data.id}(-|-)${chapter.id}`)}`}
                       fillWidth
                     >
                       <Button

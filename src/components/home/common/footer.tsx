@@ -1,3 +1,4 @@
+"use client";
 import {
   Background,
   Column,
@@ -7,10 +8,16 @@ import {
   Text,
 } from "@/once-ui/components";
 import { NextPage } from "next";
+import { usePathname } from "next/navigation";
 
 interface Props {}
 
 const Footer: NextPage<Props> = ({}) => {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/manga/read")) {
+    return null;
+  }
   return (
     <Row
       position="relative"
@@ -44,9 +51,7 @@ const Footer: NextPage<Props> = ({}) => {
         gap="16"
       >
         <Logo wordmark={false} size="s" />
-        <Text size="m">
-          Animanga
-        </Text>
+        <Text size="m">Animanga</Text>
         <Text size="m">
           <Text onBackground="neutral-weak">2024 /</Text> Created using Once UI
         </Text>

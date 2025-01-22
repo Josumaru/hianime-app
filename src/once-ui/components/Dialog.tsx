@@ -212,7 +212,10 @@ const Dialog: React.FC<DialogProps> = forwardRef<HTMLDivElement, DialogProps>(
         transition="macro-medium"
         background="overlay"
         position="fixed"
-        zIndex={base ? 9 : 10}
+        // zIndex={base ? 9 : 10}
+        style={{
+          zIndex: base ? 9 : 14
+        }}
         top="0"
         left="0"
         right="0"

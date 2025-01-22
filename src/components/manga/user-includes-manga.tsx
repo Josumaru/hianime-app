@@ -39,7 +39,6 @@ const UserIncludesManga: NextPage<Props> = ({
         >
           {title}
         </Heading>
-        <Flex>
           <Text
             align={left ? "left" : "right"}
             marginBottom="8"
@@ -47,7 +46,6 @@ const UserIncludesManga: NextPage<Props> = ({
           >
             {subtitle}
           </Text>
-        </Flex>
       </Column>
       <Scroller
         direction="row"
