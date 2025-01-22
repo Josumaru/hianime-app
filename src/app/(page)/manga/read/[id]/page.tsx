@@ -53,6 +53,7 @@ const Page: NextPage<Props> = ({ params }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openPrev, setOpenPrev] = useState<boolean>(true);
   const [openAll, setOpenAll] = useState<boolean>(false);
+  const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,7 +142,7 @@ const Page: NextPage<Props> = ({ params }) => {
                   key={index}
                   hideHint
                   zoomType="click"
-                  src={`${chapterImage.baseUrl}/data/${chapterImage.chapter.hash}/${image}`}
+                  src={`${reverseProxy}${chapterImage.baseUrl}/data/${chapterImage.chapter.hash}/${image}`}
                   zoomScale={2}
                   width={1920}
                 />
