@@ -89,7 +89,9 @@ const Page: NextPage<Props> = ({ params }) => {
         const settings = (await getCookies(
           "_animanga_m_s"
         )) as MangaPreferences;
-        setPreferences(settings);
+        if (settings) {
+          setPreferences(settings);
+        }
       } catch (error: any) {
         addToast({
           message: error.message,
@@ -144,7 +146,7 @@ const Page: NextPage<Props> = ({ params }) => {
         <Spinner />
       ) : (
         <Fragment>
-          {/* {preferences.orientation === "vertical" && (
+          {preferences.orientation === "vertical" && (
             <Flex
               fillHeight
               fillWidth
@@ -179,16 +181,21 @@ const Page: NextPage<Props> = ({ params }) => {
                 </Flex>
               ))}
             </Flex>
-          )} */}
+          )}
           {preferences.orientation != "vertical" && (
-            <Flex maxWidth={"l"} background="danger-medium" alignItems="center" marginBottom="64" fillHeight>
+            <Flex
+              maxWidth={"l"}
+              background="danger-medium"
+              alignItems="center"
+              marginBottom="64"
+              fillHeight
+            >
               <Swiper className="mySwiper">
                 {chapterImage?.chapter.data.map((image, index) => (
                   <img
                     key={index}
                     alt={`Image-${index}`}
                     style={{
-                     
                       filter: preferences.invertColors
                         ? "invert(1)"
                         : "invert(0)",
