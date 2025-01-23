@@ -116,7 +116,6 @@ export const getSchedule = async (): Promise<Schedule[]> => {
       const month = String(nextDate.getMonth() + 1).padStart(2, "0");
       const day = String(nextDate.getDate()).padStart(2, "0");
       const endpoint = `${apiBaseUrl}/api/schedule?date=${year}-${month}-${day}`;
-      console.log(endpoint);
       const data: Schedule = (await axios.get<Schedule>(endpoint)).data;
       schedules.push(data);
     }

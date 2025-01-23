@@ -2,6 +2,7 @@
 import {
   Fade,
   Flex,
+  IconButton,
   Logo,
   NavIcon,
   Row,
@@ -14,8 +15,18 @@ import SearchBar from "./search-bar";
 import { Sidebar } from "@/once-ui/modules";
 import { NavbarOverlay } from "@/once-ui/components/NavbarOverlay";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useSettingStore } from "@/lib/store";
+import { HiOutlineCog8Tooth } from "react-icons/hi2";
 
 const NavigationBar: NextPage = ({}) => {
+  const pathname = usePathname();
+
+  const { isOpenSetting, setIsOpenSetting } = useSettingStore();
+
+  // if (pathname.startsWith("/manga/read")) {
+  //   return null;
+  // }
   const [hideNavbar, setHideNavbar] = useState(false);
 
   useEffect(() => {
@@ -38,7 +49,7 @@ const NavigationBar: NextPage = ({}) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <Flex zIndex={10}>
+    <Flex>
       <Fade
         zIndex={3}
         pattern={{
@@ -48,6 +59,7 @@ const NavigationBar: NextPage = ({}) => {
         position="fixed"
         top="0"
         left="0"
+        transition="micro-medium"
         to="bottom"
         height={hideNavbar ? 0 : 5}
         fillWidth
@@ -58,8 +70,8 @@ const NavigationBar: NextPage = ({}) => {
         top="0"
         style={{
           transform: hideNavbar ? "translateY(-100%)" : "",
-          transition: "transform 0.3s ease-in-out",
         }}
+        transition="micro-medium"
         fillWidth
         justifyContent="center"
         zIndex={3}
@@ -88,9 +100,20 @@ const NavigationBar: NextPage = ({}) => {
               <Text>Manga</Text>
             </SmartLink>
           </Row>
-          <Row gap="12">
+          <Row gap="12" justifyContent="center" alignItems="center">
             <SearchBar />
             <StyleOverlay top="20" right="24" />
+            {pathname.startsWith("/manga/read") && (
+              <IconButton
+                onClick={() => setIsOpenSetting(!isOpenSetting)}
+                size="m"
+                tooltip="Manga Setting"
+                tooltipPosition="bottom"
+                variant="primary"
+              >
+                <HiOutlineCog8Tooth size={23} />
+              </IconButton>
+            )}
           </Row>
         </Row>
       </Row>

@@ -29,7 +29,7 @@ const NavbarOverlay = forwardRef<HTMLDivElement, NavbarOverlayProps>(
     };
 
     return (
-      <Flex ref={ref} {...rest} fillHeight zIndex={1} alignItems="center">
+      <Flex ref={ref} {...rest} fillHeight alignItems="center">
         <NavIcon onClick={togglePanel} isActive={isOpen} />
         <Flex
           as="aside"
@@ -38,6 +38,7 @@ const NavbarOverlay = forwardRef<HTMLDivElement, NavbarOverlayProps>(
           style={{
             maxWidth: "calc(100% - var(--static-space-16))",
             maxHeight: "calc(100% - var(--static-space-16))",
+            zIndex: 15,
           }}
           fillHeight
           position="fixed"
@@ -50,6 +51,15 @@ const NavbarOverlay = forwardRef<HTMLDivElement, NavbarOverlayProps>(
           radius="xl"
           border="neutral-medium"
         >
+          <Flex fillWidth position="absolute" right="0">
+            <Flex position="absolute" left="0" padding="12">
+              <IconButton
+                variant={"primary"}
+                onClick={togglePanel}
+                icon={"close"}
+              />
+            </Flex>
+          </Flex>
           <Flex gap="2" direction="column" fillWidth padding="16">
             <Column marginTop="48" gap="8">
               <SmartLink href="/home" fillWidth>

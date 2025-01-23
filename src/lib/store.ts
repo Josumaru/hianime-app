@@ -104,3 +104,13 @@ export const useMangadexStore = create<MangadexStore>((set) => ({
   recentlyAdded: null,
   setRecentlyAdded: (recentlyAdded) => set({ recentlyAdded }),
 }));
+
+interface SettingStore {
+  isOpenSetting: boolean | null;
+  setIsOpenSetting: (isOpenSetting: boolean) => void;
+}
+
+export const useSettingStore = create<SettingStore>((set) => ({
+  isOpenSetting: null,
+  setIsOpenSetting: (isOpenSetting) => set({ isOpenSetting }),
+}));

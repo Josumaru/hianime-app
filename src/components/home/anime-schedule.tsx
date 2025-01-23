@@ -43,8 +43,6 @@ const AnimeSchedule: NextPage<Props> = ({}) => {
       setSchedules(schedules);
       schedules[0].results.some((schedule, index) => {
         const isAfter = isAfterSpecificTime(schedule.time);
-        console.log(schedule.time);
-        console.log(new Date().getHours());
         if (!isAfter) {
           setCurrentLine(index === 0 ? 0 : index - 1);
           return true;
