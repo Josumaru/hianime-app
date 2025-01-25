@@ -6,19 +6,15 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 import {
   MediaPlayerInstance,
   MediaProvider,
-  Poster,
   Track,
   MediaPlayer,
-  useMediaPlayer,
 } from "@vidstack/react";
 import {
   defaultLayoutIcons,
   DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
 import { use, useEffect, useRef, useState } from "react";
-import { Stream } from "@/types/anime/stream";
 import {
-  Button,
   Column,
   Flex,
   Grid,
@@ -36,13 +32,12 @@ import {
   useToast,
 } from "@/once-ui/components";
 import { getEpisodes, getInfo, getStream } from "@/lib/hianime";
-import { Servers } from "@/types/anime/servers";
 import { decrypt, encrypt } from "@/lib/crypto";
-import { Episode, Episodes } from "@/types/anime/episodes";
-import { Info } from "@/types/anime/info";
+import { Episode } from "@/types/anime/episodes";
 import Link from "next/link";
 import { useHianimeStore } from "@/lib/store";
 import { createCookies, getCookies } from "@/action/cookies-action";
+import { AnimePreferences } from "@/types/anime/anime-preferences";
 
 interface Props {
   params: Promise<{
@@ -78,40 +73,26 @@ const Page: NextPage<Props> = ({ params }) => {
   const [error, setError] = useState<string | null>(null);
   const [rangeSize, setRangeSize] = useState<number[]>([0, 24]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [changingEpisode, setChangingEpisode] = useState<boolean>(false);
   const [currentSegment, setCurrentSegment] = useState<string | null>(null);
   const [currentStream, setCurrentStream] = useState<string | null>(null);
   const [currentTitle, setCurrentTitle] = useState<string | null>(null);
   const [nextId, setNextId] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState<number>(0);
-  const [autoPlay, setAutoPlay] = useState<boolean>(true);
-  const [autoSkip, setAutoSkip] = useState<boolean>(true);
+  const [preferences, setPreferences] = useState<AnimePreferences>({
+    autoPlay: true,
+    autoSkip: true,
+  });
   const { addToast } = useToast();
   const player = useRef<MediaPlayerInstance>(null);
   const router = useRouter();
-  const handleEpisodeChange = async (id: string) => {
-    // setChangingEpisode(true);
-    // try {
-    //   const response = await getStream(id);
-    // //   alert(response.stream.results.streamingLink.link.file)
-    //   setCurrentStream(response.stream.results.streamingLink.link.file);
-    // } catch (error: any) {
-    //   addToast({
-    //     message: error.message,
-    //     variant: "danger",
-    //   });
-    // } finally {
-    //   setChangingEpisode(false);
-    // }
-  };
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // if (currentTime == 0) {
-    //   return;
-    // }
+    console.log(currentTime);
+
     try {
       if (
-        autoPlay &&
+        preferences.autoPlay &&
         player.current?.state.duration &&
         currentTime > player.current?.state.duration - 1
       ) {
@@ -119,7 +100,7 @@ const Page: NextPage<Props> = ({ params }) => {
           router.push(`/anime/watch/${encrypt(nextId ?? "")}`);
         }
       }
-      if (autoSkip) {
+      if (preferences.autoSkip) {
         const startIntro = stream?.stream.results.streamingLink.intro.start;
         const endIntro = stream?.stream.results.streamingLink.intro.end;
         const startOutro = stream?.stream.results.streamingLink.outro.start;
@@ -164,10 +145,25 @@ const Page: NextPage<Props> = ({ params }) => {
   }, [currentTime]);
 
   useEffect(() => {
-    player.current?.subscribe(({ currentTime }) => {
-      setCurrentTime(currentTime);
-    });
-  }, [currentStream]);
+    intervalRef.current = setInterval(() => {
+      const time = player.current?.state.currentTime;
+      if (time !== undefined) {
+        setCurrentTime(Math.floor(time));
+      }
+    }, 2000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [player]);
+
+  // useEffect(() => {
+  //   player.current?.subscribe(({ currentTime }) => {
+  //     setCurrentTime(currentTime);
+  //   });
+  // }, [player.current]);
 
   useEffect(() => {
     if (episodes) {
@@ -197,10 +193,10 @@ const Page: NextPage<Props> = ({ params }) => {
           throw new Error("Hmm..., You tried something ? (˶ᵔ ᵕ ᵔ˶)");
         }
 
-        const autoPlayCookies = await getCookies("autoPlay");
-        const autoSkipCookies = await getCookies("autoSkip");
-        setAutoPlay(autoPlayCookies?.value == "true");
-        setAutoSkip(autoSkipCookies?.value == "true");
+        const settings = (await getCookies(
+          "_animanga_a_s"
+        )) as AnimePreferences;
+        setPreferences(settings);
 
         streamResponse = await getStream(id);
         setStream(streamResponse);
@@ -263,6 +259,14 @@ const Page: NextPage<Props> = ({ params }) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const saveUserSettings = async (settings: object) => {
+      await createCookies("_animanga_a_s", settings);
+    };
+    
+    saveUserSettings(preferences);
+  }, [preferences]);
+
   if (error) {
     return (
       <Flex justifyContent="center" fillWidth fillHeight>
@@ -278,10 +282,10 @@ const Page: NextPage<Props> = ({ params }) => {
       <Spinner />
     </Flex>
   ) : (
-    <Flex justifyContent="center" zIndex={9}>
+    <Flex justifyContent="center" zIndex={1}>
       <Row paddingY="80" paddingX="s" maxWidth={"l"} fillWidth gap="12">
         <Column maxWidth={"s"} fillWidth gap={"12"}>
-          {!changingEpisode && currentStream ? (
+          {currentStream ? (
             <Column>
               <MediaPlayer
                 ref={player}
@@ -308,40 +312,48 @@ const Page: NextPage<Props> = ({ params }) => {
               <Row gap="16" marginTop="16" hide="s">
                 <Switch
                   label="Skip Intro & Outro"
-                  isChecked={autoSkip}
+                  isChecked={preferences.autoSkip}
                   description="auto skip anime intro & outro"
                   onToggle={() => {
-                    setAutoSkip(!autoSkip);
-                    createCookies("autoSkip", !autoSkip);
+                    setPreferences({
+                      ...preferences,
+                      autoSkip: !preferences.autoSkip,
+                    });
                   }}
                 />
                 <Switch
                   label="Auto Play"
-                  isChecked={autoPlay}
+                  isChecked={preferences.autoPlay}
                   description="auto play to next episode"
                   onToggle={() => {
-                    setAutoPlay(!autoPlay);
-                    createCookies("autoPlay", !autoPlay);
+                    setPreferences({
+                      ...preferences,
+                      autoPlay: !preferences.autoPlay,
+                    });
                   }}
                 />
               </Row>
               <Row gap="16" marginTop="16" show="s">
                 <Switch
                   label="Skip Intro & Outro"
-                  isChecked={autoSkip}
+                  isChecked={preferences.autoSkip}
                   description=""
                   onToggle={() => {
-                    setAutoSkip(!autoSkip);
-                    createCookies("autoSkip", !autoSkip);
+                    setPreferences({
+                      ...preferences,
+                      autoSkip: !preferences.autoSkip,
+                    });
                   }}
                 />
                 <Switch
                   label="Auto Play"
-                  isChecked={autoPlay}
+                  isChecked={preferences.autoPlay}
                   description=""
                   onToggle={() => {
-                    setAutoPlay(!autoPlay);
-                    createCookies("autoPlay", !autoPlay);
+                    setPreferences({
+                      ...preferences,
+                      autoPlay: !preferences.autoPlay,
+                    });
                   }}
                 />
               </Row>
@@ -403,7 +415,6 @@ const Page: NextPage<Props> = ({ params }) => {
                       cursor="pointer"
                       justifyContent="center"
                       radius="m"
-                      onClick={() => handleEpisodeChange(episode.id)}
                       border={
                         episode.filler ? "warning-strong" : "brand-strong"
                       }
@@ -457,7 +468,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 return genres;
               })()}
             </Text>
-            <Text>{info?.results.data.animeInfo.Overview}</Text>
+            <Text align="justify">{info?.results.data.animeInfo.Overview}</Text>
           </Column>
           {/* {data?.servers.results.map((server) => (
             <Button key={server.data_id} label={server.serverName} />
@@ -554,7 +565,6 @@ const Page: NextPage<Props> = ({ params }) => {
                     cursor="pointer"
                     justifyContent="center"
                     radius="m"
-                    onClick={() => handleEpisodeChange(episode.id)}
                     border={episode.filler ? "warning-strong" : "brand-strong"}
                     background={
                       episode.filler

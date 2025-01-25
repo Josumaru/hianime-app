@@ -3,8 +3,6 @@ import {
   Fade,
   Flex,
   IconButton,
-  Logo,
-  NavIcon,
   Row,
   SmartLink,
   StyleOverlay,
@@ -12,7 +10,6 @@ import {
 } from "@/once-ui/components";
 import { NextPage } from "next";
 import SearchBar from "./search-bar";
-import { Sidebar } from "@/once-ui/modules";
 import { NavbarOverlay } from "@/once-ui/components/NavbarOverlay";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -24,9 +21,6 @@ const NavigationBar: NextPage = ({}) => {
 
   const { isOpenSetting, setIsOpenSetting } = useSettingStore();
 
-  // if (pathname.startsWith("/manga/read")) {
-  //   return null;
-  // }
   const [hideNavbar, setHideNavbar] = useState(false);
 
   useEffect(() => {
@@ -90,12 +84,6 @@ const NavigationBar: NextPage = ({}) => {
             <SmartLink href="/anime">
               <Text>Anime</Text>
             </SmartLink>
-            {/* <SmartLink href="/tv">
-              <Text>TV</Text>
-            </SmartLink>
-            <SmartLink href="/movies">
-              <Text>Movies</Text>
-            </SmartLink> */}
             <SmartLink href="/manga">
               <Text>Manga</Text>
             </SmartLink>

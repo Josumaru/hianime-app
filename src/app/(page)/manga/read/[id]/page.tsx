@@ -28,7 +28,7 @@ import { NextPage } from "next";
 import { Fragment, use, useEffect, useState } from "react";
 import { Feed } from "@/types/manga/feed";
 import ChapterList from "@/components/manga/chapter-list";
-import { MangaPreferences } from "@/types/common/manga-preferences";
+import { MangaPreferences } from "@/types/manga/manga-preferences";
 import { createCookies, getCookies } from "@/action/cookies-action";
 import { SpacingToken } from "@/once-ui/types";
 
