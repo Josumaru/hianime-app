@@ -72,7 +72,7 @@ const Page: NextPage<Props> = ({}) => {
         }
         if (!seasonal) {
           const seasonalResponse = await getMangadexUserInlcludes(
-            "5c5e6e39-0b4b-413e-be59-27b1ba03d1b9"
+            "a5ba5473-07b2-4d0a-aefd-90d9d4a04521"
           );
           setSeasonal(seasonalResponse);
         }

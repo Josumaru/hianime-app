@@ -17,7 +17,6 @@ export const getPopular = async (): Promise<MangadexManga> => {
     const data = await axios.get(endpoint);
     return data.data as MangadexManga;
   } catch (error: any) {
-    console.log(error);
     throw new Error("Failed to fetch popular manga");
   }
 };
@@ -40,7 +39,6 @@ export const getLatestUpdate = async (): Promise<MangadexManga> => {
     const mangaResponse = await axios.get<MangadexManga>(mangaEndpoint);
     return mangaResponse.data;
   } catch (error: any) {
-    console.log(error.message);
     throw new Error(`Oh hell! Something went wrong (◡︵◡)`);
   }
 };
@@ -65,8 +63,6 @@ export const getMangadexDetail = async (
     const response = await axios.get<MangadexDetail>(endpoint);
     return response.data;
   } catch (error) {
-    console.log(error);
-    
     throw new Error("Oh hell, Something went wrong (◡︵◡)");
   }
 };
@@ -82,7 +78,6 @@ export const getMangadexFeed = async (id: string): Promise<MangadexFeed> => {
   try {
     do {
       const endpoint = `${baseUrl}/manga/${id}/feed?limit=${limit}&offset=${offset}&order[volume]=asc&order[chapter]=asc`;
-      console.log(endpoint)
       const apiResponse = await axios.get<MangadexFeed>(endpoint);
       response = apiResponse.data;
       allData = [...allData, ...response.data];
@@ -95,8 +90,6 @@ export const getMangadexFeed = async (id: string): Promise<MangadexFeed> => {
     } as MangadexFeed;
 
   } catch (error: any) {
-    console.log(error.message);
-    
     throw new Error("Oh hell, Something went wrong (◡︵◡)");
   }
 };

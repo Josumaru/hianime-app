@@ -16,9 +16,9 @@ import {
   Flex,
   Heading,
   Icon,
+  NumberInput,
   RadioButton,
   Row,
-  Scroller,
   Spinner,
   Switch,
   Text,
@@ -62,13 +62,15 @@ const Page: NextPage<Props> = ({ params }) => {
   const reverseProxy = process.env.NEXT_PUBLIC_REVERSE_PROXY;
   const [preferences, setPreferences] = useState<MangaPreferences>({
     orientation: "vertical",
-    gap: 32,
+    gap: 8,
     autoPlay: false,
     invertColors: false,
   });
 
   useEffect(() => {
     const fetchData = async () => {
+      const formData = new FormData();
+
       setLoading(true);
       try {
         const response = await getMangadexChapterImage(cid);
@@ -78,6 +80,14 @@ const Page: NextPage<Props> = ({ params }) => {
           if (feed.id === cid) {
             setCurrentChapter(feed);
             setCurrentIndex(index);
+            formData.append("chapter", feed.attributes.chapter);
+            formData.append("volume", feed.attributes.volume ?? 0);
+            formData.append(
+              "title",
+              feed.attributes.title ?? `Chapter ${feed.attributes.chapter}`
+            );
+            formData.append("mangaId", mid);
+            formData.append("chapterId", feed.id);
             return true;
           }
         });
@@ -85,13 +95,41 @@ const Page: NextPage<Props> = ({ params }) => {
         if (!detailManga) {
           const detailResponse = await getMangadexDetail(mid);
           setDetailManga(detailResponse);
+          formData.append(
+            "cover",
+            `https://uploads.mangadex.org/covers/${mid}/${
+              detailResponse?.data.relationships.find(
+                (rel) => rel.type == "cover_art"
+              )?.attributes?.fileName
+            }.256.jpg`
+          );
+          formData.append(
+            "mangaTitle",
+            detailResponse.data.attributes.title.en
+          );
+        } else {
+          formData.append(
+            "cover",
+            `https://uploads.mangadex.org/covers/${mid}/${
+              detailManga?.data.relationships.find(
+                (rel) => rel.type == "cover_art"
+              )?.attributes?.fileName
+            }.256.jpg`
+          );
+          formData.append("mangaTitle", detailManga.data.attributes.title.en);
         }
         const settings = (await getCookies(
-          "_animanga_m_s"
+          "_animanga_m_s",
+          "manga"
         )) as MangaPreferences;
         if (settings) {
           setPreferences(settings);
         }
+
+        fetch("/api/v1/manga-history", {
+          method: "POST",
+          body: formData,
+        });
       } catch (error: any) {
         addToast({
           message: error.message,
@@ -134,7 +172,7 @@ const Page: NextPage<Props> = ({ params }) => {
   useEffect(() => {
     if (isOpenSetting) {
       const saveUserSettings = async (settings: object) => {
-        await createCookies("_animanga_m_s", settings);
+        await createCookies("_animanga_m_s", settings, "manga");
       };
       saveUserSettings(preferences);
     }
@@ -163,7 +201,7 @@ const Page: NextPage<Props> = ({ params }) => {
                   paddingBottom={
                     index + 1 == chapterImage.chapter.data.length
                       ? "64"
-                      : (preferences.gap as unknown as SpacingToken)
+                      : ("0" as SpacingToken)
                   }
                 >
                   <img
@@ -172,6 +210,7 @@ const Page: NextPage<Props> = ({ params }) => {
                       objectFit: "cover",
                       width: "100%",
                       height: "auto",
+                      marginTop: index != 0 ? preferences.gap : 0,
                       filter: preferences.invertColors
                         ? "invert(1)"
                         : "invert(0)",
@@ -342,16 +381,23 @@ const Page: NextPage<Props> = ({ params }) => {
           </Column>
           <Column>
             <Heading variant="heading-strong-l">Gap</Heading>
-            <Row justifyContent="space-between">
-              {[0, 16, 32].map((gap) => (
+            <Row justifyContent="space-between" paddingTop="8">
+              <NumberInput
+                id="input"
+                label="Gap"
+                value={preferences.gap}
+                step={1}
+                onChange={(e) => setPreferences({ ...preferences, gap: e })}
+              />
+              {/* {[0, 16, 32].map((gap) => (
                 <RadioButton
                   key={gap}
                   label={`${gap}`}
                   description={`Gap size: ${gap}`}
                   isChecked={preferences.gap === gap}
-                  onToggle={() => setPreferences({ ...preferences, gap })}
+                  onToggle={() => }
                 />
-              ))}
+              ))} */}
             </Row>
           </Column>
           <Column>

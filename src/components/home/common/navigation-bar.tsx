@@ -1,5 +1,6 @@
 "use client";
 import {
+  Avatar,
   Fade,
   Flex,
   IconButton,
@@ -15,15 +16,27 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSettingStore } from "@/lib/store";
 import { HiOutlineCog8Tooth } from "react-icons/hi2";
+import { getCurrentUser } from "@/action/get-current-user";
+import { PostgrestSingleResponse, UserResponse } from "@supabase/supabase-js";
+import { users } from "@/db/schema";
 
 const NavigationBar: NextPage = ({}) => {
   const pathname = usePathname();
-
+  const [user, setUser] = useState<{
+    user: UserResponse;
+    data: PostgrestSingleResponse<any[]>;
+  } | null>(null);
+  const [userData, setUserData] = useState<typeof users | null>(null);
   const { isOpenSetting, setIsOpenSetting } = useSettingStore();
 
   const [hideNavbar, setHideNavbar] = useState(false);
 
+  const fetchUser = async () => {
+    const userData = await getCurrentUser();
+    setUser(userData);
+  };
   useEffect(() => {
+    fetchUser();
     let lastScrollTop = 0;
 
     const handleScroll = () => {
@@ -90,7 +103,20 @@ const NavigationBar: NextPage = ({}) => {
           </Row>
           <Row gap="12" justifyContent="center" alignItems="center">
             <SearchBar />
-            <StyleOverlay top="20" right="24" />
+            {user?.data.data ? (
+              <SmartLink href="/preferences">
+                <Avatar src={user.data.data[0].profile_image} />
+              </SmartLink>
+            ) : (
+              <IconButton
+                variant="primary"
+                href="/sign-in"
+                icon="person"
+                tooltip="Click to sign in"
+                tooltipPosition="bottom"
+              />
+            )}
+            {/* <StyleOverlay top="20" right="24" /> */}
             {pathname.startsWith("/manga/read") && (
               <IconButton
                 onClick={() => setIsOpenSetting(!isOpenSetting)}

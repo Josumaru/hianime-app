@@ -4,7 +4,7 @@ import Loading from "@/components/home/common/loading";
 import HomeBackground from "@/components/home/home-background";
 import { getCategory } from "@/lib/hianime";
 import { useHianimeStore } from "@/lib/store";
-import { Column, Flex, LetterFx, Text, useToast } from "@/once-ui/components";
+import { Column, Flex, useToast } from "@/once-ui/components";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 

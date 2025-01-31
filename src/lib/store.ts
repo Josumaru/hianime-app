@@ -114,3 +114,38 @@ export const useSettingStore = create<SettingStore>((set) => ({
   isOpenSetting: null,
   setIsOpenSetting: (isOpenSetting) => set({ isOpenSetting }),
 }));
+
+export interface AnimeHistory {
+  userId: string;
+  animeId: string;
+  episodeId: string;
+  episode: string;
+  cover: string;
+  createdAt: string;
+}
+
+export interface MangaHistory {
+  userId: string;
+  mangaId: string;
+  chapterId: string;
+  chapter: string;
+  volume: string;
+  title: string;
+  cover: string;
+  createdAt: string;
+  mangaTitle: string;
+}
+
+interface HistoryStore {
+  animeHistory: AnimeHistory[];
+  mangaHistory: MangaHistory[];
+  setAnimeHistory: (history: AnimeHistory[]) => void;
+  setMangaHistory: (history: MangaHistory[]) => void;
+}
+
+export const useHistoryStore = create<HistoryStore>((set) => ({
+  animeHistory: [],
+  mangaHistory: [],
+  setAnimeHistory: (animeHistory) => set({ animeHistory }),
+  setMangaHistory: (mangaHistory) => set({ mangaHistory }),
+}));

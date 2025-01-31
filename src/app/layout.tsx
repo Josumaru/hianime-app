@@ -5,12 +5,21 @@ import classNames from "classnames";
 import { headers } from "next/headers";
 import { Metadata } from "next";
 
-import { baseURL, style, meta, og, schema, social } from "@/once-ui/resources/config";
+import {
+  baseURL,
+  style,
+  meta,
+  og,
+  schema,
+  social,
+} from "@/once-ui/resources/config";
 
 import { Background, Column, Flex, ToastProvider } from "@/once-ui/components";
 
 import { Inter } from "next/font/google";
 import { Roboto_Mono } from "next/font/google";
+import { getCurrentUser } from "@/action/get-current-user";
+import { getCookies } from "@/action/cookies-action";
 
 const primary = Inter({
   variable: "--font-primary",
@@ -49,11 +58,11 @@ export async function generateMetadata(): Promise<Metadata> {
       description: og.description,
       url: "https://" + baseURL,
       images: [
-				{
-					url: og.image,
-					alt: og.title,
-				},
-			],
+        {
+          url: og.image,
+          alt: og.title,
+        },
+      ],
       type: og.type as
         | "website"
         | "article"
@@ -69,11 +78,11 @@ export async function generateMetadata(): Promise<Metadata> {
         | "video.other",
     },
     twitter: {
-			card: 'summary_large_image',
-			title: og.title,
-			description: og.description,
-			images: [og.image],
-		},
+      card: "summary_large_image",
+      title: og.title,
+      description: og.description,
+      images: [og.image],
+    },
     metadataBase,
   };
 }
@@ -89,11 +98,18 @@ const schemaData = {
   sameAs: Object.values(social).filter(Boolean),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const user = await getCurrentUser();
+  // const userPref = await getCookies(process.env.NEXT_PUBLIC_M_S ?? "")
+  // if (user.data.user && !userPref) {
+  //   const response = await fetch("/api/v1/insert-user", {
+  //     data: 
+  //   })
+  // }
   return (
     <Flex
       as="html"
@@ -114,7 +130,7 @@ export default function RootLayout({
         primary.variable,
         code.variable,
         secondary ? secondary.variable : "",
-        tertiary ? tertiary.variable : "",
+        tertiary ? tertiary.variable : ""
       )}
     >
       <head>
@@ -126,7 +142,7 @@ export default function RootLayout({
         />
       </head>
       <ToastProvider>
-        <Column as="body" fillWidth  margin="0" padding="0">
+        <Column as="body" fillWidth margin="0" padding="0">
           <Background
             position="absolute"
             mask={{

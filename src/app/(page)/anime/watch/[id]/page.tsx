@@ -88,7 +88,6 @@ const Page: NextPage<Props> = ({ params }) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    console.log(currentTime);
 
     try {
       if (
@@ -159,12 +158,6 @@ const Page: NextPage<Props> = ({ params }) => {
     };
   }, [player]);
 
-  // useEffect(() => {
-  //   player.current?.subscribe(({ currentTime }) => {
-  //     setCurrentTime(currentTime);
-  //   });
-  // }, [player.current]);
-
   useEffect(() => {
     if (episodes) {
       for (let index = 0; index < episodes?.results.episodes.length; index++) {
@@ -194,9 +187,11 @@ const Page: NextPage<Props> = ({ params }) => {
         }
 
         const settings = (await getCookies(
-          "_animanga_a_s"
+          "_animanga_a_s", "anime"
         )) as AnimePreferences;
-        setPreferences(settings);
+        if (settings) {
+          setPreferences(settings);
+        }
 
         streamResponse = await getStream(id);
         setStream(streamResponse);
@@ -261,9 +256,8 @@ const Page: NextPage<Props> = ({ params }) => {
 
   useEffect(() => {
     const saveUserSettings = async (settings: object) => {
-      await createCookies("_animanga_a_s", settings);
+      await createCookies("_animanga_a_s", settings, "anime");
     };
-    
     saveUserSettings(preferences);
   }, [preferences]);
 
