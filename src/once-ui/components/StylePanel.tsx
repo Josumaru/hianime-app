@@ -97,7 +97,7 @@ const StylePanel = forwardRef<HTMLDivElement, StylePanelProps>(
       root.setAttribute("data-scaling", scaling);
       root.setAttribute("data-surface", surface);
       root.setAttribute("data-transition", transition);
-      setIncreementalIndex(increementalIndex + 1)
+      setIncreementalIndex(increementalIndex + 1);
     }, [
       selectedShape,
       brandColor,
@@ -167,15 +167,31 @@ const StylePanel = forwardRef<HTMLDivElement, StylePanelProps>(
     }, []);
 
     return (
-      <Column fillWidth gap="16" ref={ref} {...rest}>
-        <Column fillWidth paddingTop="12" paddingLeft="16" gap="4">
-          <Heading as="h2" variant="heading-strong-s">
+      <Column fillWidth gap="16" ref={ref} {...rest} marginTop="24">
+        {/* <Column paddingLeft="8" hide="s">
+          <Heading align="left" as="h2" variant="display-default-m">
+            Theme Preferences
+          </Heading>
+          <Text marginBottom="8" align="left" onBackground="neutral-weak">
+            Customize your experience by selecting your preferred theme.
+          </Text>
+        </Column>
+        <Column paddingLeft="8" show="s">
+          <Heading align="left" as="h2" variant="display-default-xs">
+            Theme Preferences
+          </Heading>
+          <Text marginBottom="8" align="left" onBackground="neutral-weak">
+            Customize your experience by selecting your preferred theme.
+          </Text>
+        </Column> */}
+
+        {/* <Heading as="h2" variant="heading-strong-s">
             Page
           </Heading>
           <Text variant="body-default-s" onBackground="neutral-weak">
             Customize global design settings
           </Text>
-        </Column>
+        </Column> */}
 
         <Column fillWidth border="neutral-alpha-medium" radius="l-4">
           <Flex

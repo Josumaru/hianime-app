@@ -32,6 +32,8 @@ export const historyAnime = pgTable("history_anime", {
 	id: bigint({ mode: "number" }).primaryKey().generatedAlwaysAsIdentity({ name: "history_anime_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 9223372036854775807, cache: 1 }),
 	userId: uuid("user_id"),
 	cover: text(),
+	animeTitle: text("anime_title"),
+	title: text(),
 	animeId: text("anime_id"),
 	episodeId: text("episode_id"),
 	episode: text(),

@@ -209,16 +209,8 @@ const SearchBar: NextPage<Props> = ({}) => {
                     onClick={() => setOpen(false)}
                   >
                     <User
-                      name={
-                        result.title.length > 50
-                          ? `${result.title.substring(0, 50)}...`
-                          : result.title
-                      }
-                      subline={
-                        result.japanese_title.length > 80
-                          ? `${result.japanese_title.substring(0, 80)}...`
-                          : result.japanese_title
-                      }
+                      name={result.japanese_title}
+                      subline={result.title}
                       tagProps={{
                         label: result.tvInfo.showType,
                         variant: "accent",
@@ -236,11 +228,7 @@ const SearchBar: NextPage<Props> = ({}) => {
                     onClick={() => setOpen(false)}
                   >
                     <User
-                      name={
-                        result.attributes.title.en?.length > 50
-                          ? `${result.attributes.title.en.substring(0, 50)}...`
-                          : result.attributes.title.en
-                      }
+                      name={result.attributes.title.en}
                       subline={
                         result.attributes.altTitles.find((title) => title)?.[
                           "ja-ro"

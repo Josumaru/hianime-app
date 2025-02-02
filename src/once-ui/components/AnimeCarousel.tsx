@@ -189,7 +189,6 @@ const AnimeCarousel: React.FC<AnimeCarouselProps> = ({
                 margin="0"
                 radius="full"
                 aspectRatio={1}
-                padding="xl"
               >
                 <Flex
                   fillWidth

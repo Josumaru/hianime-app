@@ -290,7 +290,6 @@ const Page: NextPage<Props> = ({ params }) => {
                 background="brand-medium"
                 border="brand-medium"
                 radius="l"
-                padding="12"
                 variant="brand"
               >
                 <Text
@@ -380,7 +379,7 @@ const Page: NextPage<Props> = ({ params }) => {
                       onBackground="brand-medium"
                       style={{ cursor: "pointer" }}
                     >
-                      {episode.title}
+                      {episode.japanese_title ?? episode.title}
                       <Text as="span" onBackground="accent-strong">
                         {" - "}Episode {episode.episode_no}
                       </Text>

@@ -119,6 +119,8 @@ export interface AnimeHistory {
   userId: string;
   animeId: string;
   episodeId: string;
+  title: string;
+  animeTitle: string;
   episode: string;
   cover: string;
   createdAt: string;

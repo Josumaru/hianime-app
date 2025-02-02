@@ -38,6 +38,7 @@ import Link from "next/link";
 import { useHianimeStore } from "@/lib/store";
 import { createCookies, getCookies } from "@/action/cookies-action";
 import { AnimePreferences } from "@/types/anime/anime-preferences";
+import { UserWatch } from "@/once-ui/components/UserWatch";
 
 interface Props {
   params: Promise<{
@@ -88,7 +89,6 @@ const Page: NextPage<Props> = ({ params }) => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-
     try {
       if (
         preferences.autoPlay &&
@@ -175,6 +175,7 @@ const Page: NextPage<Props> = ({ params }) => {
     }
   }, [episodes, id]);
   useEffect(() => {
+    const formData = new FormData();
     const fetchData = async () => {
       let streamResponse;
       let infoResponse;
@@ -187,7 +188,8 @@ const Page: NextPage<Props> = ({ params }) => {
         }
 
         const settings = (await getCookies(
-          "_animanga_a_s", "anime"
+          "_animanga_a_s",
+          "anime"
         )) as AnimePreferences;
         if (settings) {
           setPreferences(settings);
@@ -205,6 +207,16 @@ const Page: NextPage<Props> = ({ params }) => {
               const lastSize = currentSize + 24;
               setCurrentSegment(`${firstSize}-${lastSize}`);
               setRangeSize([firstSize - 1, lastSize]);
+              formData.append("episode", `${episode.episode_no}`);
+              formData.append("animeId", info.results.data.id);
+              formData.append("animeTitle", info.results.data.title);
+              formData.append("title", episode.japanese_title);
+              formData.append("episodeId", episode.id);
+              formData.append("cover", info.results.data.poster);
+              fetch("/api/v1/anime-history", {
+                method: "POST",
+                body: formData,
+              });
             }
           });
           return;
@@ -212,6 +224,13 @@ const Page: NextPage<Props> = ({ params }) => {
         if (!info) {
           infoResponse = await getInfo(id);
           setInfo(infoResponse);
+          formData.append("animeId", infoResponse.results.data.id);
+          formData.append("animeTitle", infoResponse.results.data.title);
+          formData.append("cover", infoResponse.results.data.poster);
+          fetch("/api/v1/anime-history", {
+            method: "POST",
+            body: formData,
+          });
         }
         if (!episodes) {
           episodesResponse = await getEpisodes(id);
@@ -224,6 +243,13 @@ const Page: NextPage<Props> = ({ params }) => {
               const lastSize = currentSize + 24;
               setCurrentSegment(`${firstSize}-${lastSize}`);
               setRangeSize([firstSize - 1, lastSize]);
+              formData.append("episode", `${episode.episode_no}`);
+              formData.append("title", episode.japanese_title);
+              formData.append("episodeId", episode.id);
+              fetch("/api/v1/anime-history", {
+                method: "POST",
+                body: formData,
+              });
             }
           });
           setEpisodes(episodesResponse);
@@ -362,11 +388,21 @@ const Page: NextPage<Props> = ({ params }) => {
               <Spinner></Spinner>
             </Flex>
           )}
-          <Heading as="h3">
+          <Heading
+            as="h3"
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              lineClamp: 2,
+              maxLines: 2,
+              maxWidth: "100%",
+            }}
+          >
             {episodes?.results.episodes.find((episode) => episode.id == id)
               ?.japanese_title ?? ""}
           </Heading>
-          <User
+          <UserWatch
             name={info?.results.data.japanese_title}
             subline={info?.results.data.title}
             tagProps={{
