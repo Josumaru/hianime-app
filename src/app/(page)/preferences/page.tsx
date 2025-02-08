@@ -20,7 +20,7 @@ import Loading from "@/components/home/common/loading";
 import { encrypt } from "@/lib/crypto";
 
 const Home: NextPage = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const { addToast } = useToast();
   const { mangaHistory, setMangaHistory, animeHistory, setAnimeHistory } =
     useHistoryStore();
@@ -74,7 +74,7 @@ const Home: NextPage = () => {
         fillWidth
         paddingBottom="8"
       >
-        {mangaHistory && (
+        {mangaHistory && !loading && (
           <Fragment>
             <Column paddingLeft="8" hide="s">
               <Heading align="left" as="h2" variant="display-default-m">
@@ -94,9 +94,9 @@ const Home: NextPage = () => {
             </Column>
 
             <Scroller>
-              {mangaHistory.map((history) => (
+              {mangaHistory.map((history, index) => (
                 <SmartLink
-                  key={history.chapterId}
+                  key={index}
                   href={`/manga/read/${encrypt(
                     `${history.mangaId}(-|-)${history.chapterId}`
                   )}`}
@@ -173,7 +173,7 @@ const Home: NextPage = () => {
                       fillWidth
                       width={8}
                       title={history.title}
-                      src={history.cover}
+                      src={`${reverseProxy}${history.cover}`}
                     />
                     <Tag
                       label={`Ch. ${history.chapter}`}
@@ -225,7 +225,7 @@ const Home: NextPage = () => {
             </Scroller>
           </Fragment>
         )}
-        {animeHistory && (
+        {animeHistory && !loading &&(
           <Fragment>
             <Column paddingLeft="8" hide="s" marginTop="24">
               <Heading align="left" as="h2" variant="display-default-m">
@@ -245,9 +245,9 @@ const Home: NextPage = () => {
             </Column>
 
             <Scroller>
-              {animeHistory.map((history) => (
+              {animeHistory.map((history, index) => (
                 <SmartLink
-                  key={history.episodeId}
+                  key={index}
                   href={`/anime/watch/${encrypt(
                     `${history.animeId}(-|-)${history.episodeId}`
                   )}`}

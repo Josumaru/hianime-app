@@ -1,5 +1,6 @@
 "use client";
 import CategoryScroller from "@/components/anime/category-scroller";
+import AnimeSchedule from "@/components/home/anime-schedule";
 import Loading from "@/components/home/common/loading";
 import HomeBackground from "@/components/home/home-background";
 import { getCategory } from "@/lib/hianime";
@@ -22,6 +23,8 @@ const Page: NextPage<Props> = ({}) => {
     setTopAiring,
     completed,
     setCompleted,
+    latestEpisode,
+    setLatestEpisode,
   } = useHianimeStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -41,6 +44,8 @@ const Page: NextPage<Props> = ({}) => {
         setMovie(movie);
         const completed = await getCategory("completed");
         setCompleted(completed);
+        const latestEpisode = await getCategory("recently-updated");
+        setLatestEpisode(latestEpisode);
         addToast({
           message: "Data loaded successfully",
           variant: "success",
@@ -82,17 +87,24 @@ const Page: NextPage<Props> = ({}) => {
           <Loading />
         ) : (
           <Column fillWidth fillHeight>
+            {latestEpisode && (
+              <CategoryScroller
+                anime={latestEpisode}
+                title="Recently Updated Anime"
+                subtitle="Check out the latest releases from various genres."
+              />
+            )}
             {topAiring && (
               <CategoryScroller
                 anime={topAiring}
                 title="Top Airing Anime"
+                left={false}
                 subtitle="Don't miss the hottest shows airing now!"
               />
             )}
             {upcoming && (
               <CategoryScroller
                 anime={upcoming}
-                left={false}
                 title="Upcoming Hits"
                 subtitle="Be the first to catch these highly anticipated releases!"
               />
@@ -102,11 +114,11 @@ const Page: NextPage<Props> = ({}) => {
                 anime={tv}
                 title="Must-Watch TV Shows"
                 subtitle="Dive into epic stories and unforgettable moments."
+                left={false}
               />
             )}
             {movie && (
               <CategoryScroller
-                left={false}
                 anime={movie}
                 title="Blockbuster Movies"
                 subtitle="Discover anime movies that will blow your mind!"
@@ -115,6 +127,7 @@ const Page: NextPage<Props> = ({}) => {
             {completed && (
               <CategoryScroller
                 anime={completed}
+                left={false}
                 title="Completed Anime"
                 subtitle="Relive epic adventures with stories that are complete and satisfying!"
               />

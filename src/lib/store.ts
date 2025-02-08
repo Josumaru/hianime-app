@@ -34,6 +34,8 @@ interface HianimeStore {
   setTopAiring: (topAiring: Category) => void;
   completed: Category | null;
   setCompleted: (completed: Category) => void;
+  latestEpisode: Category | null;
+  setLatestEpisode: (latestEpisode: Category) => void;
 }
 
 export const useHianimeStore = create<HianimeStore>((set) => ({
@@ -56,6 +58,8 @@ export const useHianimeStore = create<HianimeStore>((set) => ({
   setTopAiring: (topAiring) => set({ topAiring }),
   completed: null,
   setCompleted: (completed) => set({ completed }),
+  latestEpisode: null,
+  setLatestEpisode: (latestEpisode) => set({ latestEpisode }),
 }));
 
 interface MangadexStore {

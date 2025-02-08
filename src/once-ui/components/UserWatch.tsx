@@ -51,7 +51,6 @@ const UserWatch = forwardRef<HTMLDivElement, UserProps>(
         <Avatar
           size="m"
           src={src}
-          fillWidth
           value={value}
           empty={isEmpty}
           loading={loading}

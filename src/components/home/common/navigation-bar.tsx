@@ -100,6 +100,9 @@ const NavigationBar: NextPage = ({}) => {
             <SmartLink href="/manga">
               <Text>Manga</Text>
             </SmartLink>
+            <SmartLink href="/schedules">
+              <Text>Schedules</Text>
+            </SmartLink>
           </Row>
           <Row gap="12" justifyContent="center" alignItems="center">
             <SearchBar />

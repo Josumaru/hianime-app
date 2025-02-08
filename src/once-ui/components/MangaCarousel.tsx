@@ -29,7 +29,7 @@ interface CarouselProps extends React.ComponentProps<typeof Flex> {
 const MangaCarousel: React.FC<CarouselProps> = ({
   mangas = [],
   indicator = "line",
-  aspectRatio = "16 / 7",
+  aspectRatio = "16 / 9",
   sizes,
   revealedByDefault = false,
   ...rest

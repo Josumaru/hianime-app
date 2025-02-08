@@ -114,6 +114,23 @@ const NavbarOverlay = forwardRef<HTMLDivElement, NavbarOverlayProps>(
                   </Row>
                 </Button>
               </SmartLink>
+              <SmartLink href="/schedules" fillWidth>
+                <Button
+                  variant="secondary"
+                  fillWidth
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Row
+                    fillWidth
+                    justifyContent="center"
+                    alignItems="center"
+                    gap="4"
+                  >
+                    <HiOutlineViewGrid />
+                    <Text>Schedules</Text>
+                  </Row>
+                </Button>
+              </SmartLink>
             </Column>
           </Flex>
         </Flex>
