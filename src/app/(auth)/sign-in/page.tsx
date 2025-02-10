@@ -42,20 +42,51 @@ import {
   Tag,
 } from "@/once-ui/components";
 import HomeBackground from "@/components/home/home-background";
+import { useRouter } from "next/navigation";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const { addToast } = useToast();
-  const [intro, setIntro] = useState("");
   const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [password, setPassword] = useState("");
+  const router = useRouter();
   const validateLogin = () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regex.test(email)) {
       return "Email and / or password is invalid.";
     }
     return null;
+  };
+  const handleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+      const sigUpResponse = await fetch("/api/v1/sign-in", {
+        method: "POST",
+        body: formData,
+      });
+      const responseData = await sigUpResponse.json();
+      if (!sigUpResponse.ok) {
+        throw new Error(responseData.message);
+      }
+
+      addToast({
+        message: `Welcome back ( ˶ˆᗜˆ˵ )`,
+        variant: "success",
+      });
+      router.push("/home");
+    } catch (error: any) {
+      addToast({
+        message: error.message,
+        variant: "danger",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <Column fillWidth paddingY="80" paddingX="s" alignItems="center" flex={1}>
@@ -66,8 +97,9 @@ const Page: NextPage<Props> = ({}) => {
         maxWidth="l"
         position="relative"
         radius="xl"
+        fillHeight
+        justifyContent="center"
         alignItems="center"
-        border="neutral-alpha-weak"
         fillWidth
         paddingBottom="8"
         gap="32"
@@ -96,29 +128,6 @@ const Page: NextPage<Props> = ({}) => {
               Log in or
               <SmartLink href="/sign-up">sign up</SmartLink>
             </Text>
-            <Column fillWidth gap="8" zIndex={2}>
-              <Button
-                label="Continue with Google"
-                fillWidth
-                variant="secondary"
-                weight="default"
-                prefixIcon="google"
-                size="l"
-              />
-              <Button
-                label="Continue with GitHub"
-                fillWidth
-                variant="secondary"
-                weight="default"
-                prefixIcon="github"
-                size="l"
-              />
-            </Column>
-            <Row fillWidth paddingY="24">
-              <Row onBackground="neutral-weak" fillWidth gap="24">
-                <Line />/<Line />
-              </Row>
-            </Row>
             <Column gap="-1" fillWidth>
               <Input
                 id="email"
@@ -142,15 +151,13 @@ const Page: NextPage<Props> = ({}) => {
               />
             </Column>
             <Button
-              id="login"
-              label="Log in"
+              id="sign-up"
+              label={isLoading ? "Loading" : "Log in"}
               arrowIcon
+              disabled={isLoading}
               fillWidth
               onClick={() => {
-                addToast({
-                  variant: "success",
-                  message: "Wohoo! It's a toast!",
-                });
+                handleSignIn();
               }}
             />
           </Column>

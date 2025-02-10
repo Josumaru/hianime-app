@@ -39,6 +39,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     (request.nextUrl.pathname.startsWith("/manga") ||
+      request.nextUrl.pathname.startsWith("/preferences") ||
       request.nextUrl.pathname.startsWith("/anime")) &&
     !user
   ) {

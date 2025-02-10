@@ -16,7 +16,7 @@ const style = {
 
 // default metadata
 const meta = {
-  title: "Animanga - Your App for Watching Anime and Reading Manga",
+  title: "Animanga",
   description:
     "A platform to explore, watch your favorite anime, and read manga seamlessly in one place.",
 };
@@ -24,7 +24,7 @@ const meta = {
 // default open graph data
 const og = {
   title: "Animanga",
-  description: "We let designers code and developers design.",
+  description: "A platform to explore, watch your favorite anime, and read manga seamlessly in one place.",
   type: "website",
   image: "/images/cover.jpg"
 };
@@ -33,16 +33,16 @@ const og = {
 const schema = {
   logo: "",
   type: "Organization",
-  name: "One UI",
-  description: "Once UI is an open-source design system and component library for Next.js.",
+  name: "Animanga",
+  description: "A platform to explore, watch your favorite anime, and read manga seamlessly in one place.",
   email: "",
 };
 
 // social links
 const social = {
-  twitter: "https://www.twitter.com/_onceui",
-  linkedin: "https://www.linkedin.com/company/once-ui/",
-  discord: "https://discord.com/invite/5EyAQ4eNdS",
+  twitter: "https://www.twitter.com/josumaru",
+  linkedin: "https://www.linkedin.com/josumaru/",
+  discord: "https://discord.com/",
 };
 
 export { baseURL, style, meta, og, schema, social };

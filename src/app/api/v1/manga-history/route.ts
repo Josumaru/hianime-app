@@ -3,6 +3,7 @@ import { db } from "@/db/db";
 import { historyManga } from "@/db/schema";
 import { createClient } from "@/utils/supabase/server";
 import { desc, eq } from "drizzle-orm";
+import { decrypt, encrypt } from "@/lib/aes";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -41,12 +42,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       const updatedHistory = await db
         .update(historyManga)
         .set({
-          chapter,
-          volume,
-          title,
-          mangaId,
-          cover,
-          createdAt: new Date().toISOString(),
+          chapter: encrypt(chapter),
+          volume: encrypt(volume),
+          title: encrypt(title),
+          mangaId: encrypt(mangaId),
+          cover: encrypt(cover),
+          createdAt: encrypt(new Date().toISOString()),
         })
         .where(eq(historyManga.chapterId, chapterId))
         .returning();
@@ -63,14 +64,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       const newHistory = await db
         .insert(historyManga)
         .values({
-          userId,
-          chapter,
-          mangaTitle,
-          volume,
-          title,
-          mangaId,
-          chapterId,
-          cover,
+          userId: userId,
+          chapter: encrypt(chapter),
+          mangaTitle: encrypt(mangaTitle),
+          volume: encrypt(volume),
+          title: encrypt(title),
+          mangaId: encrypt(mangaId),
+          chapterId: encrypt(chapterId),
+          cover: encrypt(cover),
         })
         .returning();
 
@@ -84,6 +85,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
   } catch (error: any) {
+    console.log(error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 400 }
@@ -108,15 +110,28 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       .orderBy(desc(historyManga.createdAt))
       .execute();
 
+    const decryptedHistory = userHistory.map((history) => ({
+      ...history,
+      chapter: decrypt(history.chapter ?? ""),
+      mangaId: decrypt(history.mangaId ?? ""),
+      mangaTitle: decrypt(history.mangaTitle ?? ""),
+      title: decrypt(history.title ?? ""),
+      episodeId: decrypt(history.mangaId ?? ""),
+      cover: decrypt(history.cover ?? ""),
+      chapterId: decrypt(history.chapterId ?? ""),
+      volume: decrypt(history.volume ?? ""),
+    }));
+
     return NextResponse.json(
       {
         success: true,
         message: "History manga retrieved successfully",
-        history: userHistory,
+        history: decryptedHistory,
       },
       { status: 200 }
     );
   } catch (error: any) {
+    console.log(error);
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 400 }

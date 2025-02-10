@@ -163,8 +163,8 @@ const Page: NextPage<Props> = ({}) => {
               />
             </Column>
             <Button
-              id="login"
-              label={isLoading ? "Loading" : "Log in"}
+              id="sign-up"
+              label={isLoading ? "Loading" : "Sign Up"}
               disabled={isLoading}
               arrowIcon
               fillWidth

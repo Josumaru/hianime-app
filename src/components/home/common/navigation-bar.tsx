@@ -6,7 +6,6 @@ import {
   IconButton,
   Row,
   SmartLink,
-  StyleOverlay,
   Text,
 } from "@/once-ui/components";
 import { NextPage } from "next";
@@ -20,12 +19,23 @@ import { getCurrentUser } from "@/action/get-current-user";
 import { PostgrestSingleResponse, UserResponse } from "@supabase/supabase-js";
 import { users } from "@/db/schema";
 
+interface IUserData {
+  user: UserResponse;
+  data: {
+    userId: any;
+    name: string;
+    email: string;
+    createdAt: string;
+    animePreferences: string;
+    mangaPreferences: string;
+    themePreferences: string;
+    profileImage: string;
+  };
+}
+
 const NavigationBar: NextPage = ({}) => {
   const pathname = usePathname();
-  const [user, setUser] = useState<{
-    user: UserResponse;
-    data: PostgrestSingleResponse<any[]>;
-  } | null>(null);
+  const [user, setUser] = useState<IUserData | null>(null);
   const [userData, setUserData] = useState<typeof users | null>(null);
   const { isOpenSetting, setIsOpenSetting } = useSettingStore();
 
@@ -106,9 +116,9 @@ const NavigationBar: NextPage = ({}) => {
           </Row>
           <Row gap="12" justifyContent="center" alignItems="center">
             <SearchBar />
-            {user?.data.data ? (
+            {user?.data ? (
               <SmartLink href="/preferences">
-                <Avatar src={user.data.data[0].profile_image} />
+                <Avatar src={user.data.profileImage} />
               </SmartLink>
             ) : (
               <IconButton

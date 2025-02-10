@@ -12,6 +12,8 @@ import {
   Scroller,
   Tag,
   StylePanel,
+  Button,
+  Flex,
 } from "@/once-ui/components";
 import { NextPage } from "next";
 import { useHistoryStore } from "@/lib/store";
@@ -21,6 +23,7 @@ import { encrypt } from "@/lib/crypto";
 
 const Home: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [logouting, setLogouting] = useState<boolean>(false);
   const { addToast } = useToast();
   const { mangaHistory, setMangaHistory, animeHistory, setAnimeHistory } =
     useHistoryStore();
@@ -59,6 +62,23 @@ const Home: NextPage = () => {
     };
     fetchData();
   }, []);
+  const signOut = async () => {
+    setLogouting(true);
+    try {
+      const response = await fetch("/api/v1/logout");
+
+      if (response.ok) {
+        window.location.reload();
+      }
+    } catch (error) {
+      addToast({
+        message: "Hmm, something wrong!",
+        variant: "danger",
+      });
+    } finally {
+      setLogouting(false);
+    }
+  };
 
   return (
     <Column fillWidth paddingY="80" paddingX="s" alignItems="center" flex={1}>
@@ -74,7 +94,7 @@ const Home: NextPage = () => {
         fillWidth
         paddingBottom="8"
       >
-        {mangaHistory && !loading && (
+        {mangaHistory.length != 0 && !loading && (
           <Fragment>
             <Column paddingLeft="8" hide="s">
               <Heading align="left" as="h2" variant="display-default-m">
@@ -225,7 +245,7 @@ const Home: NextPage = () => {
             </Scroller>
           </Fragment>
         )}
-        {animeHistory && !loading &&(
+        {animeHistory.length != 0 && !loading && (
           <Fragment>
             <Column paddingLeft="8" hide="s" marginTop="24">
               <Heading align="left" as="h2" variant="display-default-m">
@@ -397,8 +417,35 @@ const Home: NextPage = () => {
                   Customize your experience by selecting your preferred theme.
                 </Text>
               </Column>
-              <StylePanel />
+              <Flex paddingX="8">
+                <StylePanel />
+              </Flex>
             </Column>
+          </Fragment>
+        )}
+        {!loading && (
+          <Fragment>
+            <Column paddingLeft="8" hide="s">
+              <Heading align="left" as="h2" variant="display-default-m">
+                Account Preferences
+              </Heading>
+              <Text marginBottom="8" align="left" onBackground="neutral-weak">
+                Catch up on the latest chapters of your favorite manga.
+              </Text>
+            </Column>
+            <Column paddingLeft="8" show="s">
+              <Heading align="left" as="h2" variant="display-default-xs">
+                Account Preferences
+              </Heading>
+              <Text marginBottom="8" align="left" onBackground="neutral-weak">
+                Revisit the most thrilling moments from past chapters.
+              </Text>
+            </Column>
+            <Flex paddingX="8">
+              <Button variant="danger" fillWidth onClick={signOut}>
+                {logouting ? "Please Wait..." : "Log Out"}
+              </Button>
+            </Flex>
           </Fragment>
         )}
       </Column>

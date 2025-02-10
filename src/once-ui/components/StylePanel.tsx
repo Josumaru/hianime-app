@@ -126,7 +126,7 @@ const StylePanel = forwardRef<HTMLDivElement, StylePanelProps>(
           scaling,
           surface,
         };
-        await createCookies("_animanga_t_s", themeSettings);
+        await createCookies("_animanga_t_s", themeSettings, "theme");
       };
 
       saveThemeSettings();
@@ -135,7 +135,8 @@ const StylePanel = forwardRef<HTMLDivElement, StylePanelProps>(
     useEffect(() => {
       const loadThemeSettings = async () => {
         const savedSettings = (await getCookies(
-          "_animanga_t_s"
+          "_animanga_t_s",
+          "theme"
         )) as StylePreferences;
         if (savedSettings) {
           setSelectedShape(savedSettings.border || style.border);

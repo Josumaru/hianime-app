@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db/db";
 import { createClient } from "@/utils/supabase/server";
 import { users } from "@/db/schema";
+import { decrypt, encrypt } from "@/lib/aes";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const supabase = await createClient();
@@ -29,12 +30,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     await db.insert(users).values({
-      name: name,
-      animePreferences: "",
-      mangaPreferences: "",
-      profileImage: `https://avatar.vercel.sh/${data.user?.id}`,
+      name: encrypt(name),
+      animePreferences: "::",
+      mangaPreferences: "::",
+      themePreferences: "::",
+      profileImage: encrypt(`https://avatar.vercel.sh/${data.user?.id}`),
       userId: data.user?.id,
-      email: email,
+      email: encrypt(email),
     });
 
     return NextResponse.json(
