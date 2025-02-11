@@ -14,12 +14,11 @@ import {
   social,
 } from "@/once-ui/resources/config";
 
-import { Background, Column, Flex, ToastProvider } from "@/once-ui/components";
+import { Background, Column, Flex, StylePanel, ToastProvider } from "@/once-ui/components";
 
 import { Inter } from "next/font/google";
 import { Roboto_Mono } from "next/font/google";
-import { getCurrentUser } from "@/action/get-current-user";
-import { getCookies } from "@/action/cookies-action";
+import { StyleIndex } from "@/once-ui/components/StyleIndex";
 
 const primary = Inter({
   variable: "--font-primary",
@@ -169,6 +168,7 @@ export default async function RootLayout({
               height: "0.25rem",
             }}
           />
+          <StyleIndex />
           {children}
         </Column>
       </ToastProvider>

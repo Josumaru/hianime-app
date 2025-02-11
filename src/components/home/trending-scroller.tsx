@@ -19,18 +19,18 @@ const TrendingScroller: NextPage<Props> = ({ params }) => {
   return (
     <Column fillWidth marginTop="24">
       <Column paddingLeft="8" hide="s">
-        <Heading as="h2" align="left" variant="display-default-m">
+        <Heading as="h2" align="right" variant="display-default-m">
           Trending Anime
         </Heading>
-        <Text marginBottom="8" align="left" onBackground="neutral-weak">
+        <Text marginBottom="8" align="right" onBackground="neutral-weak">
           There are so many who see this anime
         </Text>
       </Column>
       <Column paddingLeft="8" show="s">
-        <Heading as="h2" align="left" variant="display-default-xs">
+        <Heading as="h2" align="right" variant="display-default-xs">
           Trending Anime
         </Heading>
-        <Text marginBottom="8" align="left" onBackground="neutral-weak">
+        <Text marginBottom="8" align="right" onBackground="neutral-weak">
           There are so many who see this anime
         </Text>
       </Column>

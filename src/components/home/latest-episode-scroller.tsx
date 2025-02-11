@@ -12,25 +12,49 @@ import { Anime } from "@/types/anime/hianime";
 import { NextPage } from "next";
 interface Props {
   params: Anime[];
+  title: string;
+  subtitle: string;
+  left?: boolean;
 }
 
-const LatestEpisodeScroller: NextPage<Props> = ({ params }) => {
+const HomeAnimeScroller: NextPage<Props> = ({
+  params,
+  subtitle,
+  title,
+  left = true,
+}) => {
   return (
     <Column fillWidth marginTop="24">
       <Column paddingLeft="8" hide="s">
-        <Heading align="left" as="h2" variant="display-default-m">
-          Latest Episode
+        <Heading
+          align={left ? "left" : "right"}
+          as="h2"
+          variant="display-default-m"
+        >
+          {title}
         </Heading>
-        <Text marginBottom="8" align="left" onBackground="neutral-weak">
-          New episodes that are sure to get you excited
+        <Text
+          marginBottom="8"
+          align={left ? "left" : "right"}
+          onBackground="neutral-weak"
+        >
+          {subtitle}
         </Text>
       </Column>
       <Column paddingLeft="8" show="s">
-        <Heading align="left" as="h2" variant="display-default-xs">
-          Latest Episode
+        <Heading
+          align={left ? "left" : "right"}
+          as="h2"
+          variant="display-default-xs"
+        >
+          {title}
         </Heading>
-        <Text marginBottom="8" align="left" onBackground="neutral-weak">
-          New episodes that are sure to get you excited
+        <Text
+          marginBottom="8"
+          align={left ? "left" : "right"}
+          onBackground="neutral-weak"
+        >
+          {subtitle}
         </Text>
       </Column>
       <Scroller
@@ -146,4 +170,4 @@ const LatestEpisodeScroller: NextPage<Props> = ({ params }) => {
   );
 };
 
-export default LatestEpisodeScroller;
+export default HomeAnimeScroller;

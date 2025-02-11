@@ -13,20 +13,21 @@ export interface Results {
   mostFavorite: Anime[];
   latestComplete: Anime[];
   latestEpisode: Anime[];
-  topUpcoming: TopUpcoming[];
+  topUpcoming: Anime[];
+  // topUpcoming: TopUpcoming[];
   recentlyAdded: Anime[];
   genres: string[];
 }
 
 export interface Anime {
-  id: string; 
-  data_id: string; 
-  poster: string; 
-  title: string; 
-  japanese_title: string; 
-  description: string; 
-  tvInfo: AnimeTvInfo; 
-  adultContent: boolean; 
+  id: string;
+  data_id: string;
+  poster: string;
+  title: string;
+  japanese_title: string;
+  description: string;
+  tvInfo: AnimeTvInfo;
+  adultContent: boolean;
 }
 
 export interface AnimeTvInfo {
@@ -93,10 +94,15 @@ export interface Schedule {
 }
 
 export interface TopTen {
-  today: Trending[];
-  week: Trending[];
-  month: Trending[];
+  today: Anime[];
+  week: Anime[];
+  month: Anime[];
 }
+// export interface TopTen {
+//   today: Trending[];
+//   week: Trending[];
+//   month: Trending[];
+// }
 
 export interface Trending {
   id: string;

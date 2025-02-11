@@ -31,14 +31,21 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     ) {
       throw new Error("All fields are required");
     }
-
-    const existingHistory = await db
+    const histories = await db
       .select()
       .from(historyManga)
-      .where(eq(historyManga.chapterId, chapterId))
+      .where(eq(historyManga.userId, userId))
       .execute();
+    const existingHistory = histories.find(
+      (h) => decrypt(h.chapterId ?? "") === chapterId
+    );
+    // const existingHistory = await db
+    //   .select()
+    //   .from(historyManga)
+    //   .where(eq(historyManga.chapterId, encrypt(chapterId)))
+    //   .execute();
 
-    if (existingHistory.length > 0) {
+    if (existingHistory) {
       const updatedHistory = await db
         .update(historyManga)
         .set({
@@ -121,7 +128,9 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       chapterId: decrypt(history.chapterId ?? ""),
       volume: decrypt(history.volume ?? ""),
     }));
-
+    console.log(decryptedHistory);
+    console.log(userId);
+    console.log(decryptedHistory);
     return NextResponse.json(
       {
         success: true,

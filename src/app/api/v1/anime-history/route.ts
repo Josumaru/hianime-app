@@ -30,13 +30,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       throw new Error("All fields are required");
     }
 
-    const existingHistory = await db
+    const histories = await db
       .select()
       .from(historyAnime)
-      .where(eq(historyAnime.episodeId, episodeId))
+      .where(eq(historyAnime.userId, userId))
       .execute();
 
-    if (existingHistory.length > 0) {
+      const existingHistory = histories.find(
+        (h) => decrypt(h.episodeId ?? "") === episodeId
+      );
+
+    if (existingHistory) {
       const updatedHistory = await db
         .update(historyAnime)
         .set({

@@ -67,7 +67,8 @@ const constructOptions = (episodes: Episode[], rangeSize: number) => {
 };
 
 const Page: NextPage<Props> = ({ params }) => {
-  const id = decrypt(use(params).id);
+  const [aid, eid] = decrypt(use(params).id).split("(-|-)");
+
   const { episodes, setEpisodes } = useHianimeStore();
   const { stream, setStream } = useHianimeStore();
   const { info, setInfo } = useHianimeStore();
@@ -162,7 +163,7 @@ const Page: NextPage<Props> = ({ params }) => {
     if (episodes) {
       for (let index = 0; index < episodes?.results.episodes.length; index++) {
         const episode = episodes?.results.episodes[index];
-        if (episode.id == id) {
+        if (episode.id == eid) {
           setCurrentTitle(episode?.japanese_title ?? "");
           if (episodes?.results.episodes.length > index + 1) {
             setNextId(episodes?.results.episodes[index + 1]?.id);
@@ -173,7 +174,7 @@ const Page: NextPage<Props> = ({ params }) => {
         }
       }
     }
-  }, [episodes, id]);
+  }, [episodes, eid]);
   useEffect(() => {
     const formData = new FormData();
     const fetchData = async () => {
@@ -183,7 +184,7 @@ const Page: NextPage<Props> = ({ params }) => {
       try {
         setLoading(true);
 
-        if (!id) {
+        if (!eid) {
           throw new Error("Hmm..., You tried something ? (˶ᵔ ᵕ ᵔ˶)");
         }
 
@@ -195,13 +196,13 @@ const Page: NextPage<Props> = ({ params }) => {
           setPreferences(settings);
         }
 
-        streamResponse = await getStream(id);
+        streamResponse = await getStream(eid);
         setStream(streamResponse);
         setCurrentStream(streamResponse.stream.results.streamingLink.link.file);
 
         if (info && episodes) {
           episodes.results.episodes.map((episode, index) => {
-            if (id == episode.id) {
+            if (eid == episode.id) {
               const currentSize = Math.floor(index / 24) * 24;
               const firstSize = currentSize + 1;
               const lastSize = currentSize + 24;
@@ -222,7 +223,7 @@ const Page: NextPage<Props> = ({ params }) => {
           return;
         }
         if (!info) {
-          infoResponse = await getInfo(id);
+          infoResponse = await getInfo(aid);
           setInfo(infoResponse);
           formData.append("animeId", infoResponse.results.data.id);
           formData.append("animeTitle", infoResponse.results.data.title);
@@ -233,11 +234,12 @@ const Page: NextPage<Props> = ({ params }) => {
           });
         }
         if (!episodes) {
-          episodesResponse = await getEpisodes(id);
-          episodesResponse?.results.episodes.find((episode) => episode.id == id)
-            ?.japanese_title ?? "";
+          episodesResponse = await getEpisodes(aid);
+          episodesResponse?.results.episodes.find(
+            (episode) => episode.id == eid
+          )?.japanese_title ?? "";
           episodesResponse.results.episodes.map((episode, index) => {
-            if (id == episode.id) {
+            if (eid == episode.id) {
               const currentSize = Math.round(index / 24) * 24;
               const firstSize = currentSize + 1;
               const lastSize = currentSize + 24;
@@ -399,7 +401,7 @@ const Page: NextPage<Props> = ({ params }) => {
               maxWidth: "100%",
             }}
           >
-            {episodes?.results.episodes.find((episode) => episode.id == id)
+            {episodes?.results.episodes.find((episode) => episode.id == eid)
               ?.japanese_title ?? ""}
           </Heading>
           <UserWatch
@@ -451,20 +453,22 @@ const Page: NextPage<Props> = ({ params }) => {
                       background={
                         episode.filler
                           ? "warning-strong"
-                          : episode.id == id
+                          : episode.id == eid
                           ? "brand-medium"
                           : "brand-strong"
                       }
                       onBackground={
                         episode.filler
                           ? "warning-medium"
-                          : episode.id == id
+                          : episode.id == eid
                           ? "brand-medium"
                           : "brand-medium"
                       }
                     >
                       <SmartLink
-                        href={`/anime/watch/${encrypt(episode.id)}`}
+                        href={`/anime/watch/${encrypt(
+                          `${aid}(-|-)${episode.id}`
+                        )}`}
                         fillWidth
                       >
                         <Flex
@@ -599,20 +603,22 @@ const Page: NextPage<Props> = ({ params }) => {
                     background={
                       episode.filler
                         ? "warning-strong"
-                        : episode.id == id
+                        : episode.id == eid
                         ? "brand-medium"
                         : "brand-strong"
                     }
                     onBackground={
                       episode.filler
                         ? "warning-medium"
-                        : episode.id == id
+                        : episode.id == eid
                         ? "brand-medium"
                         : "brand-medium"
                     }
                   >
                     <SmartLink
-                      href={`/anime/watch/${encrypt(episode.id)}`}
+                      href={`/anime/watch/${encrypt(
+                        `${aid}(-|-)${episode.id}`
+                      )}`}
                       fillWidth
                     >
                       <Flex

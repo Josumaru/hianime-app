@@ -372,7 +372,7 @@ const Page: NextPage<Props> = ({ params }) => {
               >
                 {episodes?.results.episodes.map((episode, index) => (
                   <SmartLink
-                    href={`/anime/watch/${encrypt(episode.id)}`}
+                    href={`/anime/watch/${encrypt(`${id}(-|-)${episode.id}`)}`}
                     key={episode.id}
                   >
                     <Text

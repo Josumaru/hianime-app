@@ -53,7 +53,7 @@ const Footer: NextPage<Props> = ({}) => {
         <Logo wordmark={false} size="s" />
         <Text size="m">Animanga</Text>
         <Text size="m">
-          <Text onBackground="neutral-weak">2024 /</Text> Created using Once UI
+          <Text onBackground="neutral-weak">{new Date().getFullYear()} /</Text> Created using Once UI
         </Text>
         <SmartLink
           href="https://github.com/josumaru/hianime-app?tab=MIT-1-ov-file"
