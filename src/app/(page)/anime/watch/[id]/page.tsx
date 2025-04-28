@@ -321,7 +321,7 @@ const Page: NextPage<Props> = ({ params }) => {
                     (track, index) => (
                       <Track
                         key={`${index}`}
-                        src={track.file}
+                        src={`https://proxy.josumaru.my.id?url=${track.file}`}
                         kind={track.kind as TextTrackKind}
                         label={track.label}
                         default={track.label === "English"}
