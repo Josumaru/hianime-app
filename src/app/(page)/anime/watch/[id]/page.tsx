@@ -313,7 +313,7 @@ const Page: NextPage<Props> = ({ params }) => {
                 ref={player}
                 autoPlay={true}
                 style={{ width: "100%" }}
-                src={currentStream}
+                src={"https://m3u8.josumaru.my.id/m3u8-proxy?url=" + currentStream}
                 title={currentTitle ?? ""}
               >
                 <MediaProvider>
@@ -321,7 +321,7 @@ const Page: NextPage<Props> = ({ params }) => {
                     (track, index) => (
                       <Track
                         key={`${index}`}
-                        src={`https://proxy.josumaru.my.id?url=${track.file}`}
+                        src={track.file}
                         kind={track.kind as TextTrackKind}
                         label={track.label}
                         default={track.label === "English"}
