@@ -85,7 +85,7 @@ export const getStream = async (
     const filteredServer = serversData.results.find(
       (result) =>
         result.type === (type ?? "sub") &&
-        result.serverName === (server ?? "hd-1")
+        result.serverName === (server ?? "hd-3")
     );
 
     const selectedServer = filteredServer || serversData.results[0];
